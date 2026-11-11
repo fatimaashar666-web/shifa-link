@@ -1,0 +1,75 @@
+{
+  "nav": {
+    "home": "ホーム",
+    "findDoctor": "医師を探す",
+    "videoConsultation": "オンライン診療",
+    "labTests": "血液・生化学検査",
+    "radiologyTests": "画像診断・レントゲン",
+    "healthArticles": "健康コラム",
+    "about": "ShifaLinkについて",
+    "contact": "お問い合わせ",
+    "login": "ログイン",
+    "register": "患者アカウント登録",
+    "registerDoctor": "医師登録",
+    "registerProvider": "検査センター登録"
+  },
+  "theme": {
+    "light": "ライト",
+    "dark": "ダーク",
+    "system": "システム連動",
+    "toggle": "テーマ切替"
+  },
+  "common": {
+    "loading": "読み込み中...",
+    "error": "エラーが発生しました",
+    "backToHome": "ホームに戻る",
+    "learnMore": "詳細を見る",
+    "bookNow": "今すぐ予約",
+    "viewAll": "すべて見る",
+    "search": "検索",
+    "filter": "絞り込み",
+    "submit": "送信"
+  },
+  "home": {
+    "heroTitle": "あなたの健康を、安全につなぐ",
+    "heroSubtitle": "認定された専門医を検索し、対面・オンライン診療の予約や各種検査の予約を安心して行えます。",
+    "heroCta": "医師を探す",
+    "secondaryCta": "検査を予約する",
+    "feature1Title": "認証済み医師",
+    "feature1Desc": "多様な診療科の免許を持つ専門医と空き状況を確認しながら連携。",
+    "feature2Title": "検査予約",
+    "feature2Desc": "提携する信頼性の高い検査機関・画像診断センターの予約。",
+    "feature3Title": "ShifaLink ドライブ",
+    "feature3Desc": "診療記録や検査結果を強固な暗号化のもと保管し、必要な医師とのみ安全に共有。"
+  },
+  "footer": {
+    "tagline": "安全な予約・検査・電子カルテ連携を通じて、患者・医療機関・検査センターを結ぶ総合ヘルスケアプラットフォーム。",
+    "rights": "無断転載を禁じます",
+    "privacy": "プライバシーポリシー",
+    "terms": "利用規約",
+    "consent": "インフォームド・コンセント事項",
+    "sections": {
+      "company": "会社情報",
+      "services": "サービス一覧",
+      "support": "サポート・法的事項"
+    }
+  },
+  "auth": {
+    "loginTitle": "ShifaLinkにログイン",
+    "loginSubtitle": "診療予約やカルテ記録にアクセス",
+    "registerTitle": "患者新規登録",
+    "registerSubtitle": "健康管理を始めるためのアカウント作成",
+    "doctorRegisterTitle": "医師・医療従事者登録",
+    "doctorRegisterSubtitle": "認定医療ネットワークへの参画",
+    "emailLabel": "メールアドレス",
+    "passwordLabel": "パスワード",
+    "nameLabel": "氏名",
+    "licenseLabel": "医籍登録番号 / 医師免許証番号",
+    "specialtyLabel": "専門診療科",
+    "submitLogin": "ログイン",
+    "submitRegister": "新規登録",
+    "submitDoctorRegister": "確認申請を提出",
+    "noAccount": "アカウントをお持ちでないですか？",
+    "haveAccount": "すでに登録済みですか？"
+  }
+}

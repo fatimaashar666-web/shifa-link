@@ -1,0 +1,75 @@
+{
+  "nav": {
+    "home": "Startseite",
+    "findDoctor": "Arzt finden",
+    "videoConsultation": "Videosprechstunde",
+    "labTests": "Labortests",
+    "radiologyTests": "Radiologie",
+    "healthArticles": "Gesundheitsartikel",
+    "about": "Über ShifaLink",
+    "contact": "Kontakt",
+    "login": "Anmelden",
+    "register": "Als Patient registrieren",
+    "registerDoctor": "Als Arzt registrieren",
+    "registerProvider": "Als Diagnosezentrum registrieren"
+  },
+  "theme": {
+    "light": "Hell",
+    "dark": "Dunkel",
+    "system": "System",
+    "toggle": "Design wechseln"
+  },
+  "common": {
+    "loading": "Wird geladen...",
+    "error": "Ein Fehler ist aufgetreten",
+    "backToHome": "Zurück zur Startseite",
+    "learnMore": "Mehr erfahren",
+    "bookNow": "Jetzt buchen",
+    "viewAll": "Alle anzeigen",
+    "search": "Suchen",
+    "filter": "Filtern",
+    "submit": "Absenden"
+  },
+  "home": {
+    "heroTitle": "Ihre Gesundheit, vernetzt",
+    "heroSubtitle": "Finden Sie verifizierte Fachärzte, vereinbaren Sie Praxis- oder Videosprechstunden und buchen Sie Diagnostiktermine zuverlässig.",
+    "heroCta": "Arzt finden",
+    "secondaryCta": "Labortests buchen",
+    "feature1Title": "Verifizierte Ärzte",
+    "feature1Desc": "Direkter Zugang zu approbierten Fachärzten mit verlässlichen Verfügbarkeiten.",
+    "feature2Title": "Diagnostik-Termine",
+    "feature2Desc": "Einfache Terminbuchung für Labore und Radiologiezentren.",
+    "feature3Title": "ShifaLink Drive",
+    "feature3Desc": "Ihre Krankenakten und Befunde geschützt speichern und mit Ihrem Behandlungsteam teilen."
+  },
+  "footer": {
+    "tagline": "Verbindung von Patienten, Ärzten und Diagnostikzentren über sichere Termine und Befunde.",
+    "rights": "Alle Rechte vorbehalten",
+    "privacy": "Datenschutzerklärung",
+    "terms": "Nutzungsbedingungen",
+    "consent": "Einwilligungserklärung",
+    "sections": {
+      "company": "Unternehmen",
+      "services": "Dienste",
+      "support": "Support & Rechtliches"
+    }
+  },
+  "auth": {
+    "loginTitle": "Bei ShifaLink anmelden",
+    "loginSubtitle": "Zugriff auf Ihre Termine und Gesundheitsdaten",
+    "registerTitle": "Patientenkonto erstellen",
+    "registerSubtitle": "Werden Sie Mitglied bei ShifaLink für Ihre Gesundheitsvorsorge",
+    "doctorRegisterTitle": "Als Arzt registrieren",
+    "doctorRegisterSubtitle": "Werden Sie Teil unseres verifizierten Versorgungsnetzwerks",
+    "emailLabel": "E-Mail-Adresse",
+    "passwordLabel": "Passwort",
+    "nameLabel": "Vollständiger Name",
+    "licenseLabel": "Approbations-/Lebenslange Arztnummer",
+    "specialtyLabel": "Fachrichtung",
+    "submitLogin": "Anmelden",
+    "submitRegister": "Konto erstellen",
+    "submitDoctorRegister": "Antrag einreichen",
+    "noAccount": "Noch kein Konto?",
+    "haveAccount": "Bereits registriert?"
+  }
+}

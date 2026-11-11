@@ -1,0 +1,75 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "findDoctor": "Trouver un médecin",
+    "videoConsultation": "Téléconsultation",
+    "labTests": "Analyses de laboratoire",
+    "radiologyTests": "Examens d'imagerie",
+    "healthArticles": "Articles de santé",
+    "about": "À propos de ShifaLink",
+    "contact": "Contact",
+    "login": "Connexion",
+    "register": "Inscription Patient",
+    "registerDoctor": "Inscription Médecin",
+    "registerProvider": "Inscription Centre Diagnostic"
+  },
+  "theme": {
+    "light": "Clair",
+    "dark": "Sombre",
+    "system": "Système",
+    "toggle": "Changer le thème"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Une erreur est survenue",
+    "backToHome": "Retour à l'accueil",
+    "learnMore": "En savoir plus",
+    "bookNow": "Prendre rendez-vous",
+    "viewAll": "Voir tout",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "submit": "Soumettre"
+  },
+  "home": {
+    "heroTitle": "Votre santé, connectée en toute sécurité",
+    "heroSubtitle": "Trouvez des médecins certifiés, réservez des consultations en cabinet ou en vidéo et planifiez vos analyses médicales.",
+    "heroCta": "Trouver un médecin",
+    "secondaryCta": "Réserver des analyses",
+    "feature1Title": "Médecins certifiés",
+    "feature1Desc": "Accédez à un réseau de spécialistes qualifiés avec des créneaux de disponibilité transparents.",
+    "feature2Title": "Examens diagnostiques",
+    "feature2Desc": "Réservation rapide auprès de laboratoires et centres d'imagerie médicale agréés.",
+    "feature3Title": "ShifaLink Drive",
+    "feature3Desc": "Stockez vos dossiers médicaux en toute confidentialité et partagez-les avec votre équipe soignante."
+  },
+  "footer": {
+    "tagline": "Connecter patients, praticiens et centres diagnostiques par des rendez-vous et des dossiers sécurisés.",
+    "rights": "Tous droits réservés",
+    "privacy": "Politique de confidentialité",
+    "terms": "Conditions d'utilisation",
+    "consent": "Information sur le consentement",
+    "sections": {
+      "company": "Entreprise",
+      "services": "Services",
+      "support": "Assistance & Légal"
+    }
+  },
+  "auth": {
+    "loginTitle": "Connexion à ShifaLink",
+    "loginSubtitle": "Accédez à vos rendez-vous et à votre dossier médical",
+    "registerTitle": "Créer un compte patient",
+    "registerSubtitle": "Rejoignez ShifaLink pour gérer facilement votre santé",
+    "doctorRegisterTitle": "Rejoindre en tant que praticien",
+    "doctorRegisterSubtitle": "Intégrez notre réseau de professionnels de santé certifiés",
+    "emailLabel": "Adresse e-mail",
+    "passwordLabel": "Mot de passe",
+    "nameLabel": "Nom complet",
+    "licenseLabel": "Numéro RPPS / Ordre des médecins",
+    "specialtyLabel": "Spécialité principale",
+    "submitLogin": "Se connecter",
+    "submitRegister": "Créer mon compte",
+    "submitDoctorRegister": "Envoyer la demande",
+    "noAccount": "Pas encore de compte ?",
+    "haveAccount": "Déjà inscrit ?"
+  }
+}

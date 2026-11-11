@@ -1,0 +1,75 @@
+{
+  "nav": {
+    "home": "Home",
+    "findDoctor": "Find a Doctor",
+    "videoConsultation": "Video Consultation",
+    "labTests": "Lab Tests",
+    "radiologyTests": "Radiology Tests",
+    "healthArticles": "Health Articles",
+    "about": "About ShifaLink",
+    "contact": "Contact",
+    "login": "Login",
+    "register": "Register as Patient",
+    "registerDoctor": "Register as Doctor",
+    "registerProvider": "Register as Diagnostic Provider"
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "toggle": "Toggle theme"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "backToHome": "Back to Home",
+    "learnMore": "Learn More",
+    "bookNow": "Book Now",
+    "viewAll": "View All",
+    "search": "Search",
+    "filter": "Filter",
+    "submit": "Submit"
+  },
+  "home": {
+    "heroTitle": "Your Health, Connected",
+    "heroSubtitle": "Find verified doctors, schedule clinic visits or video calls, and book diagnostic tests with full confidence.",
+    "heroCta": "Find a Doctor",
+    "secondaryCta": "Book Lab Tests",
+    "feature1Title": "Verified Doctors",
+    "feature1Desc": "Connect with licensed specialists across multiple departments with clear availability.",
+    "feature2Title": "Diagnostic Bookings",
+    "feature2Desc": "Reserve laboratory and radiology appointments with certified partner centers.",
+    "feature3Title": "ShifaLink Drive",
+    "feature3Desc": "Securely store your medical records and control sharing with your healthcare team."
+  },
+  "footer": {
+    "tagline": "Connecting healthcare users and providers through secure appointments, diagnostics, and records.",
+    "rights": "All rights reserved",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "consent": "Patient Consent Info",
+    "sections": {
+      "company": "Company",
+      "services": "Services",
+      "support": "Support & Legal"
+    }
+  },
+  "auth": {
+    "loginTitle": "Sign In to ShifaLink",
+    "loginSubtitle": "Access your health records and appointments",
+    "registerTitle": "Create Patient Account",
+    "registerSubtitle": "Join ShifaLink for personalized health management",
+    "doctorRegisterTitle": "Register as a Healthcare Practitioner",
+    "doctorRegisterSubtitle": "Join our verified provider network",
+    "emailLabel": "Email Address",
+    "passwordLabel": "Password",
+    "nameLabel": "Full Name",
+    "licenseLabel": "Medical License Number",
+    "specialtyLabel": "Primary Specialty",
+    "submitLogin": "Sign In",
+    "submitRegister": "Create Account",
+    "submitDoctorRegister": "Submit Verification Request",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already registered?"
+  }
+}
