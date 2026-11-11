@@ -1606,10 +1606,9 @@ tokens to the client.
 
 ## Prompt 6 --- Six-language support
 
-Implement English, Urdu, German, Arabic, French, and Japanese. Add
+Implement English, Urdu. Add
 locale routing, language selection, locale persistence, date/number
-formatting, and correct `lang` and `dir` attributes. Ensure Urdu and
-Arabic use RTL layout. Integrate Google Cloud Translation only through a
+formatting, and correct `lang` and `dir` attributes. Ensure Urdu use RTL layout. Integrate Google Cloud Translation only through a
 server-side service. Store machine translations as drafts for review; do
 not auto-publish clinical or legal translations.
 

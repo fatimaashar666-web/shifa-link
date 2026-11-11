@@ -1,0 +1,244 @@
+// ShifaLink Prisma Schema — Milestone M2 (Identity, Access & Audit Layer)
+// Constraints: UUID primary keys (ADR-09), Decimal for money, UTC timestamps, Append-only audit (ADR-10)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────
+// ENUMS
+// ─────────────────────────────────────────────
+
+enum UserStatus {
+  ACTIVE
+  PENDING
+  SUSPENDED
+  DEACTIVATED
+}
+
+enum OrgType {
+  CLINIC
+  LAB
+  RADIOLOGY
+}
+
+enum OrgStatus {
+  ACTIVE
+  PENDING_VERIFICATION
+  SUSPENDED
+}
+
+enum VerificationStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+  SUSPENDED
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+  PREFER_NOT_TO_SAY
+}
+
+enum BloodGroup {
+  A_POSITIVE
+  A_NEGATIVE
+  B_POSITIVE
+  B_NEGATIVE
+  AB_POSITIVE
+  AB_NEGATIVE
+  O_POSITIVE
+  O_NEGATIVE
+  UNKNOWN
+}
+
+enum ActorType {
+  USER
+  AGENT
+  SYSTEM
+  WORKER
+}
+
+// ─────────────────────────────────────────────
+// CORE IDENTITY & RBAC
+// ─────────────────────────────────────────────
+
+model User {
+  id              String         @id @default(uuid())
+  email           String         @unique
+  passwordHash    String?
+  emailVerifiedAt DateTime?
+  status          UserStatus     @default(ACTIVE)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  // 1:1 Profiles
+  patientProfile  PatientProfile?
+  doctorProfile   DoctorProfile?
+  preferences     UserPreference?
+
+  // Relations
+  userRoles       UserRole[]
+  orgMemberships  OrganizationMember[]
+  auditEvents     AuditEvent[]
+  consents        ConsentRecord[]
+
+  @@map("users")
+}
+
+model Role {
+  id          Int        @id @default(autoincrement())
+  name        String     @unique // patient, doctor, lab_admin, support_agent, content_editor, super_admin
+  description String?
+  userRoles   UserRole[]
+
+  @@map("roles")
+}
+
+model UserRole {
+  id             String        @id @default(uuid())
+  userId         String
+  roleId         Int
+  organizationId String?
+  assignedAt     DateTime      @default(now())
+  assignedBy     String?
+
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role           Role          @relation(fields: [roleId], references: [id], onDelete: Restrict)
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roleId, organizationId])
+  @@index([userId])
+  @@index([roleId])
+  @@index([organizationId])
+  @@map("user_roles")
+}
+
+// ─────────────────────────────────────────────
+// ORGANIZATIONS (Clinics, Labs, Radiology Centers)
+// ─────────────────────────────────────────────
+
+model Organization {
+  id          String               @id @default(uuid())
+  name        String
+  type        OrgType
+  status      OrgStatus            @default(ACTIVE)
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+
+  members     OrganizationMember[]
+  userRoles   UserRole[]
+  auditEvents AuditEvent[]
+
+  @@map("organizations")
+}
+
+model OrganizationMember {
+  id             String       @id @default(uuid())
+  organizationId String
+  userId         String
+  membershipRole String       // e.g. "admin", "phlebotomist", "radiologist"
+  status         String       @default("ACTIVE")
+  joinedAt       DateTime     @default(now())
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, userId])
+  @@index([organizationId])
+  @@index([userId])
+  @@map("organization_members")
+}
+
+// ─────────────────────────────────────────────
+// USER PROFILES
+// ─────────────────────────────────────────────
+
+model PatientProfile {
+  id          String      @id @default(uuid())
+  userId      String      @unique
+  fullName    String
+  dateOfBirth DateTime?
+  gender      Gender?
+  bloodGroup  BloodGroup?
+  phone       String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("patient_profiles")
+}
+
+model DoctorProfile {
+  id                 String             @id @default(uuid())
+  userId             String             @unique
+  fullName           String
+  licenseNumber      String             @unique
+  consultationFee    Decimal            @db.Decimal(10, 2)
+  verificationStatus VerificationStatus @default(PENDING)
+  bio                String?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("doctor_profiles")
+}
+
+model UserPreference {
+  userId    String   @id
+  locale    String   @default("en")
+  theme     String   @default("system")
+  updatedAt DateTime @updatedAt
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_preferences")
+}
+
+// ─────────────────────────────────────────────
+// AUDIT & CONSENT (ADR-10)
+// ─────────────────────────────────────────────
+
+model AuditEvent {
+  id             String        @id @default(uuid())
+  actorType      ActorType
+  actorId        String?
+  action         String        // e.g. "auth.login", "auth.register", "auth.logout"
+  entityType     String        // e.g. "user", "appointment", "medical_record"
+  entityId       String?
+  organizationId String?
+  metadata       Json?         // Strict: Non-PHI context only
+  ipAddress      String?
+  createdAt      DateTime      @default(now())
+
+  actor          User?         @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+
+  @@index([actorId, createdAt])
+  @@index([entityType, entityId, createdAt])
+  @@index([action, createdAt])
+  @@map("audit_events")
+}
+
+model ConsentRecord {
+  id          String    @id @default(uuid())
+  patientId   String
+  consentType String    // e.g. "medical_records_sharing", "terms_of_service", "privacy_policy"
+  version     String
+  grantedAt   DateTime  @default(now())
+  withdrawnAt DateTime?
+
+  patient     User      @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@index([patientId, consentType])
+  @@map("consent_records")
+}
