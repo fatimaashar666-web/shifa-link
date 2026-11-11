@@ -4,6 +4,7 @@ import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing, isRtlLocale, type Locale } from "@/i18n/routing";
 import { ThemeProvider } from "@/components/layout/ThemeProvider";
+import { SupportChatWidget } from "@/components/ai/SupportChatWidget";
 import "@/styles/globals.css";
 
 export function generateStaticParams() {
@@ -39,6 +40,7 @@ export default async function LocaleLayout({
         >
           <NextIntlClientProvider messages={messages}>
             {children}
+            <SupportChatWidget />
           </NextIntlClientProvider>
         </ThemeProvider>
       </body>
