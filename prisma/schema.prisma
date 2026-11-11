@@ -1,4 +1,4 @@
-// ShifaLink Prisma Schema — Milestone M2 (Identity, Access & Audit Layer)
+// ShifaLink Prisma Schema — Milestone M4 (Doctor Discovery & Appointments)
 // Constraints: UUID primary keys (ADR-09), Decimal for money, UTC timestamps, Append-only audit (ADR-10)
 
 generator client {
@@ -7,7 +7,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 // ─────────────────────────────────────────────
@@ -66,6 +65,37 @@ enum ActorType {
   WORKER
 }
 
+enum AppointmentType {
+  IN_PERSON
+  VIDEO
+}
+
+enum AppointmentStatus {
+  REQUESTED
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum DayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+enum NotificationType {
+  APPOINTMENT_REQUESTED
+  APPOINTMENT_CONFIRMED
+  APPOINTMENT_CANCELLED
+  APPOINTMENT_REMINDER
+  SYSTEM
+}
+
 // ─────────────────────────────────────────────
 // CORE IDENTITY & RBAC
 // ─────────────────────────────────────────────
@@ -89,6 +119,7 @@ model User {
   orgMemberships  OrganizationMember[]
   auditEvents     AuditEvent[]
   consents        ConsentRecord[]
+  notifications   Notification[]
 
   @@map("users")
 }
@@ -126,16 +157,18 @@ model UserRole {
 // ─────────────────────────────────────────────
 
 model Organization {
-  id          String               @id @default(uuid())
-  name        String
-  type        OrgType
-  status      OrgStatus            @default(ACTIVE)
-  createdAt   DateTime             @default(now())
-  updatedAt   DateTime             @updatedAt
+  id              String               @id @default(uuid())
+  name            String
+  type            OrgType
+  status          OrgStatus            @default(ACTIVE)
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
 
-  members     OrganizationMember[]
-  userRoles   UserRole[]
-  auditEvents AuditEvent[]
+  members         OrganizationMember[]
+  userRoles       UserRole[]
+  auditEvents     AuditEvent[]
+  doctorLocations DoctorLocation[]
+  appointments    Appointment[]
 
   @@map("organizations")
 }
@@ -162,17 +195,18 @@ model OrganizationMember {
 // ─────────────────────────────────────────────
 
 model PatientProfile {
-  id          String      @id @default(uuid())
-  userId      String      @unique
-  fullName    String
-  dateOfBirth DateTime?
-  gender      Gender?
-  bloodGroup  BloodGroup?
-  phone       String?
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id           String        @id @default(uuid())
+  userId       String        @unique
+  fullName     String
+  dateOfBirth  DateTime?
+  gender       Gender?
+  bloodGroup   BloodGroup?
+  phone        String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 
-  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  appointments Appointment[]
 
   @@map("patient_profiles")
 }
@@ -189,6 +223,13 @@ model DoctorProfile {
   updatedAt          DateTime           @updatedAt
 
   user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  specialties        DoctorSpecialty[]
+  qualifications     DoctorQualification[]
+  languages          DoctorLanguage[]
+  locations          DoctorLocation[]
+  availabilities     DoctorAvailability[]
+  exceptions         AvailabilityException[]
+  appointments       Appointment[]
 
   @@map("doctor_profiles")
 }
@@ -205,6 +246,168 @@ model UserPreference {
 }
 
 // ─────────────────────────────────────────────
+// DOCTOR DISCOVERY & SPECIALTIES (M4)
+// ─────────────────────────────────────────────
+
+model Specialty {
+  id          String            @id @default(uuid())
+  name        String            @unique
+  slug        String            @unique
+  description String?
+  icon        String?
+  doctors     DoctorSpecialty[]
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@map("specialties")
+}
+
+model DoctorSpecialty {
+  id          String        @id @default(uuid())
+  doctorId    String
+  specialtyId String
+  isPrimary   Boolean       @default(false)
+
+  doctor      DoctorProfile @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  specialty   Specialty     @relation(fields: [specialtyId], references: [id], onDelete: Cascade)
+
+  @@unique([doctorId, specialtyId])
+  @@index([doctorId])
+  @@index([specialtyId])
+  @@map("doctor_specialties")
+}
+
+model DoctorQualification {
+  id          String        @id @default(uuid())
+  doctorId    String
+  degree      String        // e.g. "MBBS", "FCPS", "MD"
+  institution String        // e.g. "King Edward Medical University"
+  year        Int
+
+  doctor      DoctorProfile @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+
+  @@index([doctorId])
+  @@map("doctor_qualifications")
+}
+
+model DoctorLanguage {
+  id           String        @id @default(uuid())
+  doctorId     String
+  languageCode String        // "en", "ur", "ar", "fr", "de", "ja"
+
+  doctor       DoctorProfile @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+
+  @@unique([doctorId, languageCode])
+  @@index([doctorId])
+  @@map("doctor_languages")
+}
+
+model DoctorLocation {
+  id             String               @id @default(uuid())
+  doctorId       String
+  organizationId String?
+  name           String               // e.g. "Shifa Care Clinic - Gulberg", "Telehealth Video"
+  address        String?
+  city           String               @default("Lahore")
+  isVirtual      Boolean              @default(false)
+
+  doctor         DoctorProfile        @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  organization   Organization?        @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  availabilities DoctorAvailability[]
+  appointments   Appointment[]
+
+  @@index([doctorId])
+  @@index([organizationId])
+  @@map("doctor_locations")
+}
+
+model DoctorAvailability {
+  id                  String         @id @default(uuid())
+  doctorId            String
+  locationId          String
+  dayOfWeek           DayOfWeek
+  startTime           String         // "09:00"
+  endTime             String         // "17:00"
+  slotDurationMinutes Int            @default(30)
+  isActive            Boolean        @default(true)
+
+  doctor              DoctorProfile  @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  location            DoctorLocation @relation(fields: [locationId], references: [id], onDelete: Cascade)
+
+  @@index([doctorId, dayOfWeek])
+  @@index([locationId])
+  @@map("doctor_availability")
+}
+
+model AvailabilityException {
+  id          String        @id @default(uuid())
+  doctorId    String
+  date        DateTime      @db.Date
+  isAvailable Boolean       @default(false) // false = day off, true = override
+  startTime   String?
+  endTime     String?
+  reason      String?
+
+  doctor      DoctorProfile @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+
+  @@unique([doctorId, date])
+  @@index([doctorId])
+  @@map("availability_exceptions")
+}
+
+// ─────────────────────────────────────────────
+// APPOINTMENTS & BOOKING WORKFLOW (M4)
+// ─────────────────────────────────────────────
+
+model Appointment {
+  id                 String            @id @default(uuid())
+  patientId          String
+  doctorId           String
+  locationId         String
+  organizationId     String?
+  appointmentType    AppointmentType   @default(IN_PERSON)
+  status             AppointmentStatus @default(CONFIRMED)
+  scheduledAt        DateTime          // Exact UTC start of slot
+  endAt              DateTime          // Exact UTC end of slot
+  reason             String?
+  symptoms           String?
+  notes              String?
+  cancellationReason String?
+  cancelledBy        String?
+  cancelledAt        DateTime?
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+
+  patient            PatientProfile    @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  doctor             DoctorProfile     @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  location           DoctorLocation    @relation(fields: [locationId], references: [id], onDelete: Restrict)
+  organization       Organization?     @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+
+  @@unique([doctorId, scheduledAt]) // Prevents double-booking same doctor at exact slot
+  @@index([patientId, scheduledAt])
+  @@index([doctorId, status])
+  @@index([scheduledAt])
+  @@map("appointments")
+}
+
+model Notification {
+  id         String           @id @default(uuid())
+  userId     String
+  title      String
+  message    String
+  type       NotificationType @default(SYSTEM)
+  entityType String?          // "appointment", "booking", etc.
+  entityId   String?
+  isRead     Boolean          @default(false)
+  createdAt  DateTime         @default(now())
+
+  user       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead])
+  @@map("notifications")
+}
+
+// ─────────────────────────────────────────────
 // AUDIT & CONSENT (ADR-10)
 // ─────────────────────────────────────────────
 
@@ -212,8 +415,8 @@ model AuditEvent {
   id             String        @id @default(uuid())
   actorType      ActorType
   actorId        String?
-  action         String        // e.g. "auth.login", "auth.register", "auth.logout"
-  entityType     String        // e.g. "user", "appointment", "medical_record"
+  action         String        // e.g. "auth.login", "booking.create", "booking.cancel"
+  entityType     String        // e.g. "User", "Appointment", "MedicalRecord"
   entityId       String?
   organizationId String?
   metadata       Json?         // Strict: Non-PHI context only

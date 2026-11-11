@@ -1,5 +1,5 @@
 /**
- * Prisma seed — M2 development fixtures.
+ * Prisma seed — M2 & M4 development fixtures.
  *
  * IMPORTANT:
  * - ALL names, emails, and IDs are synthetic. No real patient data.
@@ -8,16 +8,42 @@
  * Usage:
  *   npm run db:seed
  *   # or directly:
- *   npx ts-node --compiler-options '{"module":"CommonJS"}' prisma/seed.ts
+ *   npx ts-node -T prisma/seed.ts
  */
 
-import { PrismaClient } from '@prisma/client'
+import { existsSync, readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
+import { Pool } from 'pg'
+import { PrismaPg } from '@prisma/adapter-pg'
+import { PrismaClient, DayOfWeek, AppointmentStatus, AppointmentType } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 
-const db = new PrismaClient()
+// Simple .env.local loader for ts-node script
+const envPath = resolve(process.cwd(), '.env.local')
+if (existsSync(envPath)) {
+  const content = readFileSync(envPath, 'utf-8')
+  for (const line of content.split('\n')) {
+    const trimmed = line.trim()
+    if (!trimmed || trimmed.startsWith('#')) continue
+    const eqIdx = trimmed.indexOf('=')
+    if (eqIdx > 0) {
+      const key = trimmed.slice(0, eqIdx).trim()
+      let val = trimmed.slice(eqIdx + 1).trim()
+      if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+        val = val.slice(1, -1)
+      }
+      process.env[key] = val
+    }
+  }
+}
+
+const connectionString = process.env.DATABASE_URL
+const pool = new Pool({ connectionString })
+const adapter = new PrismaPg(pool)
+const db = new PrismaClient({ adapter })
 
 async function main() {
-  console.log('🌱  Starting seed...')
+  console.log('🌱  Starting M2 + M4 seed...')
 
   // -------------------------------------------------------------------------
   // 1. Roles — must run first
@@ -46,6 +72,17 @@ async function main() {
   // 2. Organizations (OrgType enum: CLINIC | LAB | RADIOLOGY)
   // -------------------------------------------------------------------------
 
+  const clinicOrg = await db.organization.upsert({
+    where: { id: 'org-seed-cln-00000000-0000-0000-0000-000000000000' },
+    create: {
+      id: 'org-seed-cln-00000000-0000-0000-0000-000000000000',
+      name: 'Shifa Central Clinic',
+      type: 'CLINIC',
+      status: 'ACTIVE',
+    },
+    update: {},
+  })
+
   const labOrg = await db.organization.upsert({
     where: { id: 'org-seed-lab-00000000-0000-0000-0000-000000000001' },
     create: {
@@ -68,13 +105,38 @@ async function main() {
     update: {},
   })
 
-  console.log(`  ✅  Organizations: ${labOrg.name}, ${radioOrg.name}`)
+  console.log(`  ✅  Organizations: ${clinicOrg.name}, ${labOrg.name}, ${radioOrg.name}`)
 
   // -------------------------------------------------------------------------
-  // 3. Helper — create a user with hashed password, role, and preferences
+  // 3. Specialties (M4)
   // -------------------------------------------------------------------------
 
-  const BCRYPT_ROUNDS = 10 // Lower rounds for seeding speed
+  const specialtiesData = [
+    { name: 'General Medicine', slug: 'general-medicine', description: 'Primary care, fever, routine checkups', icon: 'Stethoscope' },
+    { name: 'Cardiology', slug: 'cardiology', description: 'Heart, blood pressure, and cardiovascular health', icon: 'HeartPulse' },
+    { name: 'Dermatology', slug: 'dermatology', description: 'Skin, hair, allergies, and cosmetic dermatology', icon: 'Sparkles' },
+    { name: 'Pediatrics', slug: 'pediatrics', description: 'Infant, child, and adolescent healthcare', icon: 'Baby' },
+    { name: 'Orthopedics', slug: 'orthopedics', description: 'Bones, joints, spine, and fracture management', icon: 'Bone' },
+    { name: 'Neurology', slug: 'neurology', description: 'Brain, nerves, headaches, and neuromuscular disorders', icon: 'Brain' },
+  ]
+
+  const specialtiesMap = new Map<string, string>()
+
+  for (const s of specialtiesData) {
+    const spec = await db.specialty.upsert({
+      where: { slug: s.slug },
+      create: s,
+      update: { name: s.name, description: s.description, icon: s.icon },
+    })
+    specialtiesMap.set(s.slug, spec.id)
+  }
+  console.log(`  ✅  Specialties seeded (${specialtiesData.length})`)
+
+  // -------------------------------------------------------------------------
+  // 4. Helper — create a user with hashed password, role, and preferences
+  // -------------------------------------------------------------------------
+
+  const BCRYPT_ROUNDS = 10
 
   async function seedUser(params: {
     fullName: string
@@ -84,6 +146,8 @@ async function main() {
     emailVerified?: boolean
     profileType: 'patient' | 'doctor' | 'staff'
     licenseNumber?: string
+    bio?: string
+    fee?: number
   }) {
     const passwordHash = await bcrypt.hash(params.password, BCRYPT_ROUNDS)
 
@@ -115,31 +179,39 @@ async function main() {
       update: {},
     })
 
+    let patientProf = null
+    let doctorProf = null
+
     if (params.profileType === 'patient') {
-      await db.patientProfile.upsert({
+      patientProf = await db.patientProfile.upsert({
         where: { userId: user.id },
         create: { userId: user.id, fullName: params.fullName },
-        update: {},
+        update: { fullName: params.fullName },
       })
     } else if (params.profileType === 'doctor') {
-      await db.doctorProfile.upsert({
+      doctorProf = await db.doctorProfile.upsert({
         where: { userId: user.id },
         create: {
           userId: user.id,
           fullName: params.fullName,
           licenseNumber: params.licenseNumber ?? `SYNTH-${user.id.slice(0, 8)}`,
-          consultationFee: 0,
+          consultationFee: params.fee ?? 1500,
+          verificationStatus: params.emailVerified ? 'VERIFIED' : 'PENDING',
+          bio: params.bio ?? 'Licensed medical practitioner providing evidence-based patient consultations.',
+        },
+        update: {
+          fullName: params.fullName,
+          consultationFee: params.fee ?? 1500,
           verificationStatus: params.emailVerified ? 'VERIFIED' : 'PENDING',
         },
-        update: {},
       })
     }
 
-    return user
+    return { user, patientProf, doctorProf }
   }
 
   // -------------------------------------------------------------------------
-  // 4. Patients
+  // 5. Patients
   // -------------------------------------------------------------------------
 
   const patientAlpha = await seedUser({
@@ -160,39 +232,227 @@ async function main() {
     profileType: 'patient',
   })
 
-  console.log(`  ✅  Patients: ${patientAlpha.email}, ${patientBeta.email}`)
+  console.log(`  ✅  Patients: ${patientAlpha.user.email}, ${patientBeta.user.email}`)
 
   // -------------------------------------------------------------------------
-  // 5. Doctors
+  // 6. Doctors (M4 full profiles: qualifications, specialties, locations, slots)
   // -------------------------------------------------------------------------
 
   const doctorGamma = await seedUser({
-    fullName: 'Test Doctor Gamma',
+    fullName: 'Dr. Sarah Jenkins, MD',
     email: 'doctor.gamma@example.test',
     password: 'Password3!',
     role: 'doctor',
     emailVerified: true,
     profileType: 'doctor',
-    licenseNumber: 'SYNTH-LIC-001',
+    licenseNumber: 'PMC-92041-A',
+    fee: 2500,
+    bio: 'Senior Consultant Cardiologist with over 12 years of clinical experience in non-invasive cardiology, heart disease prevention, and hypertension management.',
   })
 
   const doctorDelta = await seedUser({
-    fullName: 'Test Doctor Delta',
+    fullName: 'Dr. Tariq Mahmood, MBBS',
     email: 'doctor.delta@example.test',
     password: 'Password4!',
     role: 'doctor',
-    emailVerified: false,
+    emailVerified: true,
     profileType: 'doctor',
-    licenseNumber: 'SYNTH-LIC-002',
+    licenseNumber: 'PMC-81190-B',
+    fee: 1800,
+    bio: 'Specialist General Physician focusing on adult acute illness, preventive health assessments, and chronic condition management.',
   })
 
-  console.log(`  ✅  Doctors: ${doctorGamma.email} (VERIFIED), ${doctorDelta.email} (PENDING)`)
+  // Doctor Specialties
+  if (doctorGamma.doctorProf) {
+    const cardId = specialtiesMap.get('cardiology')!
+    const genId = specialtiesMap.get('general-medicine')!
+
+    await db.doctorSpecialty.upsert({
+      where: { doctorId_specialtyId: { doctorId: doctorGamma.doctorProf.id, specialtyId: cardId } },
+      create: { doctorId: doctorGamma.doctorProf.id, specialtyId: cardId, isPrimary: true },
+      update: {},
+    })
+
+    await db.doctorSpecialty.upsert({
+      where: { doctorId_specialtyId: { doctorId: doctorGamma.doctorProf.id, specialtyId: genId } },
+      create: { doctorId: doctorGamma.doctorProf.id, specialtyId: genId, isPrimary: false },
+      update: {},
+    })
+
+    // Qualifications
+    await db.doctorQualification.createMany({
+      data: [
+        { doctorId: doctorGamma.doctorProf.id, degree: 'MBBS', institution: 'King Edward Medical University', year: 2012 },
+        { doctorId: doctorGamma.doctorProf.id, degree: 'FCPS (Cardiology)', institution: 'College of Physicians & Surgeons', year: 2018 },
+      ],
+      skipDuplicates: true,
+    })
+
+    // Languages
+    for (const lang of ['en', 'ur']) {
+      await db.doctorLanguage.upsert({
+        where: { doctorId_languageCode: { doctorId: doctorGamma.doctorProf.id, languageCode: lang } },
+        create: { doctorId: doctorGamma.doctorProf.id, languageCode: lang },
+        update: {},
+      })
+    }
+
+    // Locations
+    const physLocation = await db.doctorLocation.upsert({
+      where: { id: 'loc-gamma-clinic-0000-0000-000000000001' },
+      create: {
+        id: 'loc-gamma-clinic-0000-0000-000000000001',
+        doctorId: doctorGamma.doctorProf.id,
+        organizationId: clinicOrg.id,
+        name: 'Shifa Central Clinic - Suite 402',
+        address: '14-C Main Boulevard, Gulberg III',
+        city: 'Lahore',
+        isVirtual: false,
+      },
+      update: {},
+    })
+
+    const virtLocation = await db.doctorLocation.upsert({
+      where: { id: 'loc-gamma-video-0000-0000-000000000002' },
+      create: {
+        id: 'loc-gamma-video-0000-0000-000000000002',
+        doctorId: doctorGamma.doctorProf.id,
+        name: 'Telehealth Secure Video Consultation',
+        city: 'Virtual',
+        isVirtual: true,
+      },
+      update: {},
+    })
+
+    // Recurring Availability: Mon, Wed, Fri (physical); Tue, Thu (video)
+    const scheduleDays: { day: DayOfWeek; locId: string; start: string; end: string }[] = [
+      { day: DayOfWeek.MONDAY, locId: physLocation.id, start: '09:00', end: '13:00' },
+      { day: DayOfWeek.WEDNESDAY, locId: physLocation.id, start: '09:00', end: '13:00' },
+      { day: DayOfWeek.FRIDAY, locId: physLocation.id, start: '14:00', end: '18:00' },
+      { day: DayOfWeek.TUESDAY, locId: virtLocation.id, start: '10:00', end: '15:00' },
+      { day: DayOfWeek.THURSDAY, locId: virtLocation.id, start: '10:00', end: '15:00' },
+    ]
+
+    for (const s of scheduleDays) {
+      const existing = await db.doctorAvailability.findFirst({
+        where: { doctorId: doctorGamma.doctorProf.id, locationId: s.locId, dayOfWeek: s.day },
+      })
+      if (!existing) {
+        await db.doctorAvailability.create({
+          data: {
+            doctorId: doctorGamma.doctorProf.id,
+            locationId: s.locId,
+            dayOfWeek: s.day,
+            startTime: s.start,
+            endTime: s.end,
+            slotDurationMinutes: 30,
+            isActive: true,
+          },
+        })
+      }
+    }
+  }
+
+  if (doctorDelta.doctorProf) {
+    const genId = specialtiesMap.get('general-medicine')!
+    await db.doctorSpecialty.upsert({
+      where: { doctorId_specialtyId: { doctorId: doctorDelta.doctorProf.id, specialtyId: genId } },
+      create: { doctorId: doctorDelta.doctorProf.id, specialtyId: genId, isPrimary: true },
+      update: {},
+    })
+
+    await db.doctorQualification.createMany({
+      data: [
+        { doctorId: doctorDelta.doctorProf.id, degree: 'MBBS', institution: 'Allama Iqbal Medical College', year: 2016 },
+      ],
+      skipDuplicates: true,
+    })
+
+    for (const lang of ['en', 'ur', 'ar']) {
+      await db.doctorLanguage.upsert({
+        where: { doctorId_languageCode: { doctorId: doctorDelta.doctorProf.id, languageCode: lang } },
+        create: { doctorId: doctorDelta.doctorProf.id, languageCode: lang },
+        update: {},
+      })
+    }
+
+    const deltaLoc = await db.doctorLocation.upsert({
+      where: { id: 'loc-delta-clinic-0000-0000-000000000003' },
+      create: {
+        id: 'loc-delta-clinic-0000-0000-000000000003',
+        doctorId: doctorDelta.doctorProf.id,
+        name: 'Community Care OPD',
+        address: '88 Jail Road',
+        city: 'Lahore',
+        isVirtual: false,
+      },
+      update: {},
+    })
+
+    for (const day of [DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.THURSDAY, DayOfWeek.SATURDAY]) {
+      const existing = await db.doctorAvailability.findFirst({
+        where: { doctorId: doctorDelta.doctorProf.id, locationId: deltaLoc.id, dayOfWeek: day },
+      })
+      if (!existing) {
+        await db.doctorAvailability.create({
+          data: {
+            doctorId: doctorDelta.doctorProf.id,
+            locationId: deltaLoc.id,
+            dayOfWeek: day,
+            startTime: '16:00',
+            endTime: '20:00',
+            slotDurationMinutes: 20,
+            isActive: true,
+          },
+        })
+      }
+    }
+  }
+
+  console.log(`  ✅  Doctors & schedules: ${doctorGamma.user.email} (Cardiology), ${doctorDelta.user.email} (General Medicine)`)
 
   // -------------------------------------------------------------------------
-  // 6. Super admin & support agent (staff — no patient/doctor profile)
+  // 7. Sample Appointments (M4)
   // -------------------------------------------------------------------------
 
-  const admin = await seedUser({
+  if (patientAlpha.patientProf && doctorGamma.doctorProf) {
+    const loc = await db.doctorLocation.findFirst({ where: { doctorId: doctorGamma.doctorProf.id } })
+    if (loc) {
+      // Future appointment (next Monday 10:00 AM UTC)
+      const nextWeek = new Date()
+      nextWeek.setDate(nextWeek.getDate() + 7)
+      nextWeek.setUTCHours(10, 0, 0, 0)
+      const nextWeekEnd = new Date(nextWeek)
+      nextWeekEnd.setUTCMinutes(30)
+
+      await db.appointment.upsert({
+        where: {
+          doctorId_scheduledAt: {
+            doctorId: doctorGamma.doctorProf.id,
+            scheduledAt: nextWeek,
+          },
+        },
+        create: {
+          patientId: patientAlpha.patientProf.id,
+          doctorId: doctorGamma.doctorProf.id,
+          locationId: loc.id,
+          appointmentType: AppointmentType.IN_PERSON,
+          status: AppointmentStatus.CONFIRMED,
+          scheduledAt: nextWeek,
+          endAt: nextWeekEnd,
+          reason: 'Routine cardiac health review and blood pressure check.',
+        },
+        update: {},
+      })
+      console.log('  ✅  Sample appointment created for patient alpha')
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // 8. Staff Accounts
+  // -------------------------------------------------------------------------
+
+  await seedUser({
     fullName: 'Seed Super Admin',
     email: 'admin@example.test',
     password: 'AdminPass1!',
@@ -201,7 +461,7 @@ async function main() {
     profileType: 'staff',
   })
 
-  const support = await seedUser({
+  await seedUser({
     fullName: 'Seed Support Agent',
     email: 'support@example.test',
     password: 'SupportPass1!',
@@ -209,13 +469,6 @@ async function main() {
     emailVerified: true,
     profileType: 'staff',
   })
-
-  console.log(`  ✅  Super admin: ${admin.email}`)
-  console.log(`  ✅  Support agent: ${support.email}`)
-
-  // -------------------------------------------------------------------------
-  // 7. Lab admin with org membership
-  // -------------------------------------------------------------------------
 
   const labAdminUser = await seedUser({
     fullName: 'Seed Lab Admin',
@@ -230,29 +483,19 @@ async function main() {
     where: {
       organizationId_userId: {
         organizationId: labOrg.id,
-        userId: labAdminUser.id,
+        userId: labAdminUser.user.id,
       },
     },
     create: {
       organizationId: labOrg.id,
-      userId: labAdminUser.id,
+      userId: labAdminUser.user.id,
       membershipRole: 'admin',
       status: 'ACTIVE',
     },
     update: {},
   })
 
-  console.log(`  ✅  Lab admin: ${labAdminUser.email} → ${labOrg.name}`)
-
-  console.log('\n🎉  Seed complete!\n')
-  console.log('  Seed accounts (use only in local/staging):')
-  console.log('  patient.alpha@example.test  / Password1!')
-  console.log('  patient.beta@example.test   / Password2!')
-  console.log('  doctor.gamma@example.test   / Password3!')
-  console.log('  doctor.delta@example.test   / Password4!')
-  console.log('  admin@example.test          / AdminPass1!')
-  console.log('  support@example.test        / SupportPass1!')
-  console.log('  lab.admin@example.test      / LabPass1!')
+  console.log('\n🎉  M2 + M4 Seed complete!\n')
 }
 
 main()
@@ -262,4 +505,5 @@ main()
   })
   .finally(() => {
     void db.$disconnect()
+    void pool.end()
   })
