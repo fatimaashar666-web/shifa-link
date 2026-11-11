@@ -4,17 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Mail, Phone, MapPin } from "lucide-react";
 
 export default function ContactPage() {
-  const tNav = useTranslations("nav");
-  const tCommon = useTranslations("common");
+  const t = useTranslations("contact");
 
   return (
     <div className="container mx-auto max-w-7xl px-4 py-8 sm:px-6 space-y-8">
       <div className="space-y-4 max-w-3xl">
         <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
-          {tNav("contact")}
+          {t("title")}
         </h1>
         <p className="text-sm text-slate-600 dark:text-slate-400">
-          Have questions regarding patient registration, diagnostic partner onboarding, or platform support? Our support team is here to assist you.
+          {t("subtitle")}
         </p>
       </div>
 
@@ -25,10 +24,10 @@ export default function ContactPage() {
             <CardHeader className="space-y-1">
               <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400">
                 <Mail className="h-5 w-5" />
-                <CardTitle className="text-base">Support Email</CardTitle>
+                <CardTitle className="text-base">{t("emailTitle")}</CardTitle>
               </div>
               <CardDescription className="text-xs text-slate-700 dark:text-slate-300">
-                support@shifalink.example.com
+                {t("email")}
               </CardDescription>
             </CardHeader>
           </Card>
@@ -37,10 +36,10 @@ export default function ContactPage() {
             <CardHeader className="space-y-1">
               <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
                 <Phone className="h-5 w-5" />
-                <CardTitle className="text-base">Inquiry Helpline</CardTitle>
+                <CardTitle className="text-base">{t("phoneTitle")}</CardTitle>
               </div>
               <CardDescription className="text-xs text-slate-700 dark:text-slate-300">
-                +92 (051) 111-SHIFA (74432) — Monday to Saturday, 9 AM to 6 PM
+                {t("phone")}
               </CardDescription>
             </CardHeader>
           </Card>
@@ -49,59 +48,59 @@ export default function ContactPage() {
             <CardHeader className="space-y-1">
               <div className="flex items-center gap-2 text-purple-600 dark:text-purple-400">
                 <MapPin className="h-5 w-5" />
-                <CardTitle className="text-base">Operational Headquarters</CardTitle>
+                <CardTitle className="text-base">{t("hqTitle")}</CardTitle>
               </div>
-              <CardDescription className="text-xs text-slate-700 dark:text-slate-300">
-                ShifaLink Health Tech Innovation Center, Sector G-11/3, Islamabad, Pakistan
+              <CardDescription className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
+                {t("hq")}
               </CardDescription>
             </CardHeader>
           </Card>
         </div>
 
-        {/* Contact Form Placeholder */}
+        {/* Contact Inquiry Form */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Send an Inquiry</CardTitle>
-            <CardDescription className="text-xs">
-              Fill out the form below. Please do not submit urgent clinical symptoms through this general contact channel.
-            </CardDescription>
+            <CardTitle className="text-base">{t("formTitle")}</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium text-slate-700 dark:text-slate-300">Your Name</label>
-              <input
-                type="text"
-                placeholder="Full name"
-                className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900 dark:text-white"
-              />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium text-slate-700 dark:text-slate-300">Email Address</label>
-              <input
-                type="email"
-                placeholder="name@example.com"
-                className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900 dark:text-white"
-              />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium text-slate-700 dark:text-slate-300">Subject</label>
-              <input
-                type="text"
-                placeholder="General inquiry, provider onboarding, or feedback"
-                className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900 dark:text-white"
-              />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium text-slate-700 dark:text-slate-300">Message</label>
-              <textarea
-                rows={4}
-                placeholder="How can we assist you?"
-                className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900 dark:text-white"
-              />
-            </div>
-            <Button className="w-full">
-              {tCommon("submit")}
-            </Button>
+          <CardContent>
+            <form className="space-y-4 text-xs" onSubmit={(e) => e.preventDefault()}>
+              <div className="space-y-1.5">
+                <label className="font-medium text-slate-700 dark:text-slate-300">
+                  {t("namePlaceholder")}
+                </label>
+                <input
+                  type="text"
+                  placeholder={t("namePlaceholder")}
+                  className="w-full rounded-md border border-slate-200 dark:border-slate-800 bg-transparent px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-blue-600"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="font-medium text-slate-700 dark:text-slate-300">
+                  {t("emailPlaceholder")}
+                </label>
+                <input
+                  type="email"
+                  placeholder={t("emailPlaceholder")}
+                  className="w-full rounded-md border border-slate-200 dark:border-slate-800 bg-transparent px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-blue-600"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="font-medium text-slate-700 dark:text-slate-300">
+                  {t("messagePlaceholder")}
+                </label>
+                <textarea
+                  rows={4}
+                  placeholder={t("messagePlaceholder")}
+                  className="w-full rounded-md border border-slate-200 dark:border-slate-800 bg-transparent px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-blue-600 resize-none"
+                />
+              </div>
+
+              <Button type="submit" className="w-full text-xs">
+                {t("sendButton")}
+              </Button>
+            </form>
           </CardContent>
         </Card>
       </div>

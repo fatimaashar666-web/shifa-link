@@ -14,6 +14,7 @@ import {
   ArrowRight,
   Sparkles
 } from "lucide-react";
+import ReviewCarousel from "@/components/ui/review-carousel";
 
 export default function HomePage() {
   const t = useTranslations("home");
@@ -212,6 +213,9 @@ export default function HomePage() {
             </div>
           </div>
         </div>
+      </section>
+      <section className="container mx-auto max-w-7xl px-4 sm:px-6">
+          <ReviewCarousel />
       </section>
     </div>
   );

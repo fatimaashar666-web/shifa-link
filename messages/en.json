@@ -42,6 +42,31 @@
     "feature3Title": "ShifaLink Drive",
     "feature3Desc": "Securely store your medical records and control sharing with your healthcare team."
   },
+  "about": {
+    "title": "About ShifaLink",
+    "description": "ShifaLink is a responsive, privacy-conscious digital healthcare platform connecting patients, qualified physicians, and certified diagnostic centers across unified clinical workflows.",
+    "pillar1Title": "Patient-Controlled Sharing",
+    "pillar1Desc": "Medical records in ShifaLink Drive are private by default. Access is granted only with explicit, time-bounded, revocable patient consent.",
+    "pillar2Title": "Verified Practitioners",
+    "pillar2Desc": "Every doctor and diagnostic organization is verified through formal credentialing review before appearing in public directories.",
+    "pillar3Title": "Controlled AI Assistance",
+    "pillar3Desc": "AI assistants are restricted to strict role-based tool boundaries without direct database access, following evidence-based clinical protocols."
+  },
+  "contact": {
+    "title": "Contact ShifaLink",
+    "subtitle": "Have questions regarding patient registration, diagnostic partner onboarding, or platform support? Our support team is here to assist you.",
+    "emailTitle": "Support Email",
+    "email": "support@shifalink.example.com",
+    "phoneTitle": "Inquiry Helpline",
+    "phone": "+92 (051) 111-SHIFA (74432) — Monday to Saturday, 9 AM to 6 PM",
+    "hqTitle": "Headquarters",
+    "hq": "ShifaLink Technologies, Technology Park, Constitution Avenue, Islamabad, Pakistan",
+    "formTitle": "Send Us a Message",
+    "namePlaceholder": "Your full name",
+    "emailPlaceholder": "Your email address",
+    "messagePlaceholder": "How can our clinical support team help you?",
+    "sendButton": "Send Message"
+  },
   "footer": {
     "tagline": "Connecting healthcare users and providers through secure appointments, diagnostics, and records.",
     "rights": "All rights reserved",

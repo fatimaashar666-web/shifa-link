@@ -3,21 +3,21 @@
     "home": "ホーム",
     "findDoctor": "医師を探す",
     "videoConsultation": "オンライン診療",
-    "labTests": "血液・生化学検査",
-    "radiologyTests": "画像診断・レントゲン",
-    "healthArticles": "健康コラム",
+    "labTests": "血液・検査",
+    "radiologyTests": "放射線・画像検査",
+    "healthArticles": "医療コラム",
     "about": "ShifaLinkについて",
     "contact": "お問い合わせ",
     "login": "ログイン",
     "register": "患者アカウント登録",
     "registerDoctor": "医師登録",
-    "registerProvider": "検査センター登録"
+    "registerProvider": "検査機関の登録"
   },
   "theme": {
     "light": "ライト",
     "dark": "ダーク",
     "system": "システム連動",
-    "toggle": "テーマ切替"
+    "toggle": "テーマ切り替え"
   },
   "common": {
     "loading": "読み込み中...",
@@ -25,51 +25,76 @@
     "backToHome": "ホームに戻る",
     "learnMore": "詳細を見る",
     "bookNow": "今すぐ予約",
-    "viewAll": "すべて見る",
+    "viewAll": "すべて表示",
     "search": "検索",
     "filter": "絞り込み",
     "submit": "送信"
   },
   "home": {
-    "heroTitle": "あなたの健康を、安全につなぐ",
-    "heroSubtitle": "認定された専門医を検索し、対面・オンライン診療の予約や各種検査の予約を安心して行えます。",
+    "heroTitle": "あなたの健康を、安心でつなぐ",
+    "heroSubtitle": "認証済みの専門医を見つけ、対面診療やオンライン診療、臨床検査の予約を確実に行えます。",
     "heroCta": "医師を探す",
     "secondaryCta": "検査を予約する",
     "feature1Title": "認証済み医師",
-    "feature1Desc": "多様な診療科の免許を持つ専門医と空き状況を確認しながら連携。",
+    "feature1Desc": "資格と経歴が確認された各診療科の専門医とスムーズにつながります。",
     "feature2Title": "検査予約",
-    "feature2Desc": "提携する信頼性の高い検査機関・画像診断センターの予約。",
-    "feature3Title": "ShifaLink ドライブ",
-    "feature3Desc": "診療記録や検査結果を強固な暗号化のもと保管し、必要な医師とのみ安全に共有。"
+    "feature2Desc": "提携する認定ラボや画像診断センターでの検査をオンラインで簡単予約。",
+    "feature3Title": "ShifaLink Drive",
+    "feature3Desc": "医療データを安全にクラウド保管し、担当医との共有を自分で管理できます。"
+  },
+  "about": {
+    "title": "ShifaLinkについて",
+    "description": "ShifaLinkはプライバシー保護を第一に考え、患者様、医療従事者、提携診断センターをつなぐ包括的な医療SaaSプラットフォームです。",
+    "pillar1Title": "患者主体のデータ管理",
+    "pillar1Desc": "ShifaLink Drive内の医療データは常に暗号化され保護されています。共有は患者本人の明確な同意と期限に基づいてのみ行われます。",
+    "pillar2Title": "厳正な資格確認",
+    "pillar2Desc": "すべての医師および検査機関は、公式な資格審査を経てからプラットフォームに掲載されます。",
+    "pillar3Title": "安全に管理されたAI支援",
+    "pillar3Desc": "AIアシスタントは臨床ガイドラインに沿った明確な権限枠組みの中で安全に稼働します。"
+  },
+  "contact": {
+    "title": "お問い合わせ",
+    "subtitle": "登録方法やパートナーシップに関するご質問など、サポートチームがお答えいたします。",
+    "emailTitle": "サポートEメール",
+    "email": "support@shifalink.example.com",
+    "phoneTitle": "専用ダイヤル",
+    "phone": "+92 (051) 111-SHIFA (74432) — 月曜〜土曜 午前9時〜午後6時",
+    "hqTitle": "本社所在地",
+    "hq": "ShifaLink Technologies, Technology Park, Constitution Avenue, Islamabad, Pakistan",
+    "formTitle": "メッセージを送信",
+    "namePlaceholder": "お名前",
+    "emailPlaceholder": "メールアドレス",
+    "messagePlaceholder": "お問い合わせ内容をご記入ください",
+    "sendButton": "送信する"
   },
   "footer": {
-    "tagline": "安全な予約・検査・電子カルテ連携を通じて、患者・医療機関・検査センターを結ぶ総合ヘルスケアプラットフォーム。",
+    "tagline": "診療予約、臨床検査、医療記録管理を安全に統合するデジタルヘルスケアプラットフォーム。",
     "rights": "無断転載を禁じます",
     "privacy": "プライバシーポリシー",
     "terms": "利用規約",
-    "consent": "インフォームド・コンセント事項",
+    "consent": "同意事項に関する説明",
     "sections": {
-      "company": "会社情報",
+      "company": "運営会社",
       "services": "サービス一覧",
-      "support": "サポート・法的事項"
+      "support": "サポート・法務"
     }
   },
   "auth": {
-    "loginTitle": "ShifaLinkにログイン",
-    "loginSubtitle": "診療予約やカルテ記録にアクセス",
-    "registerTitle": "患者新規登録",
-    "registerSubtitle": "健康管理を始めるためのアカウント作成",
-    "doctorRegisterTitle": "医師・医療従事者登録",
-    "doctorRegisterSubtitle": "認定医療ネットワークへの参画",
+    "loginTitle": "ShifaLinkへログイン",
+    "loginSubtitle": "カルテ記録や診療予約にアクセスする",
+    "registerTitle": "患者アカウント新規作成",
+    "registerSubtitle": "個別の健康管理をShifaLinkで始めましょう",
+    "doctorRegisterTitle": "医療従事者として登録",
+    "doctorRegisterSubtitle": "認定医療ネットワークへの参画申請",
     "emailLabel": "メールアドレス",
     "passwordLabel": "パスワード",
     "nameLabel": "氏名",
-    "licenseLabel": "医籍登録番号 / 医師免許証番号",
+    "licenseLabel": "医籍登録番号",
     "specialtyLabel": "専門診療科",
     "submitLogin": "ログイン",
-    "submitRegister": "新規登録",
-    "submitDoctorRegister": "確認申請を提出",
+    "submitRegister": "アカウントを作成",
+    "submitDoctorRegister": "確認リクエストを送信",
     "noAccount": "アカウントをお持ちでないですか？",
-    "haveAccount": "すでに登録済みですか？"
+    "haveAccount": "登録済みの方はこちら"
   }
 }

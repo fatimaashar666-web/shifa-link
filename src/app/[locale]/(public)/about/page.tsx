@@ -3,16 +3,16 @@ import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/ca
 import { Shield, Activity, Users, CheckCircle2 } from "lucide-react";
 
 export default function AboutPage() {
-  const tNav = useTranslations("nav");
+  const t = useTranslations("about");
 
   return (
     <div className="container mx-auto max-w-7xl px-4 py-8 sm:px-6 space-y-12">
       <div className="space-y-4 max-w-3xl">
         <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
-          {tNav("about")}
+          {t("title")}
         </h1>
         <p className="text-base text-slate-600 dark:text-slate-300 leading-relaxed">
-          ShifaLink is a responsive, privacy-conscious digital healthcare platform connecting patients, qualified physicians, and certified diagnostic centers across unified clinical workflows.
+          {t("description")}
         </p>
       </div>
 
@@ -22,9 +22,9 @@ export default function AboutPage() {
             <div className="h-10 w-10 rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-400 flex items-center justify-center mb-2">
               <Shield className="h-5 w-5" />
             </div>
-            <CardTitle className="text-lg">Patient-Controlled Sharing</CardTitle>
+            <CardTitle className="text-lg">{t("pillar1Title")}</CardTitle>
             <CardDescription className="text-xs leading-relaxed">
-              Medical records in ShifaLink Drive are private by default. Access is granted only with explicit, time-bounded, revocable patient consent.
+              {t("pillar1Desc")}
             </CardDescription>
           </CardHeader>
         </Card>
@@ -34,9 +34,9 @@ export default function AboutPage() {
             <div className="h-10 w-10 rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400 flex items-center justify-center mb-2">
               <Users className="h-5 w-5" />
             </div>
-            <CardTitle className="text-lg">Verified Practitioners</CardTitle>
+            <CardTitle className="text-lg">{t("pillar2Title")}</CardTitle>
             <CardDescription className="text-xs leading-relaxed">
-              Every doctor and diagnostic organization is verified through formal credentialing review before appearing in public directories.
+              {t("pillar2Desc")}
             </CardDescription>
           </CardHeader>
         </Card>
@@ -46,30 +46,37 @@ export default function AboutPage() {
             <div className="h-10 w-10 rounded-lg bg-purple-50 text-purple-600 dark:bg-purple-950 dark:text-purple-400 flex items-center justify-center mb-2">
               <Activity className="h-5 w-5" />
             </div>
-            <CardTitle className="text-lg">Controlled AI Assistance</CardTitle>
+            <CardTitle className="text-lg">{t("pillar3Title")}</CardTitle>
             <CardDescription className="text-xs leading-relaxed">
-              Application AI operates with narrow typed tools, explicit escalation gates, and transparent clinical disclosures under qualified human oversight.
+              {t("pillar3Desc")}
             </CardDescription>
           </CardHeader>
         </Card>
       </div>
 
-      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-8 space-y-4">
-        <h2 className="text-xl font-bold text-slate-900 dark:text-white">Our Architectural Commitments</h2>
-        <ul className="space-y-2.5 text-sm text-slate-600 dark:text-slate-400">
-          <li className="flex items-start gap-2">
-            <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
-            <span><strong>Single Full-Stack Architecture:</strong> Built cleanly on Next.js App Router with no dual-backend complexity.</span>
-          </li>
-          <li className="flex items-start gap-2">
-            <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
-            <span><strong>Operational Source of Truth:</strong> PostgreSQL guarantees ACID transaction safety for appointment schedules and consents.</span>
-          </li>
-          <li className="flex items-start gap-2">
-            <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
-            <span><strong>Multilingual Accessibility:</strong> Native 6-language routing with verified right-to-left (RTL) support for Urdu and Arabic.</span>
-          </li>
-        </ul>
+      {/* Trust & Quality Indicators */}
+      <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-6 dark:border-slate-800 dark:bg-slate-900/40 space-y-4">
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
+          Our Clinical Standards
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-xs text-slate-600 dark:text-slate-400">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+            <span>ISO-15189 Lab Compliance</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+            <span>End-to-End Encryption</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+            <span>PMC/PMDC Verified Licensure</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+            <span>Multi-Region Cloud Redundancy</span>
+          </div>
+        </div>
       </div>
     </div>
   );

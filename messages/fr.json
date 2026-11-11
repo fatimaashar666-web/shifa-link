@@ -4,71 +4,96 @@
     "findDoctor": "Trouver un médecin",
     "videoConsultation": "Téléconsultation",
     "labTests": "Analyses de laboratoire",
-    "radiologyTests": "Examens d'imagerie",
+    "radiologyTests": "Examens radiologiques",
     "healthArticles": "Articles de santé",
     "about": "À propos de ShifaLink",
     "contact": "Contact",
     "login": "Connexion",
     "register": "Inscription Patient",
     "registerDoctor": "Inscription Médecin",
-    "registerProvider": "Inscription Centre Diagnostic"
+    "registerProvider": "Inscrire un centre de diagnostic"
   },
   "theme": {
     "light": "Clair",
     "dark": "Sombre",
     "system": "Système",
-    "toggle": "Changer le thème"
+    "toggle": "Changer de thème"
   },
   "common": {
     "loading": "Chargement...",
     "error": "Une erreur est survenue",
     "backToHome": "Retour à l'accueil",
     "learnMore": "En savoir plus",
-    "bookNow": "Prendre rendez-vous",
+    "bookNow": "Réserver",
     "viewAll": "Voir tout",
     "search": "Rechercher",
     "filter": "Filtrer",
-    "submit": "Soumettre"
+    "submit": "Valider"
   },
   "home": {
     "heroTitle": "Votre santé, connectée en toute sécurité",
-    "heroSubtitle": "Trouvez des médecins certifiés, réservez des consultations en cabinet ou en vidéo et planifiez vos analyses médicales.",
+    "heroSubtitle": "Trouvez des médecins vérifiés, planifiez des consultations physiques ou vidéo, et réservez vos analyses de laboratoire en toute confiance.",
     "heroCta": "Trouver un médecin",
-    "secondaryCta": "Réserver des analyses",
-    "feature1Title": "Médecins certifiés",
-    "feature1Desc": "Accédez à un réseau de spécialistes qualifiés avec des créneaux de disponibilité transparents.",
-    "feature2Title": "Examens diagnostiques",
-    "feature2Desc": "Réservation rapide auprès de laboratoires et centres d'imagerie médicale agréés.",
+    "secondaryCta": "Réserver un test labo",
+    "feature1Title": "Médecins vérifiés",
+    "feature1Desc": "Consultez des spécialistes agréés dans toutes les disciplines avec des disponibilités claires.",
+    "feature2Title": "Réservations diagnostiques",
+    "feature2Desc": "Prenez rendez-vous pour des analyses médicales et radiologiques dans nos centres partenaires agréés.",
     "feature3Title": "ShifaLink Drive",
-    "feature3Desc": "Stockez vos dossiers médicaux en toute confidentialité et partagez-les avec votre équipe soignante."
+    "feature3Desc": "Stockez vos dossiers médicaux en toute sécurité et contrôlez les partages avec vos praticiens."
+  },
+  "about": {
+    "title": "À propos de ShifaLink",
+    "description": "ShifaLink est une plateforme de santé numérique soucieuse de la confidentialité, reliant patients, médecins qualifiés et centres de diagnostic agréés.",
+    "pillar1Title": "Partage contrôlé par le patient",
+    "pillar1Desc": "Les dossiers stockés sur ShifaLink Drive sont strictement privés. L'accès est conditionné à un consentement explicite et révocable.",
+    "pillar2Title": "Praticiens certifiés",
+    "pillar2Desc": "Chaque praticien et centre partenaire fait l'objet d'une vérification rigoureuse de ses diplômes et autorisations.",
+    "pillar3Title": "Assistance IA encadrée",
+    "pillar3Desc": "Nos assistants IA respectent des protocoles cliniques stricts, sans accès direct aux bases de données sensibles."
+  },
+  "contact": {
+    "title": "Contactez-nous",
+    "subtitle": "Des questions sur l'inscription, nos partenaires ou l'utilisation de la plateforme ? Notre équipe est à votre disposition.",
+    "emailTitle": "E-mail d'assistance",
+    "email": "support@shifalink.example.com",
+    "phoneTitle": "Assistance téléphonique",
+    "phone": "+92 (051) 111-SHIFA (74432) — Du lundi au samedi, de 9h à 18h",
+    "hqTitle": "Siège social",
+    "hq": "ShifaLink Technologies, Technology Park, Constitution Avenue, Islamabad, Pakistan",
+    "formTitle": "Envoyez-nous un message",
+    "namePlaceholder": "Votre nom complet",
+    "emailPlaceholder": "Votre adresse e-mail",
+    "messagePlaceholder": "Comment pouvons-nous vous aider ?",
+    "sendButton": "Envoyer le message"
   },
   "footer": {
-    "tagline": "Connecter patients, praticiens et centres diagnostiques par des rendez-vous et des dossiers sécurisés.",
+    "tagline": "Rendez-vous médicaux, examens diagnostiques et gestion sécurisée des dossiers patients.",
     "rights": "Tous droits réservés",
     "privacy": "Politique de confidentialité",
-    "terms": "Conditions d'utilisation",
-    "consent": "Information sur le consentement",
+    "terms": "Conditions générales",
+    "consent": "Informations de consentement",
     "sections": {
       "company": "Entreprise",
       "services": "Services",
-      "support": "Assistance & Légal"
+      "support": "Support & Juridique"
     }
   },
   "auth": {
     "loginTitle": "Connexion à ShifaLink",
-    "loginSubtitle": "Accédez à vos rendez-vous et à votre dossier médical",
+    "loginSubtitle": "Accédez à vos dossiers de santé et rendez-vous",
     "registerTitle": "Créer un compte patient",
-    "registerSubtitle": "Rejoignez ShifaLink pour gérer facilement votre santé",
-    "doctorRegisterTitle": "Rejoindre en tant que praticien",
-    "doctorRegisterSubtitle": "Intégrez notre réseau de professionnels de santé certifiés",
+    "registerSubtitle": "Rejoignez ShifaLink pour une gestion personnalisée de votre santé",
+    "doctorRegisterTitle": "S'inscrire en tant que praticien",
+    "doctorRegisterSubtitle": "Rejoignez notre réseau de praticiens certifiés",
     "emailLabel": "Adresse e-mail",
     "passwordLabel": "Mot de passe",
     "nameLabel": "Nom complet",
-    "licenseLabel": "Numéro RPPS / Ordre des médecins",
+    "licenseLabel": "Numéro d'inscription à l'Ordre",
     "specialtyLabel": "Spécialité principale",
     "submitLogin": "Se connecter",
     "submitRegister": "Créer mon compte",
-    "submitDoctorRegister": "Envoyer la demande",
+    "submitDoctorRegister": "Soumettre pour vérification",
     "noAccount": "Pas encore de compte ?",
     "haveAccount": "Déjà inscrit ?"
   }

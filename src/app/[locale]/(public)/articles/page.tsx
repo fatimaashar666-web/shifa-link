@@ -1,42 +1,21 @@
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Link } from "@/i18n/routing";
 import { Calendar, ArrowRight, ShieldCheck } from "lucide-react";
+import { getPublishedArticles } from "@/lib/sanity/client";
 
-export default function ArticlesPage() {
-  const tNav = useTranslations("nav");
-  const tCommon = useTranslations("common");
+interface ArticlesPageProps {
+  params: Promise<{ locale: string }>;
+}
 
-  const articles = [
-    {
-      id: "art-1",
-      title: "Understanding Hypertension: Symptoms, Risks, and Prevention",
-      category: "Cardiovascular Health",
-      excerpt: "Essential guidelines on monitoring blood pressure, dietary lifestyle interventions, and when to seek urgent specialist review.",
-      author: "Clinical Review Board",
-      date: "Nov 2026",
-      readTime: "5 min read",
-    },
-    {
-      id: "art-2",
-      title: "How to Prepare for Routine Blood and Fasting Diagnostics",
-      category: "Diagnostic Guides",
-      excerpt: "Step-by-step instructions on fasting duration, hydration, and medication holds prior to standard metabolic and lipid panels.",
-      author: "Diagnostic Advisory Team",
-      date: "Nov 2026",
-      readTime: "4 min read",
-    },
-    {
-      id: "art-3",
-      title: "Seasonal Respiratory Infections: Clinical Care vs. Home Management",
-      category: "Preventive Care",
-      excerpt: "Identifying red-flag symptoms in respiratory illnesses and when video consultations provide timely clinical triage.",
-      author: "Primary Care Working Group",
-      date: "Oct 2026",
-      readTime: "6 min read",
-    },
-  ];
+export default async function ArticlesPage({ params }: ArticlesPageProps) {
+  const { locale } = await params;
+  const tNav = await getTranslations("nav");
+  const tCommon = await getTranslations("common");
+
+  const articles = await getPublishedArticles();
 
   return (
     <div className="container mx-auto max-w-7xl px-4 py-8 sm:px-6 space-y-8">
@@ -50,44 +29,65 @@ export default function ArticlesPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {articles.map((art) => (
-          <Card key={art.id} className="flex flex-col justify-between hover:shadow-md transition-shadow">
-            <CardHeader className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Badge variant="secondary" className="text-xs">
-                  {art.category}
-                </Badge>
-                <div className="flex items-center gap-1 text-xs text-slate-400">
-                  <Calendar className="h-3 w-3" />
-                  <span>{art.date}</span>
+        {articles.map((art) => {
+          const localizedTitle =
+            (art.title as Record<string, string>)[locale] ||
+            art.title.en ||
+            "Health Article";
+
+          const localizedExcerpt =
+            art.excerpt &&
+            ((art.excerpt as Record<string, string>)[locale] || art.excerpt.en);
+
+          return (
+            <Card key={art._id} className="flex flex-col justify-between hover:shadow-md transition-shadow">
+              <CardHeader className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Badge variant="outline" className="text-xs">
+                    {art.category}
+                  </Badge>
+                  <span className="flex items-center gap-1 text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
+                    <ShieldCheck className="h-3.5 w-3.5" />
+                    Reviewed
+                  </span>
                 </div>
-              </div>
-              <CardTitle className="text-base font-semibold leading-snug">
-                {art.title}
-              </CardTitle>
-              <CardDescription className="text-xs leading-relaxed">
-                {art.excerpt}
-              </CardDescription>
-            </CardHeader>
+                <CardTitle className="text-base font-semibold leading-snug">
+                  {localizedTitle}
+                </CardTitle>
+                {localizedExcerpt && (
+                  <CardDescription className="text-xs leading-relaxed line-clamp-3">
+                    {localizedExcerpt}
+                  </CardDescription>
+                )}
+              </CardHeader>
 
-            <CardContent className="pt-0">
-              <div className="flex items-center justify-between text-xs text-slate-500 pt-2 border-t border-slate-100 dark:border-slate-800">
-                <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium">
-                  <ShieldCheck className="h-3.5 w-3.5" />
-                  {art.author}
-                </span>
-                <span>{art.readTime}</span>
-              </div>
-            </CardContent>
+              <CardContent className="pt-0 text-xs text-slate-500">
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-3.5 w-3.5" />
+                  <span>
+                    {art.publishedAt
+                      ? new Date(art.publishedAt).toLocaleDateString(locale, {
+                          month: "short",
+                          year: "numeric",
+                        })
+                      : "Recent"}
+                  </span>
+                  <span>•</span>
+                  <span>{art.authorDisplay ?? "Editorial Board"}</span>
+                </div>
+              </CardContent>
 
-            <CardFooter className="pt-0">
-              <Button variant="outline" size="sm" className="w-full gap-1.5 text-xs">
-                <span>{tCommon("learnMore")}</span>
-                <ArrowRight className="h-3.5 w-3.5" />
-              </Button>
-            </CardFooter>
-          </Card>
-        ))}
+              <CardFooter className="pt-0 border-t border-slate-100 dark:border-slate-800/60 mt-2 p-6">
+                <Button variant="ghost" size="sm" asChild className="gap-1.5 p-0 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:bg-transparent">
+                  <Link href={`/articles/${art.slug.current}`}>
+                    <span>{tCommon("learnMore")}</span>
+                    <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" />
+                  </Link>
+                </Button>
+              </CardFooter>
+            </Card>
+          );
+        })}
       </div>
     </div>
   );

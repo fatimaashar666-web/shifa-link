@@ -11,43 +11,68 @@
     "login": "Anmelden",
     "register": "Als Patient registrieren",
     "registerDoctor": "Als Arzt registrieren",
-    "registerProvider": "Als Diagnosezentrum registrieren"
+    "registerProvider": "Diagnostikzentrum registrieren"
   },
   "theme": {
     "light": "Hell",
     "dark": "Dunkel",
     "system": "System",
-    "toggle": "Design wechseln"
+    "toggle": "Design umschalten"
   },
   "common": {
     "loading": "Wird geladen...",
-    "error": "Ein Fehler ist aufgetreten",
+    "error": "Etwas ist schiefgelaufen",
     "backToHome": "Zurück zur Startseite",
     "learnMore": "Mehr erfahren",
     "bookNow": "Jetzt buchen",
-    "viewAll": "Alle anzeigen",
+    "viewAll": "Alle ansehen",
     "search": "Suchen",
     "filter": "Filtern",
     "submit": "Absenden"
   },
   "home": {
-    "heroTitle": "Ihre Gesundheit, vernetzt",
-    "heroSubtitle": "Finden Sie verifizierte Fachärzte, vereinbaren Sie Praxis- oder Videosprechstunden und buchen Sie Diagnostiktermine zuverlässig.",
+    "heroTitle": "Ihre Gesundheit, sicher vernetzt",
+    "heroSubtitle": "Finden Sie verifizierte Fachärzte, vereinbaren Sie Praxisbesuche oder Videosprechstunden und buchen Sie Labortests mit vollem Vertrauen.",
     "heroCta": "Arzt finden",
     "secondaryCta": "Labortests buchen",
     "feature1Title": "Verifizierte Ärzte",
-    "feature1Desc": "Direkter Zugang zu approbierten Fachärzten mit verlässlichen Verfügbarkeiten.",
-    "feature2Title": "Diagnostik-Termine",
-    "feature2Desc": "Einfache Terminbuchung für Labore und Radiologiezentren.",
+    "feature1Desc": "Verbinden Sie sich mit lizenzierten Fachärzten aller Abteilungen mit transparenten Terminen.",
+    "feature2Title": "Diagnostik-Buchungen",
+    "feature2Desc": "Reservieren Sie Labor- und Radiologietermine bei zertifizierten Partnerzentren.",
     "feature3Title": "ShifaLink Drive",
-    "feature3Desc": "Ihre Krankenakten und Befunde geschützt speichern und mit Ihrem Behandlungsteam teilen."
+    "feature3Desc": "Speichern Sie Ihre Krankenakten sicher und behalten Sie die Kontrolle über Freigaben."
+  },
+  "about": {
+    "title": "Über ShifaLink",
+    "description": "ShifaLink ist eine datenschutzorientierte digitale Gesundheitsplattform, die Patienten, qualifizierte Ärzte und zertifizierte Diagnosezentren miteinander verbindet.",
+    "pillar1Title": "Patientengesteuerte Freigaben",
+    "pillar1Desc": "Akten im ShifaLink Drive sind standardmäßig privat. Zugriff wird nur mit ausdrücklicher, befristeter Einwilligung gewährt.",
+    "pillar2Title": "Verifizierte Behandler",
+    "pillar2Desc": "Jeder Arzt und jedes Diagnostikzentrum wird sorgfältig akkreditiert, bevor es im öffentlichen Verzeichnis erscheint.",
+    "pillar3Title": "Kontrollierte KI-Unterstützung",
+    "pillar3Desc": "KI-Assistenten agieren innerhalb strenger rollenbasierter Grenzen ohne direkten Datenbankzugriff."
+  },
+  "contact": {
+    "title": "Kontaktieren Sie uns",
+    "subtitle": "Haben Sie Fragen zur Registrierung oder zu Partnerschaften? Unser Support-Team hilft Ihnen gerne weiter.",
+    "emailTitle": "Support-E-Mail",
+    "email": "support@shifalink.example.com",
+    "phoneTitle": "Inquiry-Helpline",
+    "phone": "+92 (051) 111-SHIFA (74432) — Montag bis Samstag, 9:00 bis 18:00 Uhr",
+    "hqTitle": "Hauptsitz",
+    "hq": "ShifaLink Technologies, Technology Park, Constitution Avenue, Islamabad, Pakistan",
+    "formTitle": "Nachricht senden",
+    "namePlaceholder": "Ihr vollständiger Name",
+    "emailPlaceholder": "Ihre E-Mail-Adresse",
+    "messagePlaceholder": "Wie können wir Ihnen weiterhelfen?",
+    "sendButton": "Nachricht absenden"
   },
   "footer": {
-    "tagline": "Verbindung von Patienten, Ärzten und Diagnostikzentren über sichere Termine und Befunde.",
+    "tagline": "Sichere Termine, Diagnostik und Aktenverwaltung für Patienten und Gesundheitsdienstleister.",
     "rights": "Alle Rechte vorbehalten",
-    "privacy": "Datenschutzerklärung",
+    "privacy": "Datenschutzrichtlinie",
     "terms": "Nutzungsbedingungen",
-    "consent": "Einwilligungserklärung",
+    "consent": "Patienteneinwilligung",
     "sections": {
       "company": "Unternehmen",
       "services": "Dienste",
@@ -56,19 +81,19 @@
   },
   "auth": {
     "loginTitle": "Bei ShifaLink anmelden",
-    "loginSubtitle": "Zugriff auf Ihre Termine und Gesundheitsdaten",
+    "loginSubtitle": "Greifen Sie auf Ihre Akten und Termine zu",
     "registerTitle": "Patientenkonto erstellen",
-    "registerSubtitle": "Werden Sie Mitglied bei ShifaLink für Ihre Gesundheitsvorsorge",
+    "registerSubtitle": "Werden Sie Mitglied für personalisiertes Gesundheitsmanagement",
     "doctorRegisterTitle": "Als Arzt registrieren",
-    "doctorRegisterSubtitle": "Werden Sie Teil unseres verifizierten Versorgungsnetzwerks",
+    "doctorRegisterSubtitle": "Treten Sie unserem verifizierten Versorgungsnetzwerk bei",
     "emailLabel": "E-Mail-Adresse",
     "passwordLabel": "Passwort",
     "nameLabel": "Vollständiger Name",
-    "licenseLabel": "Approbations-/Lebenslange Arztnummer",
-    "specialtyLabel": "Fachrichtung",
+    "licenseLabel": "Ärztliche Approbationsnummer",
+    "specialtyLabel": "Hauptfachgebiet",
     "submitLogin": "Anmelden",
     "submitRegister": "Konto erstellen",
-    "submitDoctorRegister": "Antrag einreichen",
+    "submitDoctorRegister": "Verifizierungsanfrage stellen",
     "noAccount": "Noch kein Konto?",
     "haveAccount": "Bereits registriert?"
   }
