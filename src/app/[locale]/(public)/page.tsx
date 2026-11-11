@@ -1,7 +1,8 @@
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
   UserCheck, 
@@ -19,21 +20,30 @@ export default function HomePage() {
   const tCommon = useTranslations("common");
 
   return (
-    <div className="flex flex-col gap-16 py-8">
+    <div className="flex flex-col gap-16 pb-16">
       {/* Hero Section */}
-      <section className="container mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="flex flex-col items-center text-center space-y-6 max-w-3xl mx-auto py-12 md:py-20">
+      <section
+        aria-labelledby="hero-title"
+        className="relative isolate min-h-[540px] overflow-hidden border-b border-sky-100 bg-cover bg-center dark:border-slate-800"
+        style={{ backgroundImage: "url('/herobanner.png')" }}
+      >
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 -z-10 bg-gradient-to-r from-white/55 via-white/20 to-transparent dark:from-slate-950/60 dark:via-slate-950/25 dark:to-transparent"
+        />
+        <div className="container mx-auto flex min-h-[540px] max-w-7xl items-center px-4 py-16 sm:px-6 md:py-20">
+          <div className="flex max-w-2xl flex-col items-start space-y-6 text-left">
           <Badge variant="secondary" className="gap-1.5 py-1 px-3 text-xs font-medium">
             <Sparkles className="h-3.5 w-3.5 text-blue-600" />
             <span>Modern Multilingual Healthcare SaaS</span>
           </Badge>
-          <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-5xl md:text-6xl leading-tight">
+          <h1 id="hero-title" className="text-4xl font-extrabold tracking-tight text-slate-950 dark:text-white sm:text-5xl md:text-6xl leading-tight">
             {t("heroTitle")}
           </h1>
-          <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed">
+          <p className="max-w-xl text-base leading-relaxed text-slate-700 dark:text-slate-200 sm:text-lg">
             {t("heroSubtitle")}
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+          <div className="flex flex-wrap items-center gap-3 pt-2">
             <Button size="lg" asChild className="gap-2">
               <Link href="/doctors">
                 {t("heroCta")}
@@ -46,6 +56,7 @@ export default function HomePage() {
               </Link>
             </Button>
           </div>
+        </div>
         </div>
       </section>
 
@@ -62,55 +73,94 @@ export default function HomePage() {
       {/* Core Platform Pillars */}
       <section className="container mx-auto max-w-7xl px-4 sm:px-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="hover:shadow-md transition-shadow">
-            <CardHeader>
-              <div className="h-12 w-12 rounded-xl bg-blue-100 text-blue-600 dark:bg-blue-950 dark:text-blue-400 flex items-center justify-center mb-2">
-                <UserCheck className="h-6 w-6" />
+          <Card className="overflow-hidden transition-shadow hover:shadow-md">
+            <div className="flex h-[230px] items-stretch gap-5 p-6">
+              <div className="flex min-w-0 flex-1 flex-col">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600 dark:bg-blue-950 dark:text-blue-400">
+                  <UserCheck className="h-6 w-6" />
+                </div>
+                <h3 className="text-lg font-semibold tracking-tight text-slate-950 dark:text-white">
+                  {t("feature1Title")}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                  {t("feature1Desc")}
+                </p>
+                <Button variant="link" className="mt-auto h-auto justify-start p-0 pt-5" asChild>
+                  <Link href="/doctors" className="gap-1.5 text-xs font-semibold">
+                    {tCommon("viewAll")} <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
+                </Button>
               </div>
-              <CardTitle>{t("feature1Title")}</CardTitle>
-              <CardDescription>{t("feature1Desc")}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button variant="link" className="p-0 h-auto" asChild>
-                <Link href="/doctors" className="gap-1.5 text-xs font-semibold">
-                  {tCommon("viewAll")} <ArrowRight className="h-3.5 w-3.5" />
-                </Link>
-              </Button>
-            </CardContent>
+              <div className="relative aspect-square w-auto shrink-0 self-stretch overflow-hidden rounded-2xl border border-blue-100 bg-blue-50 dark:border-blue-900 dark:bg-blue-950/40">
+                <Image
+                  src="/doctor.png"
+                  alt="Verified doctor"
+                  fill
+                  sizes="182px"
+                  className="object-cover"
+                />
+              </div>
+            </div>
           </Card>
 
-          <Card className="hover:shadow-md transition-shadow">
-            <CardHeader>
-              <div className="h-12 w-12 rounded-xl bg-emerald-100 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400 flex items-center justify-center mb-2">
-                <FlaskConical className="h-6 w-6" />
+          <Card className="overflow-hidden transition-shadow hover:shadow-md">
+            <div className="flex h-[230px] items-stretch gap-5 p-6">
+              <div className="flex min-w-0 flex-1 flex-col">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400">
+                  <FlaskConical className="h-6 w-6" />
+                </div>
+                <h3 className="text-lg font-semibold tracking-tight text-slate-950 dark:text-white">
+                  {t("feature2Title")}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                  {t("feature2Desc")}
+                </p>
+                <Button variant="link" className="mt-auto h-auto justify-start p-0 pt-5 text-emerald-600 dark:text-emerald-400" asChild>
+                  <Link href="/lab-tests" className="gap-1.5 text-xs font-semibold">
+                    {tCommon("viewAll")} <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
+                </Button>
               </div>
-              <CardTitle>{t("feature2Title")}</CardTitle>
-              <CardDescription>{t("feature2Desc")}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button variant="link" className="p-0 h-auto text-emerald-600 dark:text-emerald-400" asChild>
-                <Link href="/lab-tests" className="gap-1.5 text-xs font-semibold">
-                  {tCommon("viewAll")} <ArrowRight className="h-3.5 w-3.5" />
-                </Link>
-              </Button>
-            </CardContent>
+              <div className="relative aspect-square w-auto shrink-0 self-stretch overflow-hidden rounded-2xl border border-blue-100 bg-blue-50 dark:border-blue-900 dark:bg-blue-950/40">
+                <Image
+                  src="/tests.png"
+                  alt="Diagnostic booking equipment"
+                  fill
+                  sizes="182px"
+                  className="object-cover"
+                />
+              </div>
+            </div>
           </Card>
 
-          <Card className="hover:shadow-md transition-shadow">
-            <CardHeader>
-              <div className="h-12 w-12 rounded-xl bg-purple-100 text-purple-600 dark:bg-purple-950 dark:text-purple-400 flex items-center justify-center mb-2">
-                <FolderLock className="h-6 w-6" />
+          <Card className="overflow-hidden transition-shadow hover:shadow-md">
+            <div className="flex h-[230px] items-stretch gap-5 p-6">
+              <div className="flex min-w-0 flex-1 flex-col">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100 text-purple-600 dark:bg-purple-950 dark:text-purple-400">
+                  <FolderLock className="h-6 w-6" />
+                </div>
+                <h3 className="text-lg font-semibold tracking-tight text-slate-950 dark:text-white">
+                  {t("feature3Title")}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                  {t("feature3Desc")}
+                </p>
+                <Button variant="link" className="mt-auto h-auto justify-start p-0 pt-5 text-purple-600 dark:text-purple-400" asChild>
+                  <Link href="/about" className="gap-1.5 text-xs font-semibold">
+                    {tCommon("learnMore")} <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
+                </Button>
               </div>
-              <CardTitle>{t("feature3Title")}</CardTitle>
-              <CardDescription>{t("feature3Desc")}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button variant="link" className="p-0 h-auto text-purple-600 dark:text-purple-400" asChild>
-                <Link href="/about" className="gap-1.5 text-xs font-semibold">
-                  {tCommon("learnMore")} <ArrowRight className="h-3.5 w-3.5" />
-                </Link>
-              </Button>
-            </CardContent>
+              <div className="relative aspect-square w-auto shrink-0 self-stretch overflow-hidden rounded-2xl border border-blue-100 bg-blue-50 dark:border-blue-900 dark:bg-blue-950/40">
+                <Image
+                  src="/drive.jpg"
+                  alt="Secure medical records in ShifaLink Drive"
+                  fill
+                  sizes="182px"
+                  className="object-cover"
+                />
+              </div>
+            </div>
           </Card>
         </div>
       </section>

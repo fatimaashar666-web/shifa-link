@@ -1,5 +1,5 @@
-// ShifaLink Prisma Schema — Milestone M4 (Doctor Discovery & Appointments)
-// Constraints: UUID primary keys (ADR-09), Decimal for money, UTC timestamps, Append-only audit (ADR-10)
+// ShifaLink Prisma Schema — Milestone M5 (Diagnostic Services & ShifaLink Drive)
+// Constraints: UUID primary keys (ADR-09), Decimal for money, UTC timestamps, Append-only audit (ADR-10), Object storage for files (ADR-06)
 
 generator client {
   provider = "prisma-client-js"
@@ -93,7 +93,29 @@ enum NotificationType {
   APPOINTMENT_CONFIRMED
   APPOINTMENT_CANCELLED
   APPOINTMENT_REMINDER
+  DIAGNOSTIC_BOOKED
+  DIAGNOSTIC_STATUS_UPDATED
+  REPORT_READY
+  RECORD_SHARED
   SYSTEM
+}
+
+enum DiagnosticBookingStatus {
+  REQUESTED
+  CONFIRMED
+  SAMPLE_COLLECTED
+  PROCESSING
+  COMPLETED
+  CANCELLED
+}
+
+enum MedicalRecordCategory {
+  LAB_REPORT
+  RADIOLOGY_IMAGE
+  PRESCRIPTION
+  DISCHARGE_SUMMARY
+  VACCINATION
+  OTHER
 }
 
 // ─────────────────────────────────────────────
@@ -120,6 +142,7 @@ model User {
   auditEvents     AuditEvent[]
   consents        ConsentRecord[]
   notifications   Notification[]
+  uploadedFiles   FileObject[]
 
   @@map("users")
 }
@@ -157,18 +180,20 @@ model UserRole {
 // ─────────────────────────────────────────────
 
 model Organization {
-  id              String               @id @default(uuid())
-  name            String
-  type            OrgType
-  status          OrgStatus            @default(ACTIVE)
-  createdAt       DateTime             @default(now())
-  updatedAt       DateTime             @updatedAt
+  id                         String                       @id @default(uuid())
+  name                       String
+  type                       OrgType
+  status                     OrgStatus                    @default(ACTIVE)
+  createdAt                  DateTime                     @default(now())
+  updatedAt                  DateTime                     @updatedAt
 
-  members         OrganizationMember[]
-  userRoles       UserRole[]
-  auditEvents     AuditEvent[]
-  doctorLocations DoctorLocation[]
-  appointments    Appointment[]
+  members                    OrganizationMember[]
+  userRoles                  UserRole[]
+  auditEvents                AuditEvent[]
+  doctorLocations            DoctorLocation[]
+  appointments               Appointment[]
+  diagnosticServiceLocations DiagnosticServiceLocation[]
+  diagnosticBookings         DiagnosticBooking[]
 
   @@map("organizations")
 }
@@ -195,34 +220,36 @@ model OrganizationMember {
 // ─────────────────────────────────────────────
 
 model PatientProfile {
-  id           String        @id @default(uuid())
-  userId       String        @unique
-  fullName     String
-  dateOfBirth  DateTime?
-  gender       Gender?
-  bloodGroup   BloodGroup?
-  phone        String?
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  id                 String              @id @default(uuid())
+  userId             String              @unique
+  fullName           String
+  dateOfBirth        DateTime?
+  gender             Gender?
+  bloodGroup         BloodGroup?
+  phone              String?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
 
-  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  appointments Appointment[]
+  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  appointments       Appointment[]
+  diagnosticBookings DiagnosticBooking[]
+  medicalRecords     MedicalRecord[]
 
   @@map("patient_profiles")
 }
 
 model DoctorProfile {
-  id                 String             @id @default(uuid())
-  userId             String             @unique
+  id                 String                  @id @default(uuid())
+  userId             String                  @unique
   fullName           String
-  licenseNumber      String             @unique
-  consultationFee    Decimal            @db.Decimal(10, 2)
-  verificationStatus VerificationStatus @default(PENDING)
+  licenseNumber      String                  @unique
+  consultationFee    Decimal                 @db.Decimal(10, 2)
+  verificationStatus VerificationStatus      @default(PENDING)
   bio                String?
-  createdAt          DateTime           @default(now())
-  updatedAt          DateTime           @updatedAt
+  createdAt          DateTime                @default(now())
+  updatedAt          DateTime                @updatedAt
 
-  user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user               User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
   specialties        DoctorSpecialty[]
   qualifications     DoctorQualification[]
   languages          DoctorLanguage[]
@@ -230,6 +257,7 @@ model DoctorProfile {
   availabilities     DoctorAvailability[]
   exceptions         AvailabilityException[]
   appointments       Appointment[]
+  recordAccessGrants RecordAccessGrant[]
 
   @@map("doctor_profiles")
 }
@@ -390,13 +418,175 @@ model Appointment {
   @@map("appointments")
 }
 
+// ─────────────────────────────────────────────
+// DIAGNOSTIC SERVICES & BOOKINGS (M5)
+// ─────────────────────────────────────────────
+
+model DiagnosticService {
+  id              String                      @id @default(uuid())
+  name            String
+  slug            String                      @unique
+  type            OrgType                     // LAB or RADIOLOGY
+  category        String                      // e.g. "Hematology", "Cardiology", "Ultrasound", "X-Ray"
+  description     String?
+  preparation     String?                     // Fasting instructions, clothing notes
+  turnaroundHours Int                         @default(24)
+  homeCollection  Boolean                     @default(false)
+  basePrice       Decimal                     @db.Decimal(10, 2)
+  createdAt       DateTime                    @default(now())
+  updatedAt       DateTime                    @updatedAt
+
+  locations       DiagnosticServiceLocation[]
+  bookings        DiagnosticBooking[]
+
+  @@index([type, category])
+  @@map("diagnostic_services")
+}
+
+model DiagnosticServiceLocation {
+  id             String            @id @default(uuid())
+  serviceId      String
+  organizationId String
+  price          Decimal           @db.Decimal(10, 2)
+  isAvailable    Boolean           @default(true)
+
+  service        DiagnosticService @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  organization   Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([serviceId, organizationId])
+  @@index([organizationId])
+  @@index([serviceId])
+  @@map("diagnostic_service_locations")
+}
+
+model DiagnosticBooking {
+  id                 String                  @id @default(uuid())
+  bookingNumber      String                  @unique // e.g. "DIAG-2026-XXXX"
+  patientId          String
+  serviceId          String
+  organizationId     String
+  status             DiagnosticBookingStatus @default(REQUESTED)
+  scheduledAt        DateTime
+  isHomeCollection   Boolean                 @default(false)
+  collectionAddress  String?
+  notes              String?
+  totalAmount        Decimal                 @db.Decimal(10, 2)
+  cancellationReason String?
+  cancelledBy        String?
+  cancelledAt        DateTime?
+  createdAt          DateTime                @default(now())
+  updatedAt          DateTime                @updatedAt
+
+  patient            PatientProfile          @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  service            DiagnosticService       @relation(fields: [serviceId], references: [id], onDelete: Restrict)
+  organization       Organization            @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  reports            DiagnosticReport[]
+  events             DiagnosticBookingEvent[]
+
+  @@index([patientId, status])
+  @@index([organizationId, status])
+  @@index([scheduledAt])
+  @@map("diagnostic_bookings")
+}
+
+model DiagnosticBookingEvent {
+  id        String                  @id @default(uuid())
+  bookingId String
+  status    DiagnosticBookingStatus
+  note      String?
+  actorId   String?
+  createdAt DateTime                @default(now())
+
+  booking   DiagnosticBooking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@index([bookingId])
+  @@map("diagnostic_booking_events")
+}
+
+// ─────────────────────────────────────────────
+// SHIFALINK DRIVE & MEDICAL RECORDS (M5 - ADR-06)
+// ─────────────────────────────────────────────
+
+model FileObject {
+  id               String            @id @default(uuid())
+  storageKey       String            @unique // S3 / R2 storage path
+  fileName         String
+  mimeType         String
+  sizeBytes        Int
+  checksum         String?
+  uploadedBy       String            // User ID
+  createdAt        DateTime          @default(now())
+
+  uploader         User              @relation(fields: [uploadedBy], references: [id], onDelete: Cascade)
+  medicalRecord    MedicalRecord?
+  diagnosticReport DiagnosticReport?
+
+  @@index([uploadedBy])
+  @@map("file_objects")
+}
+
+model MedicalRecord {
+  id           String                @id @default(uuid())
+  patientId    String
+  fileObjectId String                @unique
+  title        String
+  category     MedicalRecordCategory @default(LAB_REPORT)
+  description  String?
+  recordDate   DateTime              @default(now())
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
+
+  patient      PatientProfile        @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  fileObject   FileObject            @relation(fields: [fileObjectId], references: [id], onDelete: Cascade)
+  accessGrants RecordAccessGrant[]
+
+  @@index([patientId, category])
+  @@map("medical_records")
+}
+
+model RecordAccessGrant {
+  id                String        @id @default(uuid())
+  recordId          String
+  grantedToDoctorId String
+  expiresAt         DateTime
+  revokedAt         DateTime?
+  revokedBy         String?
+  createdAt         DateTime      @default(now())
+
+  record            MedicalRecord @relation(fields: [recordId], references: [id], onDelete: Cascade)
+  doctor            DoctorProfile @relation(fields: [grantedToDoctorId], references: [id], onDelete: Cascade)
+
+  @@index([recordId, grantedToDoctorId])
+  @@index([grantedToDoctorId, expiresAt])
+  @@map("record_access_grants")
+}
+
+model DiagnosticReport {
+  id           String            @id @default(uuid())
+  bookingId    String
+  fileObjectId String            @unique
+  reportNotes  String?
+  releasedAt   DateTime          @default(now())
+  releasedBy   String?           // User ID of pathologist/radiologist
+
+  booking      DiagnosticBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  fileObject   FileObject        @relation(fields: [fileObjectId], references: [id], onDelete: Cascade)
+
+  @@index([bookingId])
+  @@map("diagnostic_reports")
+}
+
+// ─────────────────────────────────────────────
+// NOTIFICATIONS & AUDIT
+// ─────────────────────────────────────────────
+
 model Notification {
   id         String           @id @default(uuid())
   userId     String
   title      String
   message    String
   type       NotificationType @default(SYSTEM)
-  entityType String?          // "appointment", "booking", etc.
+  entityType String?          // "appointment", "booking", "medical_record"
   entityId   String?
   isRead     Boolean          @default(false)
   createdAt  DateTime         @default(now())
@@ -407,16 +597,12 @@ model Notification {
   @@map("notifications")
 }
 
-// ─────────────────────────────────────────────
-// AUDIT & CONSENT (ADR-10)
-// ─────────────────────────────────────────────
-
 model AuditEvent {
   id             String        @id @default(uuid())
   actorType      ActorType
   actorId        String?
-  action         String        // e.g. "auth.login", "booking.create", "booking.cancel"
-  entityType     String        // e.g. "User", "Appointment", "MedicalRecord"
+  action         String        // e.g. "record.upload", "record.share", "record.revoke", "diagnostic.book"
+  entityType     String        // e.g. "User", "Appointment", "MedicalRecord", "DiagnosticBooking"
   entityId       String?
   organizationId String?
   metadata       Json?         // Strict: Non-PHI context only

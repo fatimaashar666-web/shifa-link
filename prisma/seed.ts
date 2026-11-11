@@ -15,7 +15,14 @@ import { existsSync, readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { Pool } from 'pg'
 import { PrismaPg } from '@prisma/adapter-pg'
-import { PrismaClient, DayOfWeek, AppointmentStatus, AppointmentType } from '@prisma/client'
+import {
+  PrismaClient,
+  DayOfWeek,
+  AppointmentStatus,
+  AppointmentType,
+  DiagnosticBookingStatus,
+  MedicalRecordCategory,
+} from '@prisma/client'
 import bcrypt from 'bcryptjs'
 
 // Simple .env.local loader for ts-node script
@@ -495,7 +502,182 @@ async function main() {
     update: {},
   })
 
-  console.log('\n🎉  M2 + M4 Seed complete!\n')
+  // -------------------------------------------------------------------------
+  // 9. M5 — Diagnostic Services (LAB + RADIOLOGY)
+  // -------------------------------------------------------------------------
+
+  const labServicesData = [
+    {
+      id: 'svc-seed-lab-cbc-00000000-0000-0000-000000000001',
+      name: 'Complete Blood Count (CBC)',
+      slug: 'complete-blood-count',
+      type: 'LAB' as const,
+      category: 'Haematology',
+      description: 'Comprehensive panel measuring white blood cells, red blood cells, hemoglobin, and platelets.',
+      basePrice: 950,
+    },
+    {
+      id: 'svc-seed-lab-lip-00000000-0000-0000-000000000002',
+      name: 'Lipid Profile (Cholesterol Panel)',
+      slug: 'lipid-profile',
+      type: 'LAB' as const,
+      category: 'Biochemistry',
+      description: 'Evaluates cardiovascular risk: Total Cholesterol, HDL, LDL, and Triglycerides.',
+      basePrice: 1400,
+    },
+    {
+      id: 'svc-seed-lab-hba-00000000-0000-0000-000000000003',
+      name: 'HbA1c (Glycated Haemoglobin)',
+      slug: 'hba1c',
+      type: 'LAB' as const,
+      category: 'Endocrinology',
+      description: 'Standard monitoring panel for diabetes and pre-diabetic metabolic health.',
+      basePrice: 1600,
+    },
+  ]
+
+  const radioServicesData = [
+    {
+      id: 'svc-seed-rad-xry-00000000-0000-0000-000000000004',
+      name: 'Chest X-Ray (PA & Lateral)',
+      slug: 'chest-xray',
+      type: 'RADIOLOGY' as const,
+      category: 'Radiography',
+      description: 'Standard diagnostic imaging for lung fields, cardiac silhouette, and thoracic skeletal structures.',
+      basePrice: 1500,
+    },
+    {
+      id: 'svc-seed-rad-usg-00000000-0000-0000-000000000005',
+      name: 'Abdominal & Pelvic Ultrasound',
+      slug: 'abdominal-ultrasound',
+      type: 'RADIOLOGY' as const,
+      category: 'Ultrasound',
+      description: 'High-resolution sonography of liver, gallbladder, kidneys, spleen, pancreas, and bladder.',
+      basePrice: 2800,
+    },
+    {
+      id: 'svc-seed-rad-mri-00000000-0000-0000-000000000006',
+      name: 'Brain MRI (Without Contrast)',
+      slug: 'brain-mri',
+      type: 'RADIOLOGY' as const,
+      category: 'MRI',
+      description: 'Detailed soft-tissue neuroimaging for headaches, neurological symptoms, or cranial trauma evaluation.',
+      basePrice: 9500,
+    },
+  ]
+
+  for (const svc of labServicesData) {
+    await db.diagnosticService.upsert({
+      where: { id: svc.id },
+      create: { ...svc, slug: svc.slug ?? svc.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') },
+      update: { basePrice: svc.basePrice },
+    })
+
+    await db.diagnosticServiceLocation.upsert({
+      where: { serviceId_organizationId: { serviceId: svc.id, organizationId: labOrg.id } },
+      create: {
+        serviceId: svc.id,
+        organizationId: labOrg.id,
+        price: svc.basePrice,
+        isAvailable: true,
+      },
+      update: {},
+    })
+  }
+
+  for (const svc of radioServicesData) {
+    await db.diagnosticService.upsert({
+      where: { id: svc.id },
+      create: { ...svc, slug: svc.slug ?? svc.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') },
+      update: { basePrice: svc.basePrice },
+    })
+
+    await db.diagnosticServiceLocation.upsert({
+      where: { serviceId_organizationId: { serviceId: svc.id, organizationId: radioOrg.id } },
+      create: {
+        serviceId: svc.id,
+        organizationId: radioOrg.id,
+        price: svc.basePrice,
+        isAvailable: true,
+      },
+      update: {},
+    })
+  }
+
+  console.log(`  ✅  Diagnostic Services: ${labServicesData.length} lab + ${radioServicesData.length} radiology`)
+
+  // -------------------------------------------------------------------------
+  // 10. M5 — Sample DiagnosticBooking for patientAlpha
+  // -------------------------------------------------------------------------
+
+  const cbcService = labServicesData[0]
+  const existingBooking = await db.diagnosticBooking.findFirst({
+    where: { bookingNumber: 'DIAG-SEED-001' },
+  })
+
+  if (!existingBooking && patientAlpha.patientProf) {
+    const booking = await db.diagnosticBooking.create({
+      data: {
+        bookingNumber: 'DIAG-SEED-001',
+        patientId: patientAlpha.patientProf.id,
+        serviceId: cbcService.id,
+        organizationId: labOrg.id,
+        scheduledAt: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+        isHomeCollection: true,
+        notes: 'Fasting sample — 10h pre-collection. Synthetic seed booking.',
+        totalAmount: cbcService.basePrice,
+        status: DiagnosticBookingStatus.CONFIRMED,
+      },
+    })
+
+    await db.diagnosticBookingEvent.create({
+      data: {
+        bookingId: booking.id,
+        status: DiagnosticBookingStatus.CONFIRMED,
+        note: 'Seed booking confirmed',
+        actorId: patientAlpha.patientProf.id,
+      },
+    })
+    console.log('  ✅  DiagnosticBooking DIAG-SEED-001 created for patient.alpha')
+  } else {
+    console.log('  ⏭   DiagnosticBooking DIAG-SEED-001 already exists, skipping')
+  }
+
+  // -------------------------------------------------------------------------
+  // 11. M5 — Sample MedicalRecord (FileObject) for patientAlpha
+  // -------------------------------------------------------------------------
+
+  const existingRecord = await db.medicalRecord.findFirst({
+    where: { title: 'Seed CBC Report — Alpha' },
+  })
+
+  if (!existingRecord && patientAlpha.patientProf) {
+    const fileObj = await db.fileObject.create({
+      data: {
+        storageKey: `records/${patientAlpha.patientProf.id}/lab_report/seed-cbc-report.pdf`,
+        fileName: 'seed-cbc-report.pdf',
+        mimeType: 'application/pdf',
+        sizeBytes: 204800,
+        uploadedBy: patientAlpha.user.id,
+      },
+    })
+
+    await db.medicalRecord.create({
+      data: {
+        patientId: patientAlpha.patientProf.id,
+        fileObjectId: fileObj.id,
+        title: 'Seed CBC Report — Alpha',
+        category: MedicalRecordCategory.LAB_REPORT,
+        description: 'Synthetic seed record. File does not exist in object storage.',
+        recordDate: new Date(),
+      },
+    })
+    console.log('  ✅  MedicalRecord: Seed CBC Report created for patient.alpha')
+  } else {
+    console.log('  ⏭   MedicalRecord already exists, skipping')
+  }
+
+  console.log('\n🎉  M2 + M4 + M5 Seed complete!\n')
 }
 
 main()
