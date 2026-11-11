@@ -12,7 +12,7 @@ interface Review {
 const REVIEWS: Review[] = [
   {
     id: 1,
-    text: "This platform completely transformed how our team ships projects. Setup took minutes and support has been phenomenal.",
+    text: "Very good app.Well thought out about booking/rescheduling/cancelling an appointment. Also, Doctor's feedback mechanism is good and describes all the basics in a good way.",
     author: "Ayesha Khan",
     role: "Product Lead at Novatek",
   },
