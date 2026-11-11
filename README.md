@@ -11,9 +11,9 @@ A responsive, browser-based healthcare SaaS platform connecting patients, doctor
 | Milestone | Status |
 |---|---|
 | M0 — Foundation Documents | ✅ Complete |
-| M1 — Repository Shell & UI Foundation | ⏳ Awaiting start |
-| M2 — PostgreSQL, Prisma & Authentication | ⏳ Awaiting M1 |
-| M3 — Sanity CMS & Public Content | ⏳ Awaiting M1 |
+| M1 — Repository Shell & UI Foundation | ✅ Complete |
+| M2 — PostgreSQL, Prisma & Authentication | ⏳ Ready to start |
+| M3 — Sanity CMS & Public Content | ✅ Complete (Schemas & Contracts) |
 | M4 — Doctor Discovery & Appointments | ⏳ Awaiting M2 |
 | M5 — Diagnostic Services & ShifaLink Drive | ⏳ Awaiting M4 |
 | M6 — Multilingual Completion & Translation | ⏳ Awaiting M1 + M3 |
