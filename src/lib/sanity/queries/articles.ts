@@ -5,7 +5,10 @@ export const ARTICLES_QUERY = `
     slug,
     excerpt,
     category,
-    coverImage,
+    coverImage {
+      ...,
+      "url": asset->url
+    },
     publishedAt,
     authorDisplay,
     tags
@@ -20,7 +23,10 @@ export const ARTICLE_BY_SLUG_QUERY = `
     excerpt,
     body,
     category,
-    coverImage,
+    coverImage {
+      ...,
+      "url": asset->url
+    },
     publishedAt,
     authorDisplay,
     tags,

@@ -16,9 +16,34 @@ declare global {
   var pgPool: Pool | undefined
 }
 
-const connectionString = process.env.DATABASE_URL
+function getRuntimeConnectionString() {
+  const value = process.env.DATABASE_URL
+  if (!value) return value
 
-const pool = globalThis.pgPool ?? new Pool({ connectionString })
+  try {
+    const url = new URL(value)
+
+    // Supabase's shared pooler on port 6543 uses transaction pooling.
+    // Prisma must disable prepared statements for this connection mode.
+    if (url.hostname.endsWith('.pooler.supabase.com') && url.port === '6543') {
+      url.searchParams.set('pgbouncer', 'true')
+    }
+
+    return url.toString()
+  } catch {
+    return value
+  }
+}
+
+const connectionString = getRuntimeConnectionString()
+
+const pool = globalThis.pgPool ?? new Pool({
+  connectionString,
+  max: 5,
+  connectionTimeoutMillis: 10_000,
+  idleTimeoutMillis: 30_000,
+  keepAlive: true,
+})
 if (process.env.NODE_ENV !== 'production') {
   globalThis.pgPool = pool
 }

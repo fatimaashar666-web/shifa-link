@@ -4,7 +4,26 @@
  * Patient, clinical, and transactional records NEVER touch Sanity.
  */
 
-import { ArticleDocument, FaqDocument } from './types'
+import 'server-only'
+
+import { createClient } from 'next-sanity'
+import { ArticleDocument, FaqDocument, LegalPageDocument } from './types'
+import { ARTICLES_QUERY, ARTICLE_BY_SLUG_QUERY } from './queries/articles'
+import { LEGAL_PAGE_BY_TYPE_QUERY } from './queries/legal'
+import { FALLBACK_LEGAL_PAGES } from './legal-fallbacks'
+
+const sanityProjectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID
+const sanityDataset = process.env.NEXT_PUBLIC_SANITY_DATASET ?? 'production'
+
+const sanityClient =
+  sanityProjectId && sanityProjectId !== 'REPLACE_WITH_PROJECT_ID'
+    ? createClient({
+        projectId: sanityProjectId,
+        dataset: sanityDataset,
+        apiVersion: '2025-01-01',
+        useCdn: process.env.NODE_ENV === 'production',
+      })
+    : null
 
 // Mock / Fallback editorial articles with multi-lingual support
 const FALLBACK_ARTICLES: ArticleDocument[] = [
@@ -27,6 +46,10 @@ const FALLBACK_ARTICLES: ArticleDocument[] = [
       de: 'Wichtige Richtlinien zur Blutdruckmessung, Lebensstiländerungen und dem richtigen Zeitpunkt für einen Facharztbesuch.',
       fr: 'Directives essentielles sur la surveillance de la tension artérielle, les modifications du mode de vie et le moment de consulter.',
       ja: '血圧モニタリング、ライフスタイルの改善、専門医の受診が必要なタイミングに関する重要ガイドライン。',
+    },
+    coverImage: {
+      url: '/banner.jpg',
+      alt: 'ShifaLink health education article',
     },
     authorDisplay: 'Clinical Advisory Panel',
     publishedAt: '2026-11-01T10:00:00Z',
@@ -53,6 +76,10 @@ const FALLBACK_ARTICLES: ArticleDocument[] = [
       fr: 'Instructions étape par étape sur le jeûne, l’hydratation et la prise de médicaments avant les bilans métaboliques.',
       ja: '代謝パネルや脂質パネル検査前の絶食期間、水分補給、服薬管理に関する手順ガイド。',
     },
+    coverImage: {
+      url: '/labtests.jpg',
+      alt: 'Laboratory testing guide',
+    },
     authorDisplay: 'Laboratory Clinical Team',
     publishedAt: '2026-10-28T08:30:00Z',
     reviewStatus: 'published',
@@ -77,6 +104,10 @@ const FALLBACK_ARTICLES: ArticleDocument[] = [
       de: 'Erkennen von Warnsymptomen bei Atemwegsinfektionen und die Rolle der Telemedizin bei der Triage.',
       fr: 'Identifier les signes d’alerte des infections respiratoires et choisir le niveau de prise en charge adapté.',
       ja: '呼吸器疾患における危険信号の識別と、オンライン診療が有効なトリアージ手順について。',
+    },
+    coverImage: {
+      url: '/secure-video-consultations.png',
+      alt: 'Telehealth safety guide',
     },
     authorDisplay: 'Primary Care Working Group',
     publishedAt: '2026-10-20T12:00:00Z',
@@ -254,15 +285,52 @@ const FALLBACK_FAQS: FaqDocument[] = [
 ]
 
 export async function getPublishedArticles(): Promise<ArticleDocument[]> {
-  // If remote Sanity dataset is connected via NEXT_PUBLIC_SANITY_PROJECT_ID,
-  // we would fetch using the Sanity client here.
-  // Otherwise, return curated multilingual fallback content.
-  return Promise.resolve(FALLBACK_ARTICLES)
+  if (!sanityClient) return FALLBACK_ARTICLES
+
+  try {
+    const articles = await sanityClient.fetch<ArticleDocument[]>(ARTICLES_QUERY)
+    return articles.length > 0 ? articles : FALLBACK_ARTICLES
+  } catch (error) {
+    console.error('Unable to fetch published articles from Sanity:', error)
+    return FALLBACK_ARTICLES
+  }
 }
 
 export async function getArticleBySlug(slug: string): Promise<ArticleDocument | null> {
-  const article = FALLBACK_ARTICLES.find((a) => a.slug.current === slug)
-  return Promise.resolve(article ?? null)
+  if (!sanityClient) {
+    const article = FALLBACK_ARTICLES.find((a) => a.slug.current === slug)
+    return article ?? null
+  }
+
+  try {
+    const article = await sanityClient.fetch<ArticleDocument | null>(ARTICLE_BY_SLUG_QUERY, { slug })
+    return article ?? FALLBACK_ARTICLES.find((item) => item.slug.current === slug) ?? null
+  } catch (error) {
+    console.error('Unable to fetch article from Sanity:', error)
+    return FALLBACK_ARTICLES.find((article) => article.slug.current === slug) ?? null
+  }
+}
+
+export async function getLegalPage(
+  pageType: LegalPageDocument['pageType'],
+  locale: string,
+): Promise<LegalPageDocument> {
+  const fallback =
+    FALLBACK_LEGAL_PAGES.find((page) => page.pageType === pageType) ??
+    FALLBACK_LEGAL_PAGES[0]
+
+  if (!sanityClient) return fallback
+
+  try {
+    const page = await sanityClient.fetch<LegalPageDocument | null>(
+      LEGAL_PAGE_BY_TYPE_QUERY,
+      { pageType, locale },
+    )
+    return page ?? fallback
+  } catch (error) {
+    console.error(`Unable to fetch ${pageType} from Sanity:`, error)
+    return fallback
+  }
 }
 
 export async function getFaqs(category?: string): Promise<FaqDocument[]> {

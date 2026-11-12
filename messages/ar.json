@@ -40,7 +40,14 @@
     "feature2Title": "حجوزات تشخيصية",
     "feature2Desc": "حجز مواعيد التحاليل المخبرية والأشعة مع مراكز ومختبرات معتمدة.",
     "feature3Title": "محرك شفا لينك",
-    "feature3Desc": "حفظ ملفاتك الطبية بأمان تام والتحكم الكامل في مشاركتها مع فريقك الطبي."
+    "feature3Desc": "حفظ ملفاتك الطبية بأمان تام والتحكم الكامل في مشاركتها مع فريقك الطبي.",
+    "articlesEyebrow": "مكتبة الصحة",
+    "articlesTitle": "مقالات صحية موثوقة",
+    "articlesSubtitle": "إرشادات راجعها متخصصون سريريون لمساعدتك على اتخاذ قرارات صحية واعية.",
+    "articlesReviewed": "تمت المراجعة",
+    "articlesRecent": "حديثًا",
+    "articlesEditorialBoard": "هيئة التحرير",
+    "articlesEmpty": "ستظهر المقالات الصحية الجديدة هنا قريبًا."
   },
   "about": {
     "title": "عن منصة شفا لينك",
@@ -79,6 +86,17 @@
       "support": "الدعم والقانون"
     }
   },
+  "legal": {
+    "policyBadge": "السياسات والموافقة",
+    "effectiveDate": "تاريخ السريان",
+    "version": "الإصدار",
+    "approvedContent": "محتوى منشور",
+    "legalNotice": "هذا المحتوى الأولي مخصص لتطبيق المشروع، ويجب مراجعته وتكييفه من قبل مختصين قانونيين وسريريين قبل استخدامه في الإنتاج ضمن أي ولاية قضائية محددة.",
+    "contentPending": "يجري إعداد هذه السياسة للنشر.",
+    "questionsPrompt": "هل لديك سؤال حول هذه السياسة أو موافقتك؟",
+    "contactSupport": "تواصل مع الدعم",
+    "fallbackTitle": "سياسة شفا لينك"
+  },
   "auth": {
     "loginTitle": "تسجيل الدخول إلى شفا لينك",
     "loginSubtitle": "الوصول إلى سجلاتك الطبية ومواعيدك",
@@ -95,6 +113,23 @@
     "submitRegister": "إنشاء الحساب",
     "submitDoctorRegister": "إرسال طلب التحقق",
     "noAccount": "ليس لديك حساب؟",
-    "haveAccount": "مسجل بالفعل؟"
+    "haveAccount": "مسجل بالفعل؟",
+    "forgotPasswordTitle": "هل نسيت كلمة المرور؟",
+    "forgotPasswordSubtitle": "أدخل بريدك الإلكتروني لإعادة تعيين كلمة المرور.",
+    "sendReset": "إرسال تعليمات إعادة التعيين",
+    "sendingReset": "جارٍ إعداد رابط إعادة التعيين...",
+    "resetRequestSuccess": "إذا كان هناك حساب بهذا البريد، فقد تم إعداد تعليمات إعادة تعيين كلمة المرور.",
+    "resetRequestError": "تعذر إعداد إعادة تعيين كلمة المرور. حاول مرة أخرى.",
+    "developmentResetLink": "رابط إعادة التعيين للتطوير",
+    "backToLogin": "العودة إلى تسجيل الدخول",
+    "resetPasswordTitle": "تعيين كلمة مرور جديدة",
+    "resetPasswordSubtitle": "اختر كلمة مرور قوية لحسابك في ShifaLink.",
+    "newPasswordLabel": "كلمة المرور الجديدة",
+    "confirmPasswordLabel": "تأكيد كلمة المرور الجديدة",
+    "resetPassword": "إعادة تعيين كلمة المرور",
+    "resettingPassword": "جارٍ إعادة تعيين كلمة المرور...",
+    "passwordsDoNotMatch": "كلمتا المرور غير متطابقتين.",
+    "invalidResetLink": "رابط إعادة التعيين مفقود أو غير صالح.",
+    "networkError": "تعذر الاتصال بـ ShifaLink. حاول مرة أخرى."
   }
 }

@@ -3,7 +3,7 @@
  *
  * Register a new patient account.
  *
- * Request body: { name: string; email: string; password: string }
+ * Request body: { name, email, password, dateOfBirth?, gender?, bloodGroup?, phone? }
  * Success 201:  { userId: string; email: string }
  * Error 409:    Email already registered
  * Error 422:    Zod validation failure

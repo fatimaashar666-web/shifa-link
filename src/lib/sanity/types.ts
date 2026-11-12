@@ -1,15 +1,20 @@
 // TypeScript interfaces representing the GROQ query projections consumed by the application
 
-export type LocalizedString = Record<string, string>
-export type LocalizedText = Record<string, string>
+export type LocalizedString =
+  | Record<string, string>
+  | Array<{ _key?: string; locale?: string; value?: string }>
+export type LocalizedText =
+  | Record<string, string>
+  | Array<{ _key?: string; locale?: string; value?: string }>
 export type LocalizedPortableText = Record<string, unknown[]>
 
 export interface SanityImageSource {
-  asset: {
+  asset?: {
     _ref: string
     _type: 'reference'
   }
   alt?: string
+  url?: string
 }
 
 export interface SiteSettings {
@@ -36,7 +41,7 @@ export interface ArticleDocument {
   title: LocalizedString
   slug: { current: string }
   excerpt?: LocalizedText
-  body?: LocalizedPortableText
+  body?: LocalizedPortableText | unknown[]
   authorDisplay?: string
   category: string
   coverImage?: SanityImageSource
@@ -75,9 +80,9 @@ export interface LegalPageDocument {
   title: LocalizedString
   slug: { current: string }
   pageType: 'privacy-policy' | 'terms-of-service' | 'consent-information' | 'cookie-policy'
-  body: LocalizedPortableText
+  body: LocalizedPortableText | unknown[]
   effectiveDate: string
   version: string
   reviewStatus: 'draft' | 'legal-review' | 'approved' | 'published'
-  locale: string
+  locale?: string
 }

@@ -1,20 +1,16 @@
 import { getTranslations } from "next-intl/server";
-import Image from "next/image";
 import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
-  UserCheck, 
-  FlaskConical, 
-  FolderLock, 
-  CalendarCheck, 
-  Video, 
   ShieldAlert, 
   ArrowRight,
   Sparkles
 } from "lucide-react";
 import ReviewCarousel from "@/components/ui/review-carousel";
+import ServiceCards from "@/components/home/ServiceCards";
+import ConsultationCards from "@/components/home/ConsultationCards";
+import HealthArticles from "@/components/home/HealthArticles";
 
 export default async function HomePage({
   params,
@@ -23,7 +19,6 @@ export default async function HomePage({
 }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "home" });
-  const tCommon = await getTranslations({ locale, namespace: "common" });
 
   return (
     <div className="flex flex-col gap-16 pb-16">
@@ -78,147 +73,14 @@ export default async function HomePage({
 
       {/* Core Platform Pillars */}
       <section className="container mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="overflow-hidden transition-shadow hover:shadow-md">
-            <div className="flex h-[230px] items-stretch gap-5 p-6">
-              <div className="flex min-w-0 flex-1 flex-col">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600 dark:bg-blue-950 dark:text-blue-400">
-                  <UserCheck className="h-6 w-6" />
-                </div>
-                <h3 className="text-lg font-semibold tracking-tight text-slate-950 dark:text-white">
-                  {t("feature1Title")}
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
-                  {t("feature1Desc")}
-                </p>
-                <Button variant="link" className="mt-auto h-auto justify-start p-0 pt-5" asChild>
-                  <Link href="/doctors" locale={locale} className="gap-1.5 text-xs font-semibold">
-                    {tCommon("viewAll")} <ArrowRight className="h-3.5 w-3.5" />
-                  </Link>
-                </Button>
-              </div>
-              <div className="relative aspect-square w-auto shrink-0 self-stretch overflow-hidden rounded-2xl border border-blue-100 bg-blue-50 dark:border-blue-900 dark:bg-blue-950/40">
-                <Image
-                  src="/doctor.png"
-                  alt="Verified doctor"
-                  fill
-                  sizes="182px"
-                  className="object-cover"
-                />
-              </div>
-            </div>
-          </Card>
-
-          <Card className="overflow-hidden transition-shadow hover:shadow-md">
-            <div className="flex h-[230px] items-stretch gap-5 p-6">
-              <div className="flex min-w-0 flex-1 flex-col">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400">
-                  <FlaskConical className="h-6 w-6" />
-                </div>
-                <h3 className="text-lg font-semibold tracking-tight text-slate-950 dark:text-white">
-                  {t("feature2Title")}
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
-                  {t("feature2Desc")}
-                </p>
-                <Button variant="link" className="mt-auto h-auto justify-start p-0 pt-5 text-emerald-600 dark:text-emerald-400" asChild>
-                  <Link href="/lab-tests" locale={locale} className="gap-1.5 text-xs font-semibold">
-                    {tCommon("viewAll")} <ArrowRight className="h-3.5 w-3.5" />
-                  </Link>
-                </Button>
-              </div>
-              <div className="relative aspect-square w-auto shrink-0 self-stretch overflow-hidden rounded-2xl border border-blue-100 bg-blue-50 dark:border-blue-900 dark:bg-blue-950/40">
-                <Image
-                  src="/tests.png"
-                  alt="Diagnostic booking equipment"
-                  fill
-                  sizes="182px"
-                  className="object-cover"
-                />
-              </div>
-            </div>
-          </Card>
-
-          <Card className="overflow-hidden transition-shadow hover:shadow-md">
-            <div className="flex h-[230px] items-stretch gap-5 p-6">
-              <div className="flex min-w-0 flex-1 flex-col">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100 text-purple-600 dark:bg-purple-950 dark:text-purple-400">
-                  <FolderLock className="h-6 w-6" />
-                </div>
-                <h3 className="text-lg font-semibold tracking-tight text-slate-950 dark:text-white">
-                  {t("feature3Title")}
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
-                  {t("feature3Desc")}
-                </p>
-                <Button variant="link" className="mt-auto h-auto justify-start p-0 pt-5 text-purple-600 dark:text-purple-400" asChild>
-                  <Link href="/about" locale={locale} className="gap-1.5 text-xs font-semibold">
-                    {tCommon("learnMore")} <ArrowRight className="h-3.5 w-3.5" />
-                  </Link>
-                </Button>
-              </div>
-              <div className="relative aspect-square w-auto shrink-0 self-stretch overflow-hidden rounded-2xl border border-blue-100 bg-blue-50 dark:border-blue-900 dark:bg-blue-950/40">
-                <Image
-                  src="/drive.jpg"
-                  alt="Secure medical records in ShifaLink Drive"
-                  fill
-                  sizes="182px"
-                  className="object-cover"
-                />
-              </div>
-            </div>
-          </Card>
-        </div>
+        <ServiceCards locale={locale} />
       </section>
 
       {/* Consultation Modalities */}
       <section className="bg-slate-50 dark:bg-slate-900/50 py-16 border-y border-slate-200 dark:border-slate-800">
-        <div className="container mx-auto max-w-7xl px-4 sm:px-6">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white mb-2">
-              Flexible Healthcare Delivery
-            </h2>
-            <p className="text-sm text-slate-600 dark:text-slate-400">
-              Choose the consultation format that matches your clinical needs and comfort.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            <div className="flex items-start gap-4 p-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
-              <div className="h-10 w-10 rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-400 flex items-center justify-center shrink-0">
-                <Video className="h-5 w-5" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-slate-900 dark:text-white text-base mb-1">
-                  Secure Video Consultations
-                </h3>
-                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-3">
-                  Consult with qualified specialists from the convenience of your home with encrypted video links.
-                </p>
-                <Button size="sm" variant="outline" asChild>
-                  <Link href="/doctors" locale={locale}>Explore Telehealth</Link>
-                </Button>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4 p-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
-              <div className="h-10 w-10 rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400 flex items-center justify-center shrink-0">
-                <CalendarCheck className="h-5 w-5" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-slate-900 dark:text-white text-base mb-1">
-                  In-Person Clinic Visits
-                </h3>
-                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-3">
-                  Book direct appointments with verified doctors at partner clinics with transparent time slots.
-                </p>
-                <Button size="sm" variant="outline" asChild>
-                  <Link href="/doctors" locale={locale}>Book In-Person</Link>
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <ConsultationCards locale={locale} />
       </section>
+      <HealthArticles locale={locale} />
       <section className="container mx-auto max-w-7xl px-4 sm:px-6">
           <ReviewCarousel />
       </section>

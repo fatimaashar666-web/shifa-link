@@ -40,7 +40,14 @@
     "feature2Title": "検査予約",
     "feature2Desc": "提携する認定ラボや画像診断センターでの検査をオンラインで簡単予約。",
     "feature3Title": "ShifaLink Drive",
-    "feature3Desc": "医療データを安全にクラウド保管し、担当医との共有を自分で管理できます。"
+    "feature3Desc": "医療データを安全にクラウド保管し、担当医との共有を自分で管理できます。",
+    "articlesEyebrow": "ヘルスライブラリ",
+    "articlesTitle": "信頼できる健康記事",
+    "articlesSubtitle": "健康について informed な判断をするための、臨床レビュー済みのガイダンスです。",
+    "articlesReviewed": "レビュー済み",
+    "articlesRecent": "最近",
+    "articlesEditorialBoard": "編集委員会",
+    "articlesEmpty": "新しい健康記事がまもなくここに表示されます。"
   },
   "about": {
     "title": "ShifaLinkについて",
@@ -79,6 +86,17 @@
       "support": "サポート・法務"
     }
   },
+  "legal": {
+    "policyBadge": "ポリシーと同意",
+    "effectiveDate": "発効日",
+    "version": "バージョン",
+    "approvedContent": "公開済みコンテンツ",
+    "legalNotice": "この暫定ポリシーはキャップストーン実装用です。特定の法域で本番利用する前に、資格のある法務および臨床の専門家による確認と調整が必要です。",
+    "contentPending": "このポリシーは公開に向けて準備中です。",
+    "questionsPrompt": "このポリシーまたは同意について質問がありますか？",
+    "contactSupport": "サポートに連絡",
+    "fallbackTitle": "ShifaLinkポリシー"
+  },
   "auth": {
     "loginTitle": "ShifaLinkへログイン",
     "loginSubtitle": "カルテ記録や診療予約にアクセスする",
@@ -95,6 +113,23 @@
     "submitRegister": "アカウントを作成",
     "submitDoctorRegister": "確認リクエストを送信",
     "noAccount": "アカウントをお持ちでないですか？",
-    "haveAccount": "登録済みの方はこちら"
+    "haveAccount": "登録済みの方はこちら",
+    "forgotPasswordTitle": "パスワードをお忘れですか？",
+    "forgotPasswordSubtitle": "メールアドレスを入力してパスワードをリセットしてください。",
+    "sendReset": "リセット手順を送信",
+    "sendingReset": "リセットリンクを準備しています...",
+    "resetRequestSuccess": "このメールアドレスのアカウントが存在する場合、リセット手順を準備しました。",
+    "resetRequestError": "パスワードリセットを準備できませんでした。もう一度お試しください。",
+    "developmentResetLink": "開発用リセットリンク",
+    "backToLogin": "ログインに戻る",
+    "resetPasswordTitle": "新しいパスワードを設定",
+    "resetPasswordSubtitle": "ShifaLinkアカウント用の強力なパスワードを選択してください。",
+    "newPasswordLabel": "新しいパスワード",
+    "confirmPasswordLabel": "新しいパスワードを確認",
+    "resetPassword": "パスワードをリセット",
+    "resettingPassword": "パスワードをリセットしています...",
+    "passwordsDoNotMatch": "パスワードが一致しません。",
+    "invalidResetLink": "このリセットリンクはありません、または無効です。",
+    "networkError": "ShifaLinkに接続できません。もう一度お試しください。"
   }
 }

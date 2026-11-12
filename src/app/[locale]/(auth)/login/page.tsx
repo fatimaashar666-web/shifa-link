@@ -55,9 +55,9 @@ export default async function LoginPage({
                 <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                   {t("passwordLabel")}
                 </label>
-                <span className="text-xs text-blue-600 dark:text-blue-400 cursor-pointer hover:underline">
-                  Forgot password?
-                </span>
+                <Link href="/forgot-password" className="text-xs text-blue-600 dark:text-blue-400 hover:underline">
+                  {t("forgotPasswordTitle")}
+                </Link>
               </div>
               <div className="relative flex items-center">
                 <Lock className="absolute left-3 h-4 w-4 text-slate-400" />

@@ -40,7 +40,14 @@
     "feature2Title": "Diagnostik-Buchungen",
     "feature2Desc": "Reservieren Sie Labor- und Radiologietermine bei zertifizierten Partnerzentren.",
     "feature3Title": "ShifaLink Drive",
-    "feature3Desc": "Speichern Sie Ihre Krankenakten sicher und behalten Sie die Kontrolle über Freigaben."
+    "feature3Desc": "Speichern Sie Ihre Krankenakten sicher und behalten Sie die Kontrolle über Freigaben.",
+    "articlesEyebrow": "Gesundheitsbibliothek",
+    "articlesTitle": "Verlässliche Gesundheitsartikel",
+    "articlesSubtitle": "Klinisch geprüfte Informationen für fundierte Entscheidungen über Ihre Gesundheit.",
+    "articlesReviewed": "Geprüft",
+    "articlesRecent": "Aktuell",
+    "articlesEditorialBoard": "Redaktion",
+    "articlesEmpty": "Neue Gesundheitsartikel erscheinen bald hier."
   },
   "about": {
     "title": "Über ShifaLink",
@@ -79,6 +86,17 @@
       "support": "Support & Rechtliches"
     }
   },
+  "legal": {
+    "policyBadge": "Richtlinien und Einwilligung",
+    "effectiveDate": "Gültig ab",
+    "version": "Version",
+    "approvedContent": "Veröffentlichter Inhalt",
+    "legalNotice": "Dieser Entwurf wurde für die Capstone-Implementierung erstellt und muss vor dem produktiven Einsatz in einer bestimmten Rechtsordnung von qualifizierten juristischen und klinischen Fachleuten geprüft und angepasst werden.",
+    "contentPending": "Diese Richtlinie wird für die Veröffentlichung vorbereitet.",
+    "questionsPrompt": "Fragen zu dieser Richtlinie oder Ihrer Einwilligung?",
+    "contactSupport": "Support kontaktieren",
+    "fallbackTitle": "ShifaLink-Richtlinie"
+  },
   "auth": {
     "loginTitle": "Bei ShifaLink anmelden",
     "loginSubtitle": "Greifen Sie auf Ihre Akten und Termine zu",
@@ -95,6 +113,23 @@
     "submitRegister": "Konto erstellen",
     "submitDoctorRegister": "Verifizierungsanfrage stellen",
     "noAccount": "Noch kein Konto?",
-    "haveAccount": "Bereits registriert?"
+    "haveAccount": "Bereits registriert?",
+    "forgotPasswordTitle": "Passwort vergessen?",
+    "forgotPasswordSubtitle": "Geben Sie Ihre E-Mail-Adresse ein, um Ihr Passwort zurückzusetzen.",
+    "sendReset": "Anweisungen senden",
+    "sendingReset": "Reset-Link wird vorbereitet...",
+    "resetRequestSuccess": "Falls ein Konto mit dieser E-Mail existiert, wurden Anweisungen vorbereitet.",
+    "resetRequestError": "Passwort-Reset konnte nicht vorbereitet werden. Bitte versuchen Sie es erneut.",
+    "developmentResetLink": "Entwicklungs-Reset-Link",
+    "backToLogin": "Zur Anmeldung",
+    "resetPasswordTitle": "Neues Passwort festlegen",
+    "resetPasswordSubtitle": "Wählen Sie ein starkes Passwort für Ihr ShifaLink-Konto.",
+    "newPasswordLabel": "Neues Passwort",
+    "confirmPasswordLabel": "Neues Passwort bestätigen",
+    "resetPassword": "Passwort zurücksetzen",
+    "resettingPassword": "Passwort wird zurückgesetzt...",
+    "passwordsDoNotMatch": "Die Passwörter stimmen nicht überein.",
+    "invalidResetLink": "Dieser Reset-Link fehlt oder ist ungültig.",
+    "networkError": "Verbindung zu ShifaLink nicht möglich. Bitte versuchen Sie es erneut."
   }
 }

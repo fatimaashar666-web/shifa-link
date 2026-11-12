@@ -40,7 +40,14 @@
     "feature2Title": "Diagnostic Bookings",
     "feature2Desc": "Reserve laboratory and radiology appointments with certified partner centers.",
     "feature3Title": "ShifaLink Drive",
-    "feature3Desc": "Securely store your medical records and control sharing with your healthcare team."
+    "feature3Desc": "Securely store your medical records and control sharing with your healthcare team.",
+    "articlesEyebrow": "Health library",
+    "articlesTitle": "Trusted health articles",
+    "articlesSubtitle": "Clinically reviewed guidance to help you make informed decisions about your health.",
+    "articlesReviewed": "Reviewed",
+    "articlesRecent": "Recent",
+    "articlesEditorialBoard": "Editorial Board",
+    "articlesEmpty": "New health articles will appear here soon."
   },
   "about": {
     "title": "About ShifaLink",
@@ -79,6 +86,17 @@
       "support": "Support & Legal"
     }
   },
+  "legal": {
+    "policyBadge": "Policies & consent",
+    "effectiveDate": "Effective date",
+    "version": "Version",
+    "approvedContent": "Published content",
+    "legalNotice": "This starter policy content is provided for the capstone implementation and must be reviewed and adapted by qualified legal and clinical professionals before production use in a specific jurisdiction.",
+    "contentPending": "This policy is being prepared for publication.",
+    "questionsPrompt": "Questions about this policy or your consent?",
+    "contactSupport": "Contact support",
+    "fallbackTitle": "ShifaLink policy"
+  },
   "auth": {
     "loginTitle": "Sign In to ShifaLink",
     "loginSubtitle": "Access your health records and appointments",
@@ -95,6 +113,23 @@
     "submitRegister": "Create Account",
     "submitDoctorRegister": "Submit Verification Request",
     "noAccount": "Don't have an account?",
-    "haveAccount": "Already registered?"
+    "haveAccount": "Already registered?",
+    "forgotPasswordTitle": "Forgot your password?",
+    "forgotPasswordSubtitle": "Enter your email and we’ll help you reset your password.",
+    "sendReset": "Send reset instructions",
+    "sendingReset": "Preparing reset link...",
+    "resetRequestSuccess": "If an account exists for that email, password reset instructions have been prepared.",
+    "resetRequestError": "Unable to prepare a password reset. Please try again.",
+    "developmentResetLink": "Development reset link",
+    "backToLogin": "Back to login",
+    "resetPasswordTitle": "Set a new password",
+    "resetPasswordSubtitle": "Choose a strong password for your ShifaLink account.",
+    "newPasswordLabel": "New password",
+    "confirmPasswordLabel": "Confirm new password",
+    "resetPassword": "Reset password",
+    "resettingPassword": "Resetting password...",
+    "passwordsDoNotMatch": "The passwords do not match.",
+    "invalidResetLink": "This reset link is missing or invalid.",
+    "networkError": "Unable to connect to ShifaLink. Please try again."
   }
 }

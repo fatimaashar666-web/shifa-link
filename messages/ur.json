@@ -40,7 +40,14 @@
     "feature2Title": "تشخیصی بکنگ",
     "feature2Desc": "معیاری لیبارٹری اور ریڈیالوجی مراکز پر آسان بکنگ۔",
     "feature3Title": "شفا لنک ڈرائیو",
-    "feature3Desc": "اپنے طبی ریکارڈز کو مکمل رازداری کے ساتھ محفوظ کریں اور شیئر کریں۔"
+    "feature3Desc": "اپنے طبی ریکارڈز کو مکمل رازداری کے ساتھ محفوظ کریں اور شیئر کریں۔",
+    "articlesEyebrow": "صحت کی لائبریری",
+    "articlesTitle": "قابل اعتماد صحت کے مضامین",
+    "articlesSubtitle": "اپنی صحت کے بارے میں باخبر فیصلے کرنے کے لیے طبی ماہرین کی نظرثانی شدہ رہنمائی۔",
+    "articlesReviewed": "نظرثانی شدہ",
+    "articlesRecent": "حالیہ",
+    "articlesEditorialBoard": "ادارتی بورڈ",
+    "articlesEmpty": "صحت کے نئے مضامین جلد یہاں دکھائے جائیں گے۔"
   },
   "about": {
     "title": "شفا لنک کے بارے میں",
@@ -79,6 +86,17 @@
       "support": "معاونت و قانونی"
     }
   },
+  "legal": {
+    "policyBadge": "پالیسی اور رضامندی",
+    "effectiveDate": "مؤثر تاریخ",
+    "version": "ورژن",
+    "approvedContent": "شائع شدہ مواد",
+    "legalNotice": "یہ ابتدائی پالیسی مواد کیپ اسٹون اطلاق کے لیے ہے۔ پروڈکشن میں استعمال سے پہلے ماہر قانونی اور طبی پیشہ ور افراد سے اس کا جائزہ لینا ضروری ہے۔",
+    "contentPending": "یہ پالیسی اشاعت کے لیے تیار کی جا رہی ہے۔",
+    "questionsPrompt": "اس پالیسی یا رضامندی کے بارے میں سوال ہے؟",
+    "contactSupport": "مدد سے رابطہ کریں",
+    "fallbackTitle": "شفا لنک پالیسی"
+  },
   "auth": {
     "loginTitle": "شفا لنک میں سائن ان کریں",
     "loginSubtitle": "اپنے طبی ریکارڈز اور اپوائنٹمنٹس تک رسائی حاصل کریں",
@@ -95,6 +113,23 @@
     "submitRegister": "اکاؤنٹ بنائیں",
     "submitDoctorRegister": "تصدیق کی درخواست بھیجیں",
     "noAccount": "اکاؤنٹ نہیں ہے؟",
-    "haveAccount": "پہلے سے رجسٹرڈ ہیں؟"
+    "haveAccount": "پہلے سے رجسٹرڈ ہیں؟",
+    "forgotPasswordTitle": "پاس ورڈ بھول گئے؟",
+    "forgotPasswordSubtitle": "اپنا ای میل درج کریں تاکہ پاس ورڈ دوبارہ ترتیب دیا جا سکے۔",
+    "sendReset": "ری سیٹ ہدایات بھیجیں",
+    "sendingReset": "ری سیٹ لنک تیار ہو رہا ہے...",
+    "resetRequestSuccess": "اگر اس ای میل سے اکاؤنٹ موجود ہے تو پاس ورڈ ری سیٹ کی ہدایات تیار کر دی گئی ہیں۔",
+    "resetRequestError": "پاس ورڈ ری سیٹ تیار نہیں ہو سکا۔ دوبارہ کوشش کریں۔",
+    "developmentResetLink": "ترقیاتی ری سیٹ لنک",
+    "backToLogin": "لاگ اِن پر واپس جائیں",
+    "resetPasswordTitle": "نیا پاس ورڈ بنائیں",
+    "resetPasswordSubtitle": "اپنے ShifaLink اکاؤنٹ کے لیے مضبوط پاس ورڈ منتخب کریں۔",
+    "newPasswordLabel": "نیا پاس ورڈ",
+    "confirmPasswordLabel": "نئے پاس ورڈ کی تصدیق",
+    "resetPassword": "پاس ورڈ ری سیٹ کریں",
+    "resettingPassword": "پاس ورڈ ری سیٹ ہو رہا ہے...",
+    "passwordsDoNotMatch": "پاس ورڈز ایک جیسے نہیں ہیں۔",
+    "invalidResetLink": "یہ ری سیٹ لنک موجود نہیں یا درست نہیں ہے۔",
+    "networkError": "ShifaLink سے رابطہ نہیں ہو سکا۔ دوبارہ کوشش کریں۔"
   }
 }

@@ -55,14 +55,16 @@ export const article = defineType({
     }),
     defineField({
       name: 'coverImage',
-      title: 'Cover Image',
+      title: 'Cover Image (shown on cards and article page)',
       type: 'image',
+      description: 'Upload the article image that appears in the homepage section, article listing, and article detail page.',
       options: { hotspot: true },
       fields: [
         defineField({
           name: 'alt',
           title: 'Alt Text',
           type: 'string',
+          validation: (Rule) => Rule.required(),
         }),
       ],
     }),

@@ -16,6 +16,7 @@ import { SignJWT, jwtVerify } from 'jose'
 
 const COOKIE_NAME = 'shifalink-session'
 const MAX_AGE_SECONDS = 60 * 60 * 24 * 7 // 7 days
+const PASSWORD_RESET_MAX_AGE_SECONDS = 60 * 15 // 15 minutes
 
 function getSecret(): Uint8Array {
   const secret = process.env.SESSION_SECRET
@@ -66,6 +67,32 @@ export async function verifySession(token: string): Promise<SessionPayload | nul
   try {
     const { payload } = await jwtVerify(token, getSecret(), { algorithms: ['HS256'] })
     return payload as unknown as SessionPayload
+  } catch {
+    return null
+  }
+}
+
+/** Create a short-lived token used only for resetting a password. */
+export async function createPasswordResetToken(userId: string): Promise<string> {
+  return new SignJWT({ purpose: 'password-reset' })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setSubject(userId)
+    .setIssuedAt()
+    .setExpirationTime(`${PASSWORD_RESET_MAX_AGE_SECONDS}s`)
+    .sign(getSecret())
+}
+
+/** Verify a password-reset token and return its user id when valid. */
+export async function verifyPasswordResetToken(
+  token: string,
+): Promise<{ userId: string; issuedAt: number } | null> {
+  try {
+    const { payload } = await jwtVerify(token, getSecret(), { algorithms: ['HS256'] })
+    if (payload.purpose !== 'password-reset' || typeof payload.sub !== 'string' || typeof payload.iat !== 'number') {
+      return null
+    }
+
+    return { userId: payload.sub, issuedAt: payload.iat }
   } catch {
     return null
   }

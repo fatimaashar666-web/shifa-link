@@ -23,6 +23,19 @@ export interface CreateUserData {
 export interface CreatePatientProfileData {
   userId: string
   fullName: string
+  dateOfBirth?: Date
+  gender?: 'MALE' | 'FEMALE' | 'OTHER' | 'PREFER_NOT_TO_SAY'
+  bloodGroup?:
+    | 'A_POSITIVE'
+    | 'A_NEGATIVE'
+    | 'B_POSITIVE'
+    | 'B_NEGATIVE'
+    | 'AB_POSITIVE'
+    | 'AB_NEGATIVE'
+    | 'O_POSITIVE'
+    | 'O_NEGATIVE'
+    | 'UNKNOWN'
+  phone?: string
 }
 
 export interface CreateDoctorProfileData {
@@ -85,6 +98,10 @@ export async function createPatientProfile(data: CreatePatientProfileData) {
     data: {
       userId: data.userId,
       fullName: data.fullName,
+      dateOfBirth: data.dateOfBirth,
+      gender: data.gender,
+      bloodGroup: data.bloodGroup,
+      phone: data.phone,
     },
   })
 }
@@ -107,6 +124,14 @@ export async function setEmailVerified(userId: string) {
   return db.user.update({
     where: { id: userId },
     data: { emailVerifiedAt: new Date() },
+  })
+}
+
+/** Replace the stored password hash after a valid password-reset token. */
+export async function updatePasswordHash(userId: string, passwordHash: string) {
+  return db.user.update({
+    where: { id: userId },
+    data: { passwordHash },
   })
 }
 

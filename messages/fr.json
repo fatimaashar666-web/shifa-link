@@ -40,7 +40,14 @@
     "feature2Title": "Réservations diagnostiques",
     "feature2Desc": "Prenez rendez-vous pour des analyses médicales et radiologiques dans nos centres partenaires agréés.",
     "feature3Title": "ShifaLink Drive",
-    "feature3Desc": "Stockez vos dossiers médicaux en toute sécurité et contrôlez les partages avec vos praticiens."
+    "feature3Desc": "Stockez vos dossiers médicaux en toute sécurité et contrôlez les partages avec vos praticiens.",
+    "articlesEyebrow": "Bibliothèque santé",
+    "articlesTitle": "Articles de santé fiables",
+    "articlesSubtitle": "Des conseils vérifiés cliniquement pour vous aider à prendre des décisions éclairées.",
+    "articlesReviewed": "Vérifié",
+    "articlesRecent": "Récent",
+    "articlesEditorialBoard": "Comité éditorial",
+    "articlesEmpty": "De nouveaux articles santé apparaîtront bientôt ici."
   },
   "about": {
     "title": "À propos de ShifaLink",
@@ -79,6 +86,17 @@
       "support": "Support & Juridique"
     }
   },
+  "legal": {
+    "policyBadge": "Politiques et consentement",
+    "effectiveDate": "Date d’entrée en vigueur",
+    "version": "Version",
+    "approvedContent": "Contenu publié",
+    "legalNotice": "Ce contenu provisoire est destiné à l’implémentation du projet et doit être vérifié et adapté par des professionnels du droit et de la santé avant toute utilisation en production dans une juridiction donnée.",
+    "contentPending": "Cette politique est en préparation pour publication.",
+    "questionsPrompt": "Une question sur cette politique ou votre consentement ?",
+    "contactSupport": "Contacter le support",
+    "fallbackTitle": "Politique ShifaLink"
+  },
   "auth": {
     "loginTitle": "Connexion à ShifaLink",
     "loginSubtitle": "Accédez à vos dossiers de santé et rendez-vous",
@@ -95,6 +113,23 @@
     "submitRegister": "Créer mon compte",
     "submitDoctorRegister": "Soumettre pour vérification",
     "noAccount": "Pas encore de compte ?",
-    "haveAccount": "Déjà inscrit ?"
+    "haveAccount": "Déjà inscrit ?",
+    "forgotPasswordTitle": "Mot de passe oublié ?",
+    "forgotPasswordSubtitle": "Saisissez votre e-mail pour réinitialiser votre mot de passe.",
+    "sendReset": "Envoyer les instructions",
+    "sendingReset": "Préparation du lien...",
+    "resetRequestSuccess": "Si un compte existe avec cet e-mail, les instructions de réinitialisation ont été préparées.",
+    "resetRequestError": "Impossible de préparer la réinitialisation. Réessayez.",
+    "developmentResetLink": "Lien de réinitialisation de développement",
+    "backToLogin": "Retour à la connexion",
+    "resetPasswordTitle": "Définir un nouveau mot de passe",
+    "resetPasswordSubtitle": "Choisissez un mot de passe fort pour votre compte ShifaLink.",
+    "newPasswordLabel": "Nouveau mot de passe",
+    "confirmPasswordLabel": "Confirmer le nouveau mot de passe",
+    "resetPassword": "Réinitialiser le mot de passe",
+    "resettingPassword": "Réinitialisation en cours...",
+    "passwordsDoNotMatch": "Les mots de passe ne correspondent pas.",
+    "invalidResetLink": "Ce lien est manquant ou invalide.",
+    "networkError": "Impossible de se connecter à ShifaLink. Réessayez."
   }
 }

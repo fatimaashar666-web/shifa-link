@@ -68,7 +68,7 @@ export default async function ContactPage({
             <CardTitle className="text-base">{t("formTitle")}</CardTitle>
           </CardHeader>
           <CardContent>
-            <form className="space-y-4 text-xs" onSubmit={(e) => e.preventDefault()}>
+            <form className="space-y-4 text-xs">
               <div className="space-y-1.5">
                 <label className="font-medium text-slate-700 dark:text-slate-300">
                   {t("namePlaceholder")}
@@ -102,7 +102,7 @@ export default async function ContactPage({
                 />
               </div>
 
-              <Button type="submit" className="w-full text-xs">
+              <Button type="button" className="w-full text-xs">
                 {t("sendButton")}
               </Button>
             </form>

@@ -15,7 +15,12 @@ import 'server-only'
 import { z } from 'zod'
 import bcrypt from 'bcryptjs'
 
-import { createSession, type SessionPayload } from '@/server/auth/session'
+import {
+  createPasswordResetToken,
+  createSession,
+  type SessionPayload,
+  verifyPasswordResetToken,
+} from '@/server/auth/session'
 import * as userRepo from '@/server/repositories/user.repository'
 import { writeAuditEvent } from '@/server/audit'
 
@@ -30,6 +35,22 @@ export const RegisterSchema = z.object({
     .string()
     .min(8, 'Password must be at least 8 characters')
     .max(128, 'Password must be at most 128 characters'),
+  dateOfBirth: z.string().date('Date of birth must be a valid date').optional(),
+  gender: z.enum(['MALE', 'FEMALE', 'OTHER', 'PREFER_NOT_TO_SAY']).optional(),
+  bloodGroup: z
+    .enum([
+      'A_POSITIVE',
+      'A_NEGATIVE',
+      'B_POSITIVE',
+      'B_NEGATIVE',
+      'AB_POSITIVE',
+      'AB_NEGATIVE',
+      'O_POSITIVE',
+      'O_NEGATIVE',
+      'UNKNOWN',
+    ])
+    .optional(),
+  phone: z.string().trim().min(7, 'Phone number must be at least 7 characters').max(30).optional(),
 })
 
 export const LoginSchema = z.object({
@@ -37,8 +58,23 @@ export const LoginSchema = z.object({
   password: z.string().min(1, 'Password is required'),
 })
 
+export const ForgotPasswordSchema = z.object({
+  email: z.string().email('Invalid email address'),
+  locale: z.string().optional(),
+})
+
+export const ResetPasswordSchema = z.object({
+  token: z.string().min(1, 'Reset token is required'),
+  password: z
+    .string()
+    .min(8, 'Password must be at least 8 characters')
+    .max(128, 'Password must be at most 128 characters'),
+})
+
 export type RegisterInput = z.infer<typeof RegisterSchema>
 export type LoginInput = z.infer<typeof LoginSchema>
+export type ForgotPasswordInput = z.infer<typeof ForgotPasswordSchema>
+export type ResetPasswordInput = z.infer<typeof ResetPasswordSchema>
 
 // ---------------------------------------------------------------------------
 // Error types
@@ -87,7 +123,14 @@ export async function registerPatient(
     email: input.email,
     passwordHash,
   })
-  await userRepo.createPatientProfile({ userId: user.id, fullName: input.name })
+  await userRepo.createPatientProfile({
+    userId: user.id,
+    fullName: input.name,
+    dateOfBirth: input.dateOfBirth ? new Date(`${input.dateOfBirth}T00:00:00.000Z`) : undefined,
+    gender: input.gender,
+    bloodGroup: input.bloodGroup,
+    phone: input.phone,
+  })
   await userRepo.assignRole(user.id, 'patient')
   await userRepo.upsertPreferences(user.id, 'en', 'system')
 
@@ -164,6 +207,37 @@ export async function login(
   }
 
   return { session, userId: user.id }
+}
+
+/** Create a reset token without revealing whether an email is registered. */
+export async function requestPasswordReset(email: string): Promise<string | null> {
+  const user = await userRepo.findByEmail(email)
+  if (!user || !user.passwordHash) return null
+
+  return createPasswordResetToken(user.id)
+}
+
+/** Set a new password when the reset token is valid and has not been superseded. */
+export async function resetPassword(input: ResetPasswordInput): Promise<boolean> {
+  const tokenPayload = await verifyPasswordResetToken(input.token)
+  if (!tokenPayload) return false
+
+  const user = await userRepo.findById(tokenPayload.userId)
+  if (!user || !user.passwordHash || user.updatedAt.getTime() > tokenPayload.issuedAt * 1000) {
+    return false
+  }
+
+  const passwordHash = await bcrypt.hash(input.password, BCRYPT_ROUNDS)
+  await userRepo.updatePasswordHash(user.id, passwordHash)
+  writeAuditEvent({
+    actorType: 'USER',
+    actorId: user.id,
+    action: 'auth.password_reset',
+    entityType: 'User',
+    entityId: user.id,
+  })
+
+  return true
 }
 
 /**

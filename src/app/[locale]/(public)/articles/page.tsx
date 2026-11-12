@@ -1,10 +1,13 @@
 import { getTranslations } from "next-intl/server";
+import Image from "next/image";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/routing";
 import { Calendar, ArrowRight, ShieldCheck } from "lucide-react";
 import { getPublishedArticles } from "@/lib/sanity/client";
+import { getSanityImageUrl } from "@/lib/sanity/image";
+import { getLocalizedValue } from "@/lib/sanity/localization";
 
 interface ArticlesPageProps {
   params: Promise<{ locale: string }>;
@@ -30,17 +33,25 @@ export default async function ArticlesPage({ params }: ArticlesPageProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {articles.map((art) => {
-          const localizedTitle =
-            (art.title as Record<string, string>)[locale] ||
-            art.title.en ||
-            "Health Article";
-
-          const localizedExcerpt =
-            art.excerpt &&
-            ((art.excerpt as Record<string, string>)[locale] || art.excerpt.en);
+          const localizedTitle = getLocalizedValue(art.title, locale) || "Health Article";
+          const localizedExcerpt = getLocalizedValue(art.excerpt, locale);
+          const imageUrl = getSanityImageUrl(art.coverImage, { width: 720, height: 400 });
 
           return (
-            <Card key={art._id} className="flex flex-col justify-between hover:shadow-md transition-shadow">
+            <Card key={art._id} className="group flex flex-col justify-between overflow-hidden transition-shadow hover:shadow-md">
+              <div className="relative aspect-[16/9] overflow-hidden bg-slate-100 dark:bg-slate-900">
+                {imageUrl ? (
+                  <Image
+                    src={imageUrl}
+                    alt={art.coverImage?.alt ?? localizedTitle}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="h-full w-full bg-gradient-to-br from-blue-100 via-sky-50 to-white dark:from-blue-950/50 dark:via-slate-900 dark:to-slate-950" />
+                )}
+              </div>
               <CardHeader className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Badge variant="outline" className="text-xs">

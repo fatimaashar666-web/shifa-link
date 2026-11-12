@@ -6,6 +6,7 @@ import 'server-only'
 
 import { z } from 'zod'
 import { getPublishedArticles, getFaqs } from '@/lib/sanity/client'
+import { getLocalizedValue } from '@/lib/sanity/localization'
 
 export const SearchArticlesToolInputSchema = z.object({
   topic: z.string().describe('Health topic or keyword, e.g. "hypertension", "fasting", "telehealth", "blood test"'),
@@ -38,14 +39,14 @@ export async function searchArticlesTool(input: SearchArticlesToolInput): Promis
 
   const matchingArticles: ArticleSummary[] = articles
     .filter((a) => {
-      const enTitle = a.title.en?.toLowerCase() ?? ''
-      const enExcerpt = a.excerpt?.en?.toLowerCase() ?? ''
+      const enTitle = getLocalizedValue(a.title, 'en')?.toLowerCase() ?? ''
+      const enExcerpt = getLocalizedValue(a.excerpt, 'en')?.toLowerCase() ?? ''
       const tags = (a.tags ?? []).map((t) => t.toLowerCase()).join(' ')
       return enTitle.includes(q) || enExcerpt.includes(q) || tags.includes(q)
     })
     .map((a) => {
-      const title = (a.title as Record<string, string>)[parsed.locale] || a.title.en || 'Article'
-      const excerpt = a.excerpt ? ((a.excerpt as Record<string, string>)[parsed.locale] || a.excerpt.en) : undefined
+      const title = getLocalizedValue(a.title, parsed.locale) || 'Article'
+      const excerpt = getLocalizedValue(a.excerpt, parsed.locale)
       return {
         id: a._id,
         title,
@@ -57,11 +58,11 @@ export async function searchArticlesTool(input: SearchArticlesToolInput): Promis
 
   const matchingFaqs = faqs
     .filter((f) => {
-      const enQ = f.question.en?.toLowerCase() ?? ''
+      const enQ = getLocalizedValue(f.question, 'en')?.toLowerCase() ?? ''
       return enQ.includes(q) || f.category.toLowerCase().includes(q)
     })
     .map((f) => {
-      const question = (f.question as Record<string, string>)[parsed.locale] || f.question.en || ''
+      const question = getLocalizedValue(f.question, parsed.locale) || ''
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const answerBlocks = (f.answer as any)[parsed.locale] || (f.answer as any).en || []
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

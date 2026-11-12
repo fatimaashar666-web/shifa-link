@@ -90,13 +90,19 @@ export function Footer({ locale }: { locale: string }) {
             </h4>
             <ul className="space-y-2 text-xs">
               <li>
-                <span className="text-slate-500">{t("privacy")}</span>
+                <Link href="/privacy-policy" locale={locale} className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                  {t("privacy")}
+                </Link>
               </li>
               <li>
-                <span className="text-slate-500">{t("terms")}</span>
+                <Link href="/terms-of-service" locale={locale} className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                  {t("terms")}
+                </Link>
               </li>
               <li>
-                <span className="text-slate-500">{t("consent")}</span>
+                <Link href="/patient-consent-info" locale={locale} className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                  {t("consent")}
+                </Link>
               </li>
             </ul>
           </div>
