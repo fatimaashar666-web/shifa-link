@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { PageBanner } from "@/components/layout/PageBanner";
 import { Shield, Activity, Users, CheckCircle2 } from "lucide-react";
 
 export default async function AboutPage({
@@ -11,17 +12,15 @@ export default async function AboutPage({
   const t = await getTranslations({ locale, namespace: "about" });
 
   return (
-    <div className="container mx-auto max-w-7xl px-4 py-8 sm:px-6 space-y-12">
-      <div className="space-y-4 max-w-3xl">
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
-          {t("title")}
-        </h1>
-        <p className="text-base text-slate-600 dark:text-slate-300 leading-relaxed">
-          {t("description")}
-        </p>
-      </div>
+    <div className="container mx-auto max-w-7xl space-y-12 px-4 py-8 sm:px-6">
+      <PageBanner
+        image="/about.png"
+        alt="Healthcare professionals standing outside a hospital"
+        heading={t("title")}
+        description={t("description")}
+      />
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         <Card>
           <CardHeader>
             <div className="h-10 w-10 rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-400 flex items-center justify-center mb-2">

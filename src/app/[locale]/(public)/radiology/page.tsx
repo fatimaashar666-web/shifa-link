@@ -3,6 +3,7 @@ import { Link } from "@/i18n/routing";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { PageBanner } from "@/components/layout/PageBanner";
 import { Scan, Clock, MapPin, AlertCircle } from "lucide-react";
 import { searchServices } from "@/server/services/diagnostic.service";
 
@@ -25,29 +26,26 @@ export default async function RadiologyPage({
   }
 
   return (
-    <div className="container mx-auto max-w-7xl px-4 py-8 sm:px-6 space-y-8">
-      <div className="space-y-4 max-w-3xl">
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
-          {tNav("radiologyTests")}
-        </h1>
-        <p className="text-sm text-slate-600 dark:text-slate-400">
-          Schedule diagnostic imaging services including X-Rays, Ultrasounds, CT Scans, and MRIs
-          with certified partner radiology centers.
-        </p>
-      </div>
+    <div className="container mx-auto max-w-7xl space-y-8 px-4 py-8 sm:px-6">
+      <PageBanner
+        image="/radiology-tests.png"
+        alt="Radiology professionals reviewing medical imaging"
+        heading={tNav("radiologyTests")}
+        description="Schedule diagnostic imaging services including X-Rays, Ultrasounds, CT Scans, and MRIs with certified partner radiology centers."
+      />
 
-      {fetchError && (
+        {fetchError && (
         <div className="flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-800/40 dark:bg-amber-900/20 dark:text-amber-400">
           <AlertCircle className="h-4 w-4 shrink-0" />
           <span>Unable to load services at this time. Please try again shortly.</span>
         </div>
-      )}
+        )}
 
-      {!fetchError && radiologyServices.length === 0 && (
+        {!fetchError && radiologyServices.length === 0 && (
         <p className="text-sm text-slate-500">No radiology services available yet. Check back soon.</p>
-      )}
+        )}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         {radiologyServices.map((service) => {
           const lowestPrice =
             service.locations.length > 0
@@ -105,7 +103,7 @@ export default async function RadiologyPage({
             </Card>
           );
         })}
-      </div>
+        </div>
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { Link } from "@/i18n/routing";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { PageBanner } from "@/components/layout/PageBanner";
 import { Search, CheckCircle2, MapPin, Video, Stethoscope, Globe2 } from "lucide-react";
 import * as doctorService from "@/server/services/doctor.service";
 
@@ -39,16 +40,16 @@ export default async function DoctorsPage({ params, searchParams }: DoctorsPageP
   ]);
 
   return (
-    <div className="container mx-auto max-w-7xl px-4 py-8 sm:px-6 space-y-8">
-      {/* Header and Search */}
-      <div className="space-y-4 max-w-3xl">
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
-          {tNav("findDoctor")}
-        </h1>
-        <p className="text-sm text-slate-600 dark:text-slate-400">
-          Book verified healthcare specialists, view transparent consultation fees, and schedule clinic or telehealth appointments.
-        </p>
+    <div className="container mx-auto max-w-7xl space-y-8 px-4 py-8 sm:px-6">
+      <PageBanner
+        image="/find-a-doctor.png"
+        alt="Doctors working in a bright hospital"
+        heading={tNav("findDoctor")}
+        description="Book verified healthcare specialists, view transparent consultation fees, and schedule clinic or telehealth appointments."
+      />
 
+        {/* Search and filters */}
+        <div className="max-w-3xl space-y-4">
         {/* Search Bar Form */}
         <form method="GET" className="relative flex items-center">
           <Search className="absolute left-3.5 h-4 w-4 text-slate-400" />
@@ -97,10 +98,10 @@ export default async function DoctorsPage({ params, searchParams }: DoctorsPageP
             </Badge>
           </Link>
         </div>
-      </div>
+        </div>
 
-      {/* Doctor Listings Grid */}
-      {searchResult.doctors.length === 0 ? (
+        {/* Doctor Listings Grid */}
+        {searchResult.doctors.length === 0 ? (
         <div className="rounded-xl border border-dashed border-slate-300 dark:border-slate-800 p-12 text-center space-y-3">
           <Stethoscope className="mx-auto h-10 w-10 text-slate-400" />
           <h3 className="text-base font-semibold text-slate-900 dark:text-white">
@@ -113,7 +114,7 @@ export default async function DoctorsPage({ params, searchParams }: DoctorsPageP
             <Link href="/doctors">Clear Filters</Link>
           </Button>
         </div>
-      ) : (
+        ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {searchResult.doctors.map((doc) => {
             const primarySpec = doc.specialties.find((s) => s.isPrimary) ?? doc.specialties[0];
@@ -189,7 +190,7 @@ export default async function DoctorsPage({ params, searchParams }: DoctorsPageP
             );
           })}
         </div>
-      )}
+        )}
     </div>
   );
 }

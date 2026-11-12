@@ -24,11 +24,7 @@ export default async function HealthArticles({ locale }: { locale: string }) {
   return (
     <section aria-labelledby="health-articles-title" className="container mx-auto max-w-7xl px-4 sm:px-6">
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div className="max-w-2xl space-y-2">
-          <div className="flex items-center gap-2 text-sm font-semibold text-blue-600 dark:text-blue-400">
-            <BookOpen className="h-4 w-4" />
-            <span>{t("articlesEyebrow")}</span>
-          </div>
+        <div className="max-w-2xl space-y-2 mx-auto mb-12 text-center">
           <h2 id="health-articles-title" className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">
             {t("articlesTitle")}
           </h2>

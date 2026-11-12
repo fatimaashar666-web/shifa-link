@@ -59,6 +59,9 @@ export default function ReviewCarousel() {
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
+      <div className="mx-auto mb-12 max-w-2xl text-center">
+        <h2 className="mb-2 text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">
+What our users have to say</h2></div>
       <div className="relative rounded-2xl border border-slate-200 bg-white px-8 py-12 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:px-16">
         {/* Opening Quotation Mark */}
         <span
