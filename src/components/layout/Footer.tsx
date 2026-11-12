@@ -3,7 +3,7 @@ import { useTranslations } from "next-intl"
 import { Link } from "@/i18n/routing"
 import { Activity, ShieldCheck, HeartHandshake } from "lucide-react"
 
-export function Footer() {
+export function Footer({ locale }: { locale: string }) {
   const t = useTranslations("footer")
   const tNav = useTranslations("nav")
 
@@ -13,7 +13,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand & Mission */}
           <div className="space-y-4 md:col-span-1">
-            <Link href="/" className="flex items-center gap-2">
+            <Link href="/" locale={locale} className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white">
                 <Activity className="h-4 w-4" />
               </div>
@@ -37,22 +37,22 @@ export function Footer() {
             </h4>
             <ul className="space-y-2 text-xs">
               <li>
-                <Link href="/doctors" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                <Link href="/doctors" locale={locale} className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                   {tNav("findDoctor")}
                 </Link>
               </li>
               <li>
-                <Link href="/lab-tests" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                <Link href="/lab-tests" locale={locale} className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                   {tNav("labTests")}
                 </Link>
               </li>
               <li>
-                <Link href="/radiology" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                <Link href="/radiology" locale={locale} className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                   {tNav("radiologyTests")}
                 </Link>
               </li>
               <li>
-                <Link href="/articles" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                <Link href="/articles" locale={locale} className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                   {tNav("healthArticles")}
                 </Link>
               </li>
@@ -66,17 +66,17 @@ export function Footer() {
             </h4>
             <ul className="space-y-2 text-xs">
               <li>
-                <Link href="/about" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                <Link href="/about" locale={locale} className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                   {tNav("about")}
                 </Link>
               </li>
               <li>
-                <Link href="/register-doctor" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                <Link href="/register-doctor" locale={locale} className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                   {tNav("registerDoctor")}
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                <Link href="/contact" locale={locale} className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                   {tNav("contact")}
                 </Link>
               </li>

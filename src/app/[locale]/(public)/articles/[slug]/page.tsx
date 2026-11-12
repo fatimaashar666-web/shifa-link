@@ -17,7 +17,7 @@ export async function generateStaticParams() {
 
 export default async function ArticleDetailPage({ params }: ArticleDetailPageProps) {
   const { locale, slug } = await params;
-  const tCommon = await getTranslations("common");
+  const tCommon = await getTranslations({ locale, namespace: "common" });
 
   const article = await getArticleBySlug(slug);
   if (!article) {

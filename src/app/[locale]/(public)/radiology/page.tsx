@@ -6,9 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Scan, Clock, MapPin, AlertCircle } from "lucide-react";
 import { searchServices } from "@/server/services/diagnostic.service";
 
-export default async function RadiologyPage() {
-  const tNav = await getTranslations("nav");
-  const tCommon = await getTranslations("common");
+export default async function RadiologyPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const tNav = await getTranslations({ locale, namespace: "nav" });
+  const tCommon = await getTranslations({ locale, namespace: "common" });
 
   let radiologyServices: Awaited<ReturnType<typeof searchServices>> = [];
   let fetchError = false;

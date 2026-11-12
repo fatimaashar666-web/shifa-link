@@ -1,10 +1,15 @@
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Mail, Phone, MapPin } from "lucide-react";
 
-export default function ContactPage() {
-  const t = useTranslations("contact");
+export default async function ContactPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "contact" });
 
   return (
     <div className="container mx-auto max-w-7xl px-4 py-8 sm:px-6 space-y-8">

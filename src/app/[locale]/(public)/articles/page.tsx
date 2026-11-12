@@ -12,8 +12,8 @@ interface ArticlesPageProps {
 
 export default async function ArticlesPage({ params }: ArticlesPageProps) {
   const { locale } = await params;
-  const tNav = await getTranslations("nav");
-  const tCommon = await getTranslations("common");
+  const tNav = await getTranslations({ locale, namespace: "nav" });
+  const tCommon = await getTranslations({ locale, namespace: "common" });
 
   const articles = await getPublishedArticles();
 

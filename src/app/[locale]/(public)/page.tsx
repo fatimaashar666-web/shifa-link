@@ -1,4 +1,4 @@
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
@@ -16,9 +16,14 @@ import {
 } from "lucide-react";
 import ReviewCarousel from "@/components/ui/review-carousel";
 
-export default function HomePage() {
-  const t = useTranslations("home");
-  const tCommon = useTranslations("common");
+export default async function HomePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "home" });
+  const tCommon = await getTranslations({ locale, namespace: "common" });
 
   return (
     <div className="flex flex-col gap-16 pb-16">
@@ -46,13 +51,13 @@ export default function HomePage() {
           </p>
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <Button size="lg" asChild className="gap-2">
-              <Link href="/doctors">
+              <Link href="/doctors" locale={locale}>
                 {t("heroCta")}
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
             <Button size="lg" variant="outline" asChild>
-              <Link href="/lab-tests">
+              <Link href="/lab-tests" locale={locale}>
                 {t("secondaryCta")}
               </Link>
             </Button>
@@ -87,7 +92,7 @@ export default function HomePage() {
                   {t("feature1Desc")}
                 </p>
                 <Button variant="link" className="mt-auto h-auto justify-start p-0 pt-5" asChild>
-                  <Link href="/doctors" className="gap-1.5 text-xs font-semibold">
+                  <Link href="/doctors" locale={locale} className="gap-1.5 text-xs font-semibold">
                     {tCommon("viewAll")} <ArrowRight className="h-3.5 w-3.5" />
                   </Link>
                 </Button>
@@ -117,7 +122,7 @@ export default function HomePage() {
                   {t("feature2Desc")}
                 </p>
                 <Button variant="link" className="mt-auto h-auto justify-start p-0 pt-5 text-emerald-600 dark:text-emerald-400" asChild>
-                  <Link href="/lab-tests" className="gap-1.5 text-xs font-semibold">
+                  <Link href="/lab-tests" locale={locale} className="gap-1.5 text-xs font-semibold">
                     {tCommon("viewAll")} <ArrowRight className="h-3.5 w-3.5" />
                   </Link>
                 </Button>
@@ -147,7 +152,7 @@ export default function HomePage() {
                   {t("feature3Desc")}
                 </p>
                 <Button variant="link" className="mt-auto h-auto justify-start p-0 pt-5 text-purple-600 dark:text-purple-400" asChild>
-                  <Link href="/about" className="gap-1.5 text-xs font-semibold">
+                  <Link href="/about" locale={locale} className="gap-1.5 text-xs font-semibold">
                     {tCommon("learnMore")} <ArrowRight className="h-3.5 w-3.5" />
                   </Link>
                 </Button>
@@ -190,7 +195,7 @@ export default function HomePage() {
                   Consult with qualified specialists from the convenience of your home with encrypted video links.
                 </p>
                 <Button size="sm" variant="outline" asChild>
-                  <Link href="/doctors">Explore Telehealth</Link>
+                  <Link href="/doctors" locale={locale}>Explore Telehealth</Link>
                 </Button>
               </div>
             </div>
@@ -207,7 +212,7 @@ export default function HomePage() {
                   Book direct appointments with verified doctors at partner clinics with transparent time slots.
                 </p>
                 <Button size="sm" variant="outline" asChild>
-                  <Link href="/doctors">Book In-Person</Link>
+                  <Link href="/doctors" locale={locale}>Book In-Person</Link>
                 </Button>
               </div>
             </div>

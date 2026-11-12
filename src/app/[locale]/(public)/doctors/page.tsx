@@ -1,12 +1,13 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Search, CheckCircle2, MapPin, Video, Stethoscope, Globe2 } from "lucide-react";
 import * as doctorService from "@/server/services/doctor.service";
 
 interface DoctorsPageProps {
+  params: Promise<{ locale: string }>;
   searchParams: Promise<{
     q?: string;
     specialty?: string;
@@ -15,9 +16,10 @@ interface DoctorsPageProps {
   }>;
 }
 
-export default async function DoctorsPage({ searchParams }: DoctorsPageProps) {
-  const tNav = await getTranslations("nav");
-  const tCommon = await getTranslations("common");
+export default async function DoctorsPage({ params, searchParams }: DoctorsPageProps) {
+  const { locale } = await params;
+  const tNav = await getTranslations({ locale, namespace: "nav" });
+  const tCommon = await getTranslations({ locale, namespace: "common" });
 
   const resolvedParams = await searchParams;
   const q = resolvedParams.q;
@@ -139,7 +141,7 @@ export default async function DoctorsPage({ searchParams }: DoctorsPageProps) {
                     </div>
                   </div>
 
-                  <CardDescription className="text-xs space-y-1.5 pt-1">
+                  <div className="space-y-1.5 pt-1 text-xs">
                     {doc.qualifications.length > 0 && (
                       <p className="font-medium text-slate-700 dark:text-slate-300">
                         {doc.qualifications.map((q) => q.degree).join(", ")}
@@ -164,7 +166,7 @@ export default async function DoctorsPage({ searchParams }: DoctorsPageProps) {
                         <span>{doc.languages.map((l) => l.toUpperCase()).join(", ")}</span>
                       </div>
                     )}
-                  </CardDescription>
+                  </div>
                 </CardHeader>
 
                 <CardContent className="space-y-3 pt-0">

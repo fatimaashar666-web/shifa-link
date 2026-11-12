@@ -1,13 +1,27 @@
-import { existsSync } from "node:fs";
-import { loadEnvFile } from "node:process";
 import { defineConfig, env } from "prisma/config";
 
-if (existsSync(".env.local")) {
-  loadEnvFile(".env.local");
+const nodeProcess = (globalThis as typeof globalThis & {
+  process: {
+    loadEnvFile(path: string): void;
+    env: Record<string, string | undefined>;
+  };
+}).process;
+
+try {
+  nodeProcess.loadEnvFile(".env.local");
+} catch (error) {
+  if (
+    typeof error !== "object" ||
+    error === null ||
+    !("code" in error) ||
+    error.code !== "ENOENT"
+  ) {
+    throw error;
+  }
 }
 
 const directUrl = env("DIRECT_URL");
-const runtimeUrl = process.env.DATABASE_URL;
+const runtimeUrl = nodeProcess.env.DATABASE_URL;
 
 // Supabase direct database hosts may be IPv6-only. When the runtime URL uses
 // Supabase's IPv4 pooler, use its session mode for Prisma migrations too.

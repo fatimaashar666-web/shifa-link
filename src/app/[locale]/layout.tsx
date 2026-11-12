@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages, setRequestLocale } from "next-intl/server";
+import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing, isRtlLocale, type Locale } from "@/i18n/routing";
 import { ThemeProvider } from "@/components/layout/ThemeProvider";
@@ -25,7 +25,7 @@ export default async function LocaleLayout({
   }
 
   setRequestLocale(locale);
-  const messages = await getMessages();
+  const messages = (await import(`../../../messages/${locale}.json`)).default;
   const isRtl = isRtlLocale(locale);
 
   return (
@@ -38,7 +38,7 @@ export default async function LocaleLayout({
           storageKey="shifalink-theme"
           disableTransitionOnChange
         >
-          <NextIntlClientProvider messages={messages}>
+          <NextIntlClientProvider locale={locale} messages={messages}>
             {children}
             <SupportChatWidget />
           </NextIntlClientProvider>

@@ -1,106 +1,110 @@
-# ShifaLink
+# ShifaLink — Responsive Multilingual Healthcare SaaS
 
-A responsive, browser-based healthcare SaaS platform connecting patients, doctors, and diagnostic providers.
-
-**Tech stack:** Next.js App Router · TypeScript · PostgreSQL · Prisma · Sanity CMS · Tailwind CSS · shadcn/ui · next-intl · Redis · BullMQ
-
----
-
-## Project status
-
-| Milestone | Status |
-|---|---|
-| M0 — Foundation Documents | ✅ Complete |
-| M1 — Repository Shell & UI Foundation | ✅ Complete |
-| M2 — PostgreSQL, Prisma & Authentication | ⏳ Ready to start |
-| M3 — Sanity CMS & Public Content | ✅ Complete (Schemas & Contracts) |
-| M4 — Doctor Discovery & Appointments | ⏳ Awaiting M2 |
-| M5 — Diagnostic Services & ShifaLink Drive | ⏳ Awaiting M4 |
-| M6 — Multilingual Completion & Translation | ⏳ Awaiting M1 + M3 |
-| M7 — AI Support Chat | ⏳ Awaiting M2 + M3 + M4 |
-| M8 — Clinical AI Assistance | ⏳ Awaiting M5 + M7 |
-| M9 — Administration, QA & Security | ⏳ Awaiting M7 + M8 |
-| M10 — Deployment & Demonstration | ⏳ Awaiting M9 |
+> **Modern, Privacy-Conscious Digital Healthcare Platform**  
+> Connecting patients, verified medical practitioners, and certified diagnostic centers across unified clinical workflows with guardrailed AI assistance.
 
 ---
 
-## Architecture summary
+## 🌟 Milestone Status Overview
 
-- **Only backend:** Next.js App Router — no NestJS, no second server
-- **Operational data:** PostgreSQL via Prisma
-- **Editorial content:** Sanity CMS (public pages, FAQs, articles only)
-- **Medical files:** Private S3-compatible object storage (PostgreSQL stores metadata only)
-- **Background jobs:** Redis + BullMQ
-- **Localisation:** 6 languages (en, ur, de, ar, fr, ja); RTL for Urdu and Arabic
-
-Full architecture: [`docs/architecture/architecture.md`](docs/architecture/architecture.md)
+| Milestone | Scope | Status | Commit |
+|---|---|---|---|
+| **M0** | Architecture, ADRs, AGENTS.md, Specifications | ✅ Approved | `cf1cb91` |
+| **M1** | Next.js App Router UI Foundation, Tailwind, shadcn/ui, RTL, 6 Locales | ✅ Approved | `cf1cb91` |
+| **M2** | PostgreSQL Schema, Auth.js / JWT Session, RBAC Guards, Audit Writer | ✅ Approved | `8867222` |
+| **M3** | Sanity CMS Schemas (Public Editorial, FAQs, Legal, Health Articles) | ✅ Approved | `cf1cb91` |
+| **M4** | Doctor Discovery, Availability Slot Generation, Appointment Booking | ✅ Approved | `8e947a7` |
+| **M5** | Diagnostic Services, ShifaLink Drive (ADR-06 Object Storage), Records | ✅ Approved | `33e618f` |
+| **M6** | Multilingual Polish (en/ur/de/ar/fr/ja), Sanity Article Integration | ✅ Approved | `17e01cc` |
+| **M7** | AI Patient Support Agent, Safe Typed Tools, Clinical Pre-Triage | ✅ Approved | `1c8d5e4` |
+| **M8** | Clinical AI Assistance, Patient Record Summarizer, Doctor Review Gate | ✅ Approved | `df79428` |
+| **M9** | Admin Verification Queue, Security Audit Explorer, Invariant Tests | ✅ Approved | `1243d89` |
+| **M10**| Railway Deployment Guide, Dockerfile, Final Topology & Docs | ✅ Completed | `Current` |
 
 ---
 
-## Prerequisites
+## 🏛️ Core Architectural Invariants
 
+- **Sole Backend (ADR-01)**: Next.js App Router is the **only** backend. No NestJS or auxiliary backend servers.
+- **Data Segregation (ADR-02 / ADR-03)**:
+  - **PostgreSQL (Supabase)**: All operational, transactional, appointment, identity, and clinical metadata.
+  - **Sanity CMS**: Public editorial health articles, FAQs, and marketing content only. **Zero patient or clinical data in Sanity**.
+- **Medical File Storage (ADR-06)**: Medical files (PDF, DICOM, images) are **never stored as bytes in PostgreSQL**. Stored in private object storage (Cloudflare R2 / S3) with time-bounded presigned URLs.
+- **Guardrailed AI Agents (ADR-05)**: AI agents use narrow typed tools only. **Zero direct database access** from AI modules.
+- **Audit Trails (ADR-10)**: All sensitive identity, medical record, booking, and administrative actions write immutable audit logs to `audit_events`.
+
+---
+
+## 🚀 Quickstart & Local Setup
+
+### 1. Prerequisites
 - Node.js 20+
-- pnpm (or npm)
-- PostgreSQL 16+
-- Redis 7+
+- PostgreSQL database (e.g. Supabase or local Postgres)
+
+### 2. Installation
+```bash
+git clone https://github.com/Shifalink/shifalink.git
+cd shifalink
+npm install
+```
+
+### 3. Environment Configuration
+Copy `.env.example` to `.env.local`:
+```bash
+cp .env.example .env.local
+```
+Configure your `DATABASE_URL` (pooled connection) and `DIRECT_URL` (direct migration connection).
+
+### 4. Database Setup & Seed
+```bash
+# Push schema to database
+npx prisma db push
+
+# Populate synthetic reference data (roles, specialties, doctors, test accounts)
+npm run db:seed
+```
+
+### 5. Start Development Server
+```bash
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## Local setup (available after M1)
+## 🧪 Quality Gates & Verification
 
 ```bash
-# 1. Clone the repository
-git clone <repo-url>
-cd shifalink
+# TypeScript strict typecheck (0 errors)
+npm run typecheck
 
-# 2. Install dependencies
-pnpm install
+# ESLint inspection (0 errors, 0 warnings)
+npm run lint
 
-# 3. Configure environment
-cp .env.example .env.local
-# Edit .env.local with your local credentials
+# Security invariant regression test suite (§18 blueprint)
+npx ts-node -T scripts/run-security-tests.ts
 
-# 4. Run database migrations
-pnpm prisma migrate dev
-
-# 5. Seed synthetic data
-pnpm prisma db seed
-
-# 6. Start development server
-pnpm dev
+# Production build compilation
+npm run build
 ```
 
 ---
 
-## Key documentation
+## 👥 Demo Synthetic Accounts
 
-| Document | Purpose |
-|---|---|
-| [`AGENTS.md`](AGENTS.md) | Coding-agent ownership matrix and hard constraints |
-| [`docs/agent-specs/AGENTS.md`](docs/agent-specs/AGENTS.md) | Full agent specification |
-| [`docs/architecture/architecture.md`](docs/architecture/architecture.md) | System architecture |
-| [`docs/database/schema-notes.md`](docs/database/schema-notes.md) | Database entity design |
-| [`docs/decisions/`](docs/decisions/) | Architecture Decision Records (ADR-01 – ADR-10) |
-| [`.env.example`](.env.example) | Required environment variables |
+All accounts seeded with synthetic data. Passwords are `Password1!` (or `AdminPass1!` / `DoctorPass1!` / `LabPass1!`):
 
----
-
-## Important rules
-
-- Do **not** store patient records, booking data, or consent records in Sanity
-- Do **not** introduce NestJS or a second HTTP backend
-- Do **not** commit real patient data or secrets to Git
-- Do **not** auto-publish machine-translated clinical or legal content
-- Run `pnpm lint && pnpm typecheck && pnpm test` before every commit
+| Role | Email | Capabilities |
+|---|---|---|
+| **Super Admin** | `admin@example.test` | Full admin queue, license verifications, security audit log search |
+| **Doctor** | `doctor.gamma@example.test` | View appointments, clinical AI pre-consultation summary, patient-shared records |
+| **Doctor** | `doctor.delta@example.test` | General medicine consultations and clinical schedules |
+| **Patient Alpha** | `patient.alpha@example.test` | ShifaLink Drive records, book appointments, diagnostic test tracking |
+| **Patient Beta** | `patient.beta@example.test` | Telehealth consultation booking and lab test management |
+| **Lab Admin** | `lab.admin@example.test` | Diagnostic service management and lab sample updates |
 
 ---
 
-## Supported languages
+## 📄 License & Compliance
 
-English · اردو · Deutsch · العربية · Français · 日本語
-
----
-
-## Licence
-
-*(To be determined — do not assume open source until a licence is chosen and committed.)*
+Confidential & Proprietary. Built in accordance with healthcare privacy standards and clinical AI safety guardrails.

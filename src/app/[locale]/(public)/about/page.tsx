@@ -1,9 +1,14 @@
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Shield, Activity, Users, CheckCircle2 } from "lucide-react";
 
-export default function AboutPage() {
-  const t = useTranslations("about");
+export default async function AboutPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "about" });
 
   return (
     <div className="container mx-auto max-w-7xl px-4 py-8 sm:px-6 space-y-12">
