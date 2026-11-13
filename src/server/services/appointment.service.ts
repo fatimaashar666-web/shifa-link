@@ -13,7 +13,9 @@ import { writeAuditEvent } from '@/server/audit'
 
 export const CreateAppointmentSchema = z.object({
   doctorId: z.string().uuid('Invalid doctor ID'),
-  locationId: z.string().uuid('Invalid location ID'),
+  // Location IDs are application identifiers stored as strings. Some seeded
+  // locations use stable human-readable IDs rather than UUIDs.
+  locationId: z.string().trim().min(1, 'Invalid location ID'),
   scheduledAt: z.string().datetime('Must be a valid ISO datetime'),
   appointmentType: z.enum(['IN_PERSON', 'VIDEO']).default('IN_PERSON'),
   reason: z.string().max(500).optional(),

@@ -1,5 +1,6 @@
 
 import Image from "next/image";
+import { getTranslations } from "next-intl/server";
 import { ArrowRight } from "lucide-react";
 
 import { Link } from "@/i18n/routing";
@@ -7,33 +8,14 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
 const services = [
-  {
-    id: 1,
-    title: "Find Doctors Near You",
-    description: "Confirmed appointments",
-    image: "/doctor.jpg",
-    buttonText: "Find Doctors",
-    link: "/doctors",
-  },
-  {
-    id: 2,
-    title: "Lab Tests",
-    description: "Safe and trusted lab tests",
-    image: "/labtests.jpg",
-    buttonText: "Book a Test",
-    link: "/lab-tests",
-  },
-  {
-    id: 3,
-    title: "Shifa Link Drive",
-    description: "Connect within 60 seconds",
-    image: "/drive.png",
-    buttonText: "Learn More",
-    link: "/about",
-  }
-];
+  { id: "doctors", image: "/doctor.jpg", link: "/doctors" },
+  { id: "labs", image: "/labtests.jpg", link: "/lab-tests" },
+  { id: "drive", image: "/drive.png", link: "/about" },
+] as const;
 
-export default function ServiceCards({ locale }: { locale: string }) {
+export default async function ServiceCards({ locale }: { locale: string }) {
+  const t = await getTranslations({ locale, namespace: "home" });
+
   return (
     <div className="w-full">
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -45,7 +27,7 @@ export default function ServiceCards({ locale }: { locale: string }) {
             <div className="relative aspect-[16/10] overflow-hidden bg-slate-100 dark:bg-slate-800">
               <Image
                 src={service.image}
-                alt={service.title}
+                alt={t(`services.${service.id}.title`)}
                 fill
                 sizes="(max-width: 768px) 100vw, 33vw"
                 className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -54,10 +36,10 @@ export default function ServiceCards({ locale }: { locale: string }) {
 
             <div className="flex flex-1 flex-col p-6">
               <h3 className="text-lg font-semibold tracking-tight text-slate-950 dark:text-white">
-                {service.title}
+                {t(`services.${service.id}.title`)}
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
-                {service.description}
+                {t(`services.${service.id}.description`)}
               </p>
               <Button
                 size="sm"
@@ -65,7 +47,7 @@ export default function ServiceCards({ locale }: { locale: string }) {
                 asChild
               >
                 <Link href={service.link} locale={locale}>
-                  {service.buttonText}
+                  {t(`services.${service.id}.button`)}
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>

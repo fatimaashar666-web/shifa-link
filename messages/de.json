@@ -31,6 +31,19 @@
     "submit": "Absenden"
   },
   "home": {
+    "clinicalSafetyTitle": "Klinischer Sicherheitshinweis",
+    "clinicalSafetyBody": "ShifaLink ist eine Plattform zur Koordination geplanter Termine und medizinischer Unterlagen, keine Notfalleinrichtung. Wenn Sie oder eine Person bei Ihnen akute Notfallsymptome haben, rufen Sie bitte sofort den örtlichen Notdienst (z. B. 112, 911 oder 15).",
+    "services": {
+      "doctors": { "title": "Ärzte in Ihrer Nähe finden", "description": "Bestätigte Termine", "button": "Ärzte finden" },
+      "labs": { "title": "Labortests", "description": "Sichere und zuverlässige Labortests", "button": "Test buchen" },
+      "drive": { "title": "ShifaLink Drive", "description": "In 60 Sekunden verbinden", "button": "Mehr erfahren" }
+    },
+    "consultation": {
+      "sectionTitle": "Flexible Gesundheitsversorgung",
+      "sectionDescription": "Wählen Sie das Beratungsformat, das zu Ihren medizinischen Bedürfnissen und Ihrem Komfort passt.",
+      "video": { "title": "Sichere Videosprechstunden", "description": "Konsultieren Sie qualifizierte Fachärzte bequem von zu Hause über verschlüsselte Videolinks.", "imageAlt": "Patient in einer Videosprechstunde mit einem Arzt", "button": "Telemedizin entdecken" },
+      "clinic": { "title": "Persönliche Praxisbesuche", "description": "Buchen Sie direkte Termine bei verifizierten Ärzten in Partnerkliniken mit transparenten Zeitfenstern.", "imageAlt": "Arzt bei der Beratung eines Patienten in einer Klinik", "button": "Klinik finden" }
+    },
     "heroTitle": "Ihre Gesundheit, sicher vernetzt",
     "heroSubtitle": "Finden Sie verifizierte Fachärzte, vereinbaren Sie Praxisbesuche oder Videosprechstunden und buchen Sie Labortests mit vollem Vertrauen.",
     "heroCta": "Arzt finden",

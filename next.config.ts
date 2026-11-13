@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
-import createNextIntlPlugin from 'next-intl/plugin';
+import path from "node:path";
 
-const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
+// Keep next-intl's request configuration available without loading its
+// optional message-extraction plugin (which depends on a native @swc/core
+// binding that is unavailable in some Windows environments).
+const nextIntlRequestConfig = path.resolve(process.cwd(), "src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -14,6 +17,17 @@ const nextConfig: NextConfig = {
     ],
   },
   serverExternalPackages: ["sanity", "@sanity/vision", "next-sanity"],
+  turbopack: {
+    resolveAlias: {
+      "next-intl/config": "./src/i18n/request.ts",
+    },
+  },
+  webpack(config) {
+    config.resolve ??= {};
+    config.resolve.alias ??= {};
+    config.resolve.alias["next-intl/config"] = nextIntlRequestConfig;
+    return config;
+  },
 };
 
-export default withNextIntl(nextConfig);
+export default nextConfig;

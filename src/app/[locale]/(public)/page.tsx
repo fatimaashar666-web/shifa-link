@@ -66,7 +66,7 @@ export default async function HomePage({
         <div className="rounded-lg border border-amber-200 bg-amber-50/80 p-4 dark:border-amber-900/50 dark:bg-amber-950/30 flex items-start gap-3">
           <ShieldAlert className="h-5 w-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
           <div className="text-xs sm:text-sm text-amber-900 dark:text-amber-200">
-            <strong>Clinical Safety Notice:</strong> ShifaLink is a scheduled appointment and record coordination platform, not an emergency facility. If you or someone with you experiences acute emergency symptoms, please call your local emergency service (e.g. 112, 911, or 15) immediately.
+            <strong>{t("clinicalSafetyTitle")}:</strong> {t("clinicalSafetyBody")}
           </div>
         </div>
       </section>

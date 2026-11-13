@@ -31,6 +31,19 @@
     "submit": "送信"
   },
   "home": {
+    "clinicalSafetyTitle": "臨床安全に関する注意",
+    "clinicalSafetyBody": "ShifaLinkは、予定された診療予約と医療記録を調整するためのプラットフォームであり、救急医療施設ではありません。あなたや同伴者に急を要する症状がある場合は、直ちに地域の救急サービス（112、911、15など）へ連絡してください。",
+    "services": {
+      "doctors": { "title": "近くの医師を探す", "description": "確認済みの予約", "button": "医師を探す" },
+      "labs": { "title": "検査予約", "description": "安全で信頼できる検査", "button": "検査を予約する" },
+      "drive": { "title": "ShifaLink Drive", "description": "60秒以内に接続", "button": "詳しく見る" }
+    },
+    "consultation": {
+      "sectionTitle": "柔軟な医療サービス",
+      "sectionDescription": "診療上のニーズと快適さに合った相談方法を選択してください。",
+      "video": { "title": "安全なオンライン診療", "description": "暗号化されたビデオリンクで、自宅から資格を持つ専門医に相談できます。", "imageAlt": "医師とビデオ相談をする患者", "button": "オンライン診療を見る" },
+      "clinic": { "title": "対面でのクリニック受診", "description": "提携クリニックの認証済み医師を、透明な時間枠から直接予約できます。", "imageAlt": "クリニックで患者を診察する医師", "button": "クリニックを探す" }
+    },
     "heroTitle": "あなたの健康を、安心でつなぐ",
     "heroSubtitle": "認証済みの専門医を見つけ、対面診療やオンライン診療、臨床検査の予約を確実に行えます。",
     "heroCta": "医師を探す",

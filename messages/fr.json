@@ -31,6 +31,19 @@
     "submit": "Valider"
   },
   "home": {
+    "clinicalSafetyTitle": "Avis de sécurité clinique",
+    "clinicalSafetyBody": "ShifaLink est une plateforme de coordination des rendez-vous et des dossiers médicaux, et non un service d’urgence. Si vous ou une personne avec vous présentez des symptômes d’urgence aiguë, appelez immédiatement les services d’urgence locaux (par exemple le 112, le 911 ou le 15).",
+    "services": {
+      "doctors": { "title": "Trouver des médecins près de chez vous", "description": "Rendez-vous confirmés", "button": "Trouver un médecin" },
+      "labs": { "title": "Analyses de laboratoire", "description": "Des analyses sûres et fiables", "button": "Réserver une analyse" },
+      "drive": { "title": "ShifaLink Drive", "description": "Connectez-vous en 60 secondes", "button": "En savoir plus" }
+    },
+    "consultation": {
+      "sectionTitle": "Une offre de soins flexible",
+      "sectionDescription": "Choisissez le format de consultation adapté à vos besoins cliniques et à votre confort.",
+      "video": { "title": "Téléconsultations sécurisées", "description": "Consultez des spécialistes qualifiés depuis chez vous grâce à des liens vidéo chiffrés.", "imageAlt": "Patient en téléconsultation vidéo avec un médecin", "button": "Découvrir la téléconsultation" },
+      "clinic": { "title": "Visites en clinique", "description": "Prenez rendez-vous directement avec des médecins vérifiés dans des cliniques partenaires aux créneaux transparents.", "imageAlt": "Médecin consultant un patient dans une clinique", "button": "Trouver une clinique" }
+    },
     "heroTitle": "Votre santé, connectée en toute sécurité",
     "heroSubtitle": "Trouvez des médecins vérifiés, planifiez des consultations physiques ou vidéo, et réservez vos analyses de laboratoire en toute confiance.",
     "heroCta": "Trouver un médecin",

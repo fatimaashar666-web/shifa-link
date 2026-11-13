@@ -31,6 +31,19 @@
     "submit": "Submit"
   },
   "home": {
+    "clinicalSafetyTitle": "Clinical Safety Notice",
+    "clinicalSafetyBody": "ShifaLink is a scheduled appointment and record coordination platform, not an emergency facility. If you or someone with you experiences acute emergency symptoms, please call your local emergency service (e.g. 112, 911, or 15) immediately.",
+    "services": {
+      "doctors": { "title": "Find Doctors Near You", "description": "Confirmed appointments", "button": "Find Doctors" },
+      "labs": { "title": "Lab Tests", "description": "Safe and trusted lab tests", "button": "Book a Test" },
+      "drive": { "title": "ShifaLink Drive", "description": "Connect within 60 seconds", "button": "Learn More" }
+    },
+    "consultation": {
+      "sectionTitle": "Flexible Healthcare Delivery",
+      "sectionDescription": "Choose the consultation format that matches your clinical needs and comfort.",
+      "video": { "title": "Secure Video Consultations", "description": "Consult with qualified specialists from the convenience of your home with encrypted video links.", "imageAlt": "Patient having a video consultation with a doctor", "button": "Explore Telehealth" },
+      "clinic": { "title": "In-Person Clinic Visits", "description": "Book direct appointments with verified doctors at partner clinics with transparent time slots.", "imageAlt": "Doctor consulting with a patient at a clinic", "button": "Find a Clinic" }
+    },
     "heroTitle": "Your Health, Connected",
     "heroSubtitle": "Find verified doctors, schedule clinic visits or video calls, and book diagnostic tests with full confidence.",
     "heroCta": "Find a Doctor",
