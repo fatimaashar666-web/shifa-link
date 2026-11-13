@@ -42,6 +42,7 @@ export interface CreateDoctorProfileData {
   userId: string
   fullName: string
   licenseNumber: string
+  specialtySlug?: string
   /** Defaults to 0.00 — updated later in the doctor onboarding flow. */
   consultationFee?: number
 }
@@ -88,6 +89,8 @@ export async function createUser(data: CreateUserData) {
       email: data.email.toLowerCase().trim(),
       passwordHash: data.passwordHash,
       status: 'ACTIVE',
+      // Email verification is intentionally disabled for the current MVP flow.
+      emailVerifiedAt: new Date(),
     },
   })
 }
@@ -108,7 +111,7 @@ export async function createPatientProfile(data: CreatePatientProfileData) {
 
 /** Attach a DoctorProfile to an existing user. */
 export async function createDoctorProfile(data: CreateDoctorProfileData) {
-  return db.doctorProfile.create({
+  const doctor = await db.doctorProfile.create({
     data: {
       userId: data.userId,
       fullName: data.fullName,
@@ -117,6 +120,17 @@ export async function createDoctorProfile(data: CreateDoctorProfileData) {
       verificationStatus: 'PENDING',
     },
   })
+
+  if (data.specialtySlug) {
+    const specialty = await db.specialty.findUnique({ where: { slug: data.specialtySlug } })
+    if (specialty) {
+      await db.doctorSpecialty.create({
+        data: { doctorId: doctor.id, specialtyId: specialty.id, isPrimary: true },
+      })
+    }
+  }
+
+  return doctor
 }
 
 /** Mark a user's email address as verified. */

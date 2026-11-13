@@ -1,5 +1,6 @@
 import { Stethoscope } from "lucide-react";
 import { DoctorClinicalSummaryClient } from "@/features/doctor/DoctorClinicalSummaryClient";
+import ErrorBoundary from "@/components/common/error-boundary";
 
 interface ClinicalSummaryPageProps {
   searchParams: Promise<{ patientId?: string }>;
@@ -20,7 +21,9 @@ export default async function DoctorClinicalSummaryPage({ searchParams }: Clinic
         </p>
       </div>
 
-      <DoctorClinicalSummaryClient patientId={patientId ?? "patient-seed-alpha-0000-000000000001"} />
+      <ErrorBoundary>
+        <DoctorClinicalSummaryClient patientId={patientId ?? "patient-seed-alpha-0000-000000000001"} />
+      </ErrorBoundary>
     </div>
   );
 }

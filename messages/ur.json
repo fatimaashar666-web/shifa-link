@@ -108,6 +108,8 @@
     "doctorOnboarding": "ڈاکٹر کی رجسٹریشن"
   },
   "registration": {
+    "doctorPrompt": "Are you a doctor?",
+    "registerAsDoctor": "Register as a doctor",
     "dateOfBirth": "تاریخ پیدائش",
     "phoneNumber": "فون نمبر",
     "gender": "صنف",
@@ -292,6 +294,12 @@
     "fallbackTitle": "شفا لنک پالیسی"
   },
   "auth": {
+    "selectSpecialty": "Select specialty",
+    "accountTypeLabel": "Sign in as",
+    "patientAccount": "Patient account",
+    "doctorAccount": "Doctor account",
+    "doctorReviewNotice": "Your account is available immediately. Your medical license will remain pending review before your profile appears as verified.",
+    "creatingDoctorAccount": "Creating doctor account...",
     "loginTitle": "شفا لنک میں سائن ان کریں",
     "loginSubtitle": "اپنے طبی ریکارڈز اور اپوائنٹمنٹس تک رسائی حاصل کریں",
     "registerTitle": "مریض کا اکاؤنٹ بنائیں",

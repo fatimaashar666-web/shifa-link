@@ -108,6 +108,8 @@
     "doctorOnboarding": "تسجيل الأطباء"
   },
   "registration": {
+    "doctorPrompt": "Are you a doctor?",
+    "registerAsDoctor": "Register as a doctor",
     "dateOfBirth": "تاريخ الميلاد",
     "phoneNumber": "رقم الهاتف",
     "gender": "الجنس",
@@ -292,6 +294,12 @@
     "fallbackTitle": "سياسة شفا لينك"
   },
   "auth": {
+    "selectSpecialty": "Select specialty",
+    "accountTypeLabel": "Sign in as",
+    "patientAccount": "Patient account",
+    "doctorAccount": "Doctor account",
+    "doctorReviewNotice": "Your account is available immediately. Your medical license will remain pending review before your profile appears as verified.",
+    "creatingDoctorAccount": "Creating doctor account...",
     "loginTitle": "تسجيل الدخول إلى شفا لينك",
     "loginSubtitle": "الوصول إلى سجلاتك الطبية ومواعيدك",
     "registerTitle": "إنشاء حساب مريض",

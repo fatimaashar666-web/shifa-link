@@ -56,9 +56,22 @@ export const RegisterSchema = z.object({
   locale: z.string().optional().default('en'),
 })
 
+export const DoctorRegisterSchema = z.object({
+  name: z.string().min(2, 'Name must be at least 2 characters').max(100),
+  licenseNumber: z.string().trim().min(3, 'Medical license number is required').max(100),
+  specialty: z.string().trim().min(1, 'Specialty is required').max(100),
+  email: z.string().email('Invalid email address'),
+  password: z
+    .string()
+    .min(8, 'Password must be at least 8 characters')
+    .max(128, 'Password must be at most 128 characters'),
+  locale: z.string().optional().default('en'),
+})
+
 export const LoginSchema = z.object({
   email: z.string().email('Invalid email address'),
   password: z.string().min(1, 'Password is required'),
+  accountType: z.enum(['patient', 'doctor']).default('patient'),
 })
 
 export const ForgotPasswordSchema = z.object({
@@ -75,6 +88,7 @@ export const ResetPasswordSchema = z.object({
 })
 
 export type RegisterInput = z.infer<typeof RegisterSchema>
+export type DoctorRegisterInput = z.infer<typeof DoctorRegisterSchema>
 export type LoginInput = z.infer<typeof LoginSchema>
 export type ForgotPasswordInput = z.infer<typeof ForgotPasswordSchema>
 export type ResetPasswordInput = z.infer<typeof ResetPasswordSchema>
@@ -85,7 +99,7 @@ export type ResetPasswordInput = z.infer<typeof ResetPasswordSchema>
 
 export class AuthError extends Error {
   constructor(
-    public readonly code: 'EMAIL_TAKEN' | 'INVALID_CREDENTIALS' | 'ACCOUNT_DISABLED' | 'EMAIL_NOT_VERIFIED',
+    public readonly code: 'EMAIL_TAKEN' | 'INVALID_CREDENTIALS' | 'ACCOUNT_DISABLED' | 'EMAIL_NOT_VERIFIED' | 'ROLE_NOT_ALLOWED',
     message: string,
   ) {
     super(message)
@@ -107,12 +121,12 @@ const BCRYPT_ROUNDS = 12
  * 2. Hash password.
  * 3. Create user, patient profile, role assignment, and preferences.
  * 4. Write audit event.
- * 5. Create a one-time email verification token.
+ * 5. Activate the account immediately; email verification is currently disabled.
  */
 export async function registerPatient(
   input: RegisterInput,
   ipAddress?: string,
-): Promise<{ userId: string; email: string; verificationToken: string }> {
+): Promise<{ userId: string; email: string }> {
   // Uniqueness check
   const existing = await userRepo.findByEmail(input.email)
   if (existing) throw new AuthError('EMAIL_TAKEN', 'An account with this email already exists.')
@@ -137,10 +151,6 @@ export async function registerPatient(
   await userRepo.assignRole(user.id, 'patient')
   await userRepo.upsertPreferences(user.id, input.locale, 'system')
 
-  const verificationToken = randomBytes(32).toString('hex')
-  const tokenHash = createHash('sha256').update(verificationToken).digest('hex')
-  await emailVerificationRepo.replaceForUser(user.id, tokenHash, new Date(Date.now() + 24 * 60 * 60 * 1000))
-
   // Audit
   writeAuditEvent({
     actorType: 'USER',
@@ -151,7 +161,42 @@ export async function registerPatient(
     ipAddress,
   })
 
-  return { userId: user.id, email: user.email, verificationToken }
+  return { userId: user.id, email: user.email }
+}
+
+/** Register a doctor with a pending credential review and an immediately usable account. */
+export async function registerDoctor(
+  input: DoctorRegisterInput,
+  ipAddress?: string,
+): Promise<{ userId: string; email: string }> {
+  const existing = await userRepo.findByEmail(input.email)
+  if (existing) throw new AuthError('EMAIL_TAKEN', 'An account with this email already exists.')
+
+  const passwordHash = await bcrypt.hash(input.password, BCRYPT_ROUNDS)
+  const user = await userRepo.createUser({
+    displayName: input.name,
+    email: input.email,
+    passwordHash,
+  })
+  await userRepo.createDoctorProfile({
+    userId: user.id,
+    fullName: input.name,
+    licenseNumber: input.licenseNumber,
+    specialtySlug: input.specialty,
+  })
+  await userRepo.assignRole(user.id, 'doctor')
+  await userRepo.upsertPreferences(user.id, input.locale, 'system')
+
+  writeAuditEvent({
+    actorType: 'USER',
+    actorId: user.id,
+    action: 'auth.doctor_register',
+    entityType: 'User',
+    entityId: user.id,
+    ipAddress,
+  })
+
+  return { userId: user.id, email: user.email }
 }
 
 /** Create or replace the signed-in user's email verification request. */
@@ -217,6 +262,10 @@ export async function login(
   }
 
   const roles = user.userRoles.map((ur) => ur.role.name)
+
+  if (!roles.includes(input.accountType)) {
+    throw new AuthError('ROLE_NOT_ALLOWED', `This account is not registered as a ${input.accountType}.`)
+  }
 
   writeAuditEvent({
     actorType: 'USER',

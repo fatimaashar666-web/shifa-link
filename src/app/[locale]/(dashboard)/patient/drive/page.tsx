@@ -3,6 +3,7 @@ import { HardDrive } from "lucide-react";
 import { ShifaDriveClient } from "@/features/drive/ShifaDriveClient";
 import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
+import ErrorBoundary from "@/components/common/error-boundary";
 
 export default async function PatientDrivePage({
   params,
@@ -30,7 +31,9 @@ export default async function PatientDrivePage({
         </Button>
       </div>
 
-      <ShifaDriveClient />
+      <ErrorBoundary>
+        <ShifaDriveClient />
+      </ErrorBoundary>
     </div>
   );
 }

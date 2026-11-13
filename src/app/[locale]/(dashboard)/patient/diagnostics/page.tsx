@@ -2,6 +2,7 @@ import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import { FlaskConical, Plus } from "lucide-react";
 import { PatientDiagnosticsClient } from "@/features/diagnostics/PatientDiagnosticsClient";
+import ErrorBoundary from "@/components/common/error-boundary";
 
 export default function PatientDiagnosticsPage() {
   return (
@@ -25,7 +26,9 @@ export default function PatientDiagnosticsPage() {
         </Button>
       </div>
 
-      <PatientDiagnosticsClient />
+      <ErrorBoundary>
+        <PatientDiagnosticsClient />
+      </ErrorBoundary>
     </div>
   );
 }

@@ -108,6 +108,8 @@
     "doctorOnboarding": "医師登録"
   },
   "registration": {
+    "doctorPrompt": "Are you a doctor?",
+    "registerAsDoctor": "Register as a doctor",
     "dateOfBirth": "生年月日",
     "phoneNumber": "電話番号",
     "gender": "性別",
@@ -292,6 +294,12 @@
     "fallbackTitle": "ShifaLinkポリシー"
   },
   "auth": {
+    "selectSpecialty": "Select specialty",
+    "accountTypeLabel": "Sign in as",
+    "patientAccount": "Patient account",
+    "doctorAccount": "Doctor account",
+    "doctorReviewNotice": "Your account is available immediately. Your medical license will remain pending review before your profile appears as verified.",
+    "creatingDoctorAccount": "Creating doctor account...",
     "loginTitle": "ShifaLinkへログイン",
     "loginSubtitle": "カルテ記録や診療予約にアクセスする",
     "registerTitle": "患者アカウント新規作成",

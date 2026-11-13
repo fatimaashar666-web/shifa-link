@@ -108,6 +108,8 @@
     "doctorOnboarding": "Inscription des médecins"
   },
   "registration": {
+    "doctorPrompt": "Are you a doctor?",
+    "registerAsDoctor": "Register as a doctor",
     "dateOfBirth": "Date de naissance",
     "phoneNumber": "Numéro de téléphone",
     "gender": "Genre",
@@ -292,6 +294,12 @@
     "fallbackTitle": "Politique ShifaLink"
   },
   "auth": {
+    "selectSpecialty": "Select specialty",
+    "accountTypeLabel": "Sign in as",
+    "patientAccount": "Patient account",
+    "doctorAccount": "Doctor account",
+    "doctorReviewNotice": "Your account is available immediately. Your medical license will remain pending review before your profile appears as verified.",
+    "creatingDoctorAccount": "Creating doctor account...",
     "loginTitle": "Connexion à ShifaLink",
     "loginSubtitle": "Accédez à vos dossiers de santé et rendez-vous",
     "registerTitle": "Créer un compte patient",

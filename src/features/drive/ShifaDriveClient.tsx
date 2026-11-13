@@ -108,7 +108,7 @@ export function ShifaDriveClient() {
           setError(err instanceof Error ? err.message : t("couldNotLoad"));
         setLoading(false);
       });
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     loadRecords();

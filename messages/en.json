@@ -123,7 +123,9 @@
     "creatingAccount": "Creating account...",
     "verificationSentTitle": "Check your inbox",
     "verificationSentMessage": "We sent a verification link to {email}. Open it to activate your patient account.",
-    "goToLogin": "Go to login"
+    "goToLogin": "Go to login",
+    "doctorPrompt": "Are you a doctor?",
+    "registerAsDoctor": "Register as a doctor"
   },
   "emailVerification": {
     "successTitle": "Email verified",
@@ -303,6 +305,12 @@
     "nameLabel": "Full Name",
     "licenseLabel": "Medical License Number",
     "specialtyLabel": "Primary Specialty",
+    "selectSpecialty": "Select specialty",
+    "accountTypeLabel": "Sign in as",
+    "patientAccount": "Patient account",
+    "doctorAccount": "Doctor account",
+    "doctorReviewNotice": "Your account is available immediately. Your medical license will remain pending review before your profile appears as verified.",
+    "creatingDoctorAccount": "Creating doctor account...",
     "submitLogin": "Sign In",
     "submitRegister": "Create Account",
     "submitDoctorRegister": "Submit Verification Request",

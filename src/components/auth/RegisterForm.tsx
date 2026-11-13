@@ -3,9 +3,10 @@
 import { FormEvent, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
+import { Link } from "@/i18n/routing";
 import { CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CalendarDays, CheckCircle2, Droplets, Lock, Mail, Phone, ShieldCheck, User } from "lucide-react";
+import { CalendarDays, Droplets, Lock, Mail, Phone, ShieldCheck, User } from "lucide-react";
 
 type ApiErrorResponse = {
   message?: string;
@@ -27,7 +28,6 @@ export function RegisterForm() {
   const [phone, setPhone] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [verificationSent, setVerificationSent] = useState(false);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -60,29 +60,13 @@ export function RegisterForm() {
         return;
       }
 
-      setVerificationSent(true);
+      router.push("/patient");
+      router.refresh();
     } catch {
       setError("Unable to connect to ShifaLink. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
-  }
-
-  if (verificationSent) {
-    return (
-      <CardContent className="flex flex-col items-center gap-4 pt-8 text-center">
-        <CheckCircle2 className="h-12 w-12 text-emerald-600" aria-hidden="true" />
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
-          {tRegistration("verificationSentTitle")}
-        </h2>
-        <p className="text-sm text-slate-600 dark:text-slate-300">
-          {tRegistration("verificationSentMessage", { email })}
-        </p>
-        <Button type="button" className="w-full" onClick={() => router.push("/login")}>
-          {tRegistration("goToLogin")}
-        </Button>
-      </CardContent>
-    );
   }
 
   return (
@@ -254,6 +238,13 @@ export function RegisterForm() {
         <Button type="submit" className="mt-2 w-full" size="lg" disabled={isSubmitting}>
           {isSubmitting ? tRegistration("creatingAccount") : t("submitRegister")}
         </Button>
+
+        <p className="text-center text-xs text-slate-500 dark:text-slate-400">
+          {tRegistration("doctorPrompt")} {" "}
+          <Link href="/register-doctor" className="font-semibold text-blue-600 hover:underline dark:text-blue-400">
+            {tRegistration("registerAsDoctor")}
+          </Link>
+        </p>
       </form>
     </CardContent>
   );

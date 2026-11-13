@@ -17,6 +17,7 @@ export function LoginForm() {
   const router = useRouter()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [accountType, setAccountType] = useState<"patient" | "doctor">("patient")
   const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -29,7 +30,7 @@ export function LoginForm() {
       const response = await fetch("/api/v1/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, accountType }),
       })
       const data = (await response.json().catch(() => ({}))) as LoginResponse
 
@@ -41,7 +42,7 @@ export function LoginForm() {
         return
       }
 
-      router.push("/patient")
+      router.push(accountType === "doctor" ? "/doctor/summary" : "/patient")
       router.refresh()
     } catch {
       setError(t("networkError"))
@@ -70,6 +71,22 @@ export function LoginForm() {
             className="w-full rounded-md border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
           />
         </div>
+      </div>
+
+      <div className="space-y-1.5">
+        <label htmlFor="login-account-type" className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+          {t("accountTypeLabel")}
+        </label>
+        <select
+          id="login-account-type"
+          name="accountType"
+          value={accountType}
+          onChange={(event) => setAccountType(event.target.value as "patient" | "doctor")}
+          className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+        >
+          <option value="patient">{t("patientAccount")}</option>
+          <option value="doctor">{t("doctorAccount")}</option>
+        </select>
       </div>
 
       <div className="space-y-1.5">

@@ -2,6 +2,7 @@ import { PatientAppointmentsClient } from "@/features/appointments/PatientAppoin
 import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import { Calendar, Plus } from "lucide-react";
+import ErrorBoundary from "@/components/common/error-boundary";
 
 export default function PatientAppointmentsPage() {
   return (
@@ -25,7 +26,9 @@ export default function PatientAppointmentsPage() {
         </Button>
       </div>
 
-      <PatientAppointmentsClient />
+      <ErrorBoundary>
+        <PatientAppointmentsClient />
+      </ErrorBoundary>
     </div>
   );
 }

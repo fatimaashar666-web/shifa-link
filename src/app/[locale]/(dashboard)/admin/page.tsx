@@ -1,6 +1,7 @@
 import { ShieldCheck } from "lucide-react";
 import { AdminVerificationClient } from "@/features/admin/AdminVerificationClient";
 import { AdminAuditLogsClient } from "@/features/admin/AdminAuditLogsClient";
+import ErrorBoundary from "@/components/common/error-boundary";
 
 export default function AdminDashboardPage() {
   return (
@@ -16,14 +17,18 @@ export default function AdminDashboardPage() {
       </div>
 
       <div className="space-y-6">
-        <AdminVerificationClient />
+        <ErrorBoundary>
+          <AdminVerificationClient />
+        </ErrorBoundary>
       </div>
 
       <div className="pt-8 border-t border-slate-200 dark:border-slate-800 space-y-4">
         <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
           Security Audit Trail Explorer
         </h2>
-        <AdminAuditLogsClient />
+        <ErrorBoundary>
+          <AdminAuditLogsClient />
+        </ErrorBoundary>
       </div>
     </div>
   );
