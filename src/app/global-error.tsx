@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   AlertTriangle,
   RefreshCw,
@@ -18,6 +19,7 @@ export default function GlobalError({
   error,
   reset,
 }: GlobalErrorProps) {
+  const router = useRouter();
 
   useEffect(() => {
     // Log critical application errors
@@ -82,7 +84,7 @@ export default function GlobalError({
               </button>
 
               <button
-                onClick={() => window.location.assign("/")}
+                onClick={() => router.push("/")}
                 className="flex items-center justify-center gap-2 rounded-lg border border-blue-200 px-6 py-3 text-sm font-semibold text-blue-700 transition hover:bg-blue-50"
               >
                 <Home size={17} />
