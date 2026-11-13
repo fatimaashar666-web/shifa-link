@@ -154,6 +154,34 @@ export async function registerPatient(
   return { userId: user.id, email: user.email, verificationToken }
 }
 
+/** Create or replace the signed-in user's email verification request. */
+export async function createEmailVerificationRequest(userId: string) {
+  const user = await userRepo.findById(userId)
+  if (!user || user.emailVerifiedAt) return null
+
+  const verificationToken = randomBytes(32).toString('hex')
+  const tokenHash = createHash('sha256').update(verificationToken).digest('hex')
+  await emailVerificationRepo.replaceForUser(
+    user.id,
+    tokenHash,
+    new Date(Date.now() + 24 * 60 * 60 * 1000),
+  )
+
+  writeAuditEvent({
+    actorType: 'USER',
+    actorId: user.id,
+    action: 'auth.email_verification_requested',
+    entityType: 'User',
+    entityId: user.id,
+  })
+
+  return {
+    email: user.email,
+    name: user.patientProfile?.fullName ?? user.doctorProfile?.fullName ?? user.email.split('@')[0],
+    verificationToken,
+  }
+}
+
 /**
  * Authenticate a user with email + password.
  *
@@ -186,10 +214,6 @@ export async function login(
 
   if (user.status !== 'ACTIVE') {
     throw new AuthError('ACCOUNT_DISABLED', 'Your account has been disabled. Please contact support.')
-  }
-
-  if (!user.emailVerifiedAt) {
-    throw new AuthError('EMAIL_NOT_VERIFIED', 'Please verify your email address before signing in.')
   }
 
   const roles = user.userRoles.map((ur) => ur.role.name)

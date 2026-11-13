@@ -98,6 +98,11 @@ export function Footer({ locale }: { locale: string }) {
                 </Link>
               </li>
               <li>
+                <Link href="/drive" locale={locale} className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                  {tNav("drive")}
+                </Link>
+              </li>
+              <li>
                 <Link href="/articles" locale={locale} className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                   {tNav("healthArticles")}
                 </Link>

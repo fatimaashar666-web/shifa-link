@@ -3,6 +3,10 @@ import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar, FileText, FlaskConical, Search, ArrowRight } from "lucide-react";
+import { cookies } from "next/headers";
+import { verifySession } from "@/server/auth/session";
+import { getMe } from "@/server/services/auth.service";
+import { EmailVerificationBanner } from "@/components/auth/EmailVerificationBanner";
 
 export default async function PatientDashboardPage({
   params,
@@ -11,6 +15,9 @@ export default async function PatientDashboardPage({
 }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "patientDashboard" });
+  const sessionToken = (await cookies()).get("shifalink-session")?.value;
+  const session = sessionToken ? await verifySession(sessionToken) : null;
+  const profile = session ? await getMe(session.userId) : null;
 
   const cards = [
     {
@@ -54,6 +61,10 @@ export default async function PatientDashboardPage({
           </Link>
         </Button>
       </div>
+
+      {profile && !profile.isEmailVerified && (
+        <EmailVerificationBanner email={profile.email} />
+      )}
 
       <div className="grid gap-6 md:grid-cols-3">
         {cards.map(({ href, title, description, icon: Icon }) => (

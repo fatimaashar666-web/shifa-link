@@ -4,10 +4,12 @@
     "findDoctor": "医師を探す",
     "videoConsultation": "オンライン診療",
     "labTests": "血液・検査",
+    "tests": "検査",
     "radiologyTests": "放射線・画像検査",
     "drive": "ShifaLink Drive",
     "healthArticles": "医療コラム",
     "about": "ShifaLinkについて",
+    "aboutAndContact": "概要・お問い合わせ",
     "contact": "お問い合わせ",
     "login": "ログイン",
     "register": "患者アカウント登録",
@@ -65,7 +67,13 @@
     "diagnosticsTitle": "検査予約",
     "diagnosticsDescription": "検査室・放射線検査の予約とレポートの更新を確認できます。",
     "open": "開く",
-    "dashboardLink": "患者ダッシュボード"
+    "dashboardLink": "患者ダッシュボード",
+    "verifyEmailTitle": "メールアドレスを確認してください",
+    "verifyEmailMessage": "アカウントは有効ですが、メールアドレス（{email}）がまだ確認されていません。",
+    "verifyEmailButton": "確認メールを送信",
+    "verificationEmailSentTitle": "確認メールを送信しました",
+    "verificationEmailSentMessage": "{email} の受信トレイで確認リンクを確認してください。",
+    "verificationEmailError": "確認メールを送信できませんでした。後でもう一度お試しください。"
   },
   "diagnostics": {
     "labImageAlt": "検査用検体を扱う検査室スタッフ",

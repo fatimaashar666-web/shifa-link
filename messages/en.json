@@ -4,10 +4,12 @@
     "findDoctor": "Find a Doctor",
     "videoConsultation": "Video Consultation",
     "labTests": "Lab Tests",
+    "tests": "Tests",
     "radiologyTests": "Radiology Tests",
     "drive": "ShifaLink Drive",
     "healthArticles": "Health Articles",
     "about": "About ShifaLink",
+    "aboutAndContact": "About & Contact",
     "contact": "Contact",
     "login": "Login",
     "register": "Register as Patient",
@@ -65,7 +67,13 @@
     "diagnosticsTitle": "Diagnostic Bookings",
     "diagnosticsDescription": "Track laboratory and radiology bookings and follow report updates.",
     "open": "Open",
-    "dashboardLink": "Patient Dashboard"
+    "dashboardLink": "Patient Dashboard",
+    "verifyEmailTitle": "Verify your email address",
+    "verifyEmailMessage": "Your account is active, but your email address ({email}) is not verified yet.",
+    "verifyEmailButton": "Send verification email",
+    "verificationEmailSentTitle": "Verification email sent",
+    "verificationEmailSentMessage": "Check {email} for the verification link.",
+    "verificationEmailError": "We could not send the verification email. Please try again later."
   },
   "diagnostics": {
     "labImageAlt": "Laboratory professionals working with diagnostic samples",

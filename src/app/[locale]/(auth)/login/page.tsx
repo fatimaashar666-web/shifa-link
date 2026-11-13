@@ -3,6 +3,7 @@ import { Link } from "@/i18n/routing";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Activity, Lock, Mail } from "lucide-react";
+import { LoginForm } from "@/components/auth/LoginForm";
 
 export default async function LoginPage({
   params,
@@ -36,7 +37,7 @@ export default async function LoginPage({
 
         {/* Card Form */}
         <Card className="shadow-lg border-slate-200 dark:border-slate-800">
-          <CardContent className="pt-6 space-y-4">
+          <CardContent className="hidden">
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                 {t("emailLabel")}
@@ -73,6 +74,9 @@ export default async function LoginPage({
             <Button className="w-full mt-2" size="lg">
               {t("submitLogin")}
             </Button>
+          </CardContent>
+          <CardContent className="pt-6">
+            <LoginForm />
           </CardContent>
 
           <CardFooter className="flex flex-col space-y-2 text-center text-xs text-slate-500 border-t border-slate-100 dark:border-slate-800 pt-4">

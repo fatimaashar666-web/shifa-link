@@ -4,10 +4,12 @@
     "findDoctor": "ڈاکٹر تلاش کریں",
     "videoConsultation": "ویڈیو مشاورت",
     "labTests": "لیب ٹیسٹ",
+    "tests": "ٹیسٹ",
     "radiologyTests": "ریڈیالوجی ٹیسٹ",
     "drive": "ShifaLink Drive",
     "healthArticles": "صحت کے مضامین",
     "about": "شفا لنک کا تعارف",
+    "aboutAndContact": "تعارف اور رابطہ",
     "contact": "رابطہ کریں",
     "login": "لاگ ان",
     "register": "بطور مریض رجسٹر ہوں",
@@ -65,7 +67,13 @@
     "diagnosticsTitle": "تشخیصی بکنگ",
     "diagnosticsDescription": "لیبارٹری اور ریڈیولوجی بکنگ کا جائزہ لیں اور رپورٹس کی پیش رفت دیکھیں۔",
     "open": "کھولیں",
-    "dashboardLink": "مریض کا ڈیش بورڈ"
+    "dashboardLink": "مریض کا ڈیش بورڈ",
+    "verifyEmailTitle": "اپنے ای میل ایڈریس کی تصدیق کریں",
+    "verifyEmailMessage": "آپ کا اکاؤنٹ فعال ہے، لیکن آپ کے ای میل ایڈریس ({email}) کی ابھی تصدیق نہیں ہوئی۔",
+    "verifyEmailButton": "تصدیقی ای میل بھیجیں",
+    "verificationEmailSentTitle": "تصدیقی ای میل بھیج دی گئی",
+    "verificationEmailSentMessage": "تصدیقی لنک کے لیے {email} چیک کریں۔",
+    "verificationEmailError": "تصدیقی ای میل نہیں بھیجی جا سکی۔ بعد میں دوبارہ کوشش کریں۔"
   },
   "diagnostics": {
     "labImageAlt": "تشخیصی نمونوں کے ساتھ کام کرتے ہوئے لیبارٹری ماہرین",

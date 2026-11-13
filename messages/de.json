@@ -4,10 +4,12 @@
     "findDoctor": "Arzt finden",
     "videoConsultation": "Videosprechstunde",
     "labTests": "Labortests",
+    "tests": "Tests",
     "radiologyTests": "Radiologie",
     "drive": "ShifaLink Drive",
     "healthArticles": "Gesundheitsartikel",
     "about": "Über ShifaLink",
+    "aboutAndContact": "Über & Kontakt",
     "contact": "Kontakt",
     "login": "Anmelden",
     "register": "Als Patient registrieren",
@@ -65,7 +67,13 @@
     "diagnosticsTitle": "Diagnostische Buchungen",
     "diagnosticsDescription": "Verfolgen Sie Labor- und Radiologiebuchungen sowie den Status Ihrer Befunde.",
     "open": "Öffnen",
-    "dashboardLink": "Patienten-Dashboard"
+    "dashboardLink": "Patienten-Dashboard",
+    "verifyEmailTitle": "E-Mail-Adresse bestätigen",
+    "verifyEmailMessage": "Ihr Konto ist aktiv, aber Ihre E-Mail-Adresse ({email}) wurde noch nicht bestätigt.",
+    "verifyEmailButton": "Bestätigungs-E-Mail senden",
+    "verificationEmailSentTitle": "Bestätigungs-E-Mail gesendet",
+    "verificationEmailSentMessage": "Prüfen Sie {email} auf den Bestätigungslink.",
+    "verificationEmailError": "Die Bestätigungs-E-Mail konnte nicht gesendet werden. Bitte versuchen Sie es später erneut."
   },
   "diagnostics": {
     "labImageAlt": "Laborpersonal bei der Arbeit mit diagnostischen Proben",

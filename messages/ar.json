@@ -4,10 +4,12 @@
     "findDoctor": "البحث عن طبيب",
     "videoConsultation": "استشارة مرئية",
     "labTests": "الفحوصات المخبرية",
+    "tests": "الفحوصات",
     "radiologyTests": "فحوصات الأشعة",
     "drive": "ShifaLink Drive",
     "healthArticles": "المقالات الصحية",
     "about": "عن شفا لينك",
+    "aboutAndContact": "عن شفا لينك واتصل بنا",
     "contact": "اتصل بنا",
     "login": "تسجيل الدخول",
     "register": "التسجيل كمريض",
@@ -65,7 +67,13 @@
     "diagnosticsTitle": "الحجوزات التشخيصية",
     "diagnosticsDescription": "تابع حجوزات المختبر والأشعة وتحديثات التقارير.",
     "open": "فتح",
-    "dashboardLink": "لوحة المريض"
+    "dashboardLink": "لوحة المريض",
+    "verifyEmailTitle": "تحقق من عنوان بريدك الإلكتروني",
+    "verifyEmailMessage": "حسابك نشط، لكن عنوان بريدك الإلكتروني ({email}) لم يتم التحقق منه بعد.",
+    "verifyEmailButton": "إرسال رسالة التحقق",
+    "verificationEmailSentTitle": "تم إرسال رسالة التحقق",
+    "verificationEmailSentMessage": "تحقق من {email} للعثور على رابط التحقق.",
+    "verificationEmailError": "تعذر إرسال رسالة التحقق. يرجى المحاولة لاحقًا."
   },
   "diagnostics": {
     "labImageAlt": "متخصصو المختبر يعملون على عينات تشخيصية",

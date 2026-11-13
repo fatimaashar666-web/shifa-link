@@ -3,28 +3,111 @@
 import * as React from "react"
 import { useTranslations } from "next-intl"
 import { Link, usePathname } from "@/i18n/routing"
-import { Activity, Menu, X } from "lucide-react"
+import { Activity, ChevronDown, Menu, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "./ThemeToggle"
 import { LangSelector } from "./LangSelector"
 import { cn } from "@/lib/utils"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+
+type MenuLink = { href: string; label: string }
+type NavigationItem =
+  | { key: string; href: string; label: string }
+  | { key: string; label: string; items: MenuLink[] }
 
 export function Header() {
   const t = useTranslations("nav")
+  const tFooter = useTranslations("footer")
   const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
 
-  const navItems = [
-    { href: "/", label: t("home") },
-    { href: "/doctors", label: t("findDoctor") },
-    { href: "/lab-tests", label: t("labTests") },
-    { href: "/radiology", label: t("radiologyTests") },
-    { href: "/drive", label: t("drive") },
-    { href: "/articles", label: t("healthArticles") },
-    { href: "/about", label: t("about") },
-    { href: "/contact", label: t("contact") },
+  const navItems: NavigationItem[] = [
+    { key: "home", href: "/", label: t("home") },
+    { key: "doctors", href: "/doctors", label: t("findDoctor") },
+    {
+      key: "tests",
+      label: t("tests"),
+      items: [
+        { href: "/lab-tests", label: t("labTests") },
+        { href: "/radiology", label: t("radiologyTests") },
+      ],
+    },
+    { key: "drive", href: "/drive", label: t("drive") },
+    { key: "articles", href: "/articles", label: t("healthArticles") },
+    {
+      key: "company-info",
+      label: t("aboutAndContact"),
+      items: [
+        { href: "/about", label: t("about") },
+        { href: "/contact", label: t("contact") },
+        { href: "/privacy-policy", label: tFooter("privacy") },
+        { href: "/terms-of-service", label: tFooter("terms") },
+        { href: "/patient-consent-info", label: tFooter("consent") },
+      ],
+    },
   ]
+
+  function isActive(item: NavigationItem) {
+    return "items" in item
+      ? item.items.some((child) => pathname === child.href)
+      : pathname === item.href
+  }
+
+  function renderNavigationItem(item: NavigationItem, mobile = false) {
+    const active = isActive(item)
+    const className = mobile
+      ? cn(
+          "w-full justify-between rounded-md px-3 py-2 text-sm font-medium",
+          active
+            ? "bg-blue-50 text-blue-600 dark:bg-blue-950/50 dark:text-blue-400"
+            : "text-slate-700 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800",
+        )
+      : cn(
+          "text-sm font-medium transition-colors hover:text-blue-600 dark:hover:text-blue-400",
+          active
+            ? "text-blue-600 font-semibold dark:text-blue-400"
+            : "text-slate-600 dark:text-slate-300",
+        )
+
+    if ("items" in item) {
+      return (
+        <DropdownMenu key={item.key}>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size={mobile ? "sm" : "default"} className={className}>
+              {item.label}
+              <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align={mobile ? "start" : "center"}>
+            {item.items.map((child) => (
+              <DropdownMenuItem key={child.href} asChild>
+                <Link href={child.href} onClick={() => setMobileMenuOpen(false)}>
+                  {child.label}
+                </Link>
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )
+    }
+
+    return (
+      <Link
+        key={item.key}
+        href={item.href}
+        onClick={() => setMobileMenuOpen(false)}
+        className={className}
+      >
+        {item.label}
+      </Link>
+    )
+  }
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-slate-200 bg-white/95 backdrop-blur dark:border-slate-800 dark:bg-slate-900/95 transition-colors">
@@ -41,23 +124,7 @@ export function Header() {
 
         {/* Desktop Navigation */}
         <nav className="hidden lg:flex items-center gap-6">
-          {navItems.map((item) => {
-            const isActive = pathname === item.href
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "text-sm font-medium transition-colors hover:text-blue-600 dark:hover:text-blue-400",
-                  isActive
-                    ? "text-blue-600 font-semibold dark:text-blue-400"
-                    : "text-slate-600 dark:text-slate-300"
-                )}
-              >
-                {item.label}
-              </Link>
-            )
-          })}
+          {navItems.map((item) => renderNavigationItem(item))}
         </nav>
 
         {/* Right Actions: Lang, Theme, Login, Register */}
@@ -92,21 +159,7 @@ export function Header() {
       {mobileMenuOpen && (
         <div className="lg:hidden border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 px-4 py-4 space-y-3">
           <nav className="flex flex-col space-y-2">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className={cn(
-                  "px-3 py-2 rounded-md text-sm font-medium transition-colors",
-                  pathname === item.href
-                    ? "bg-blue-50 text-blue-600 dark:bg-blue-950/50 dark:text-blue-400"
-                    : "text-slate-700 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800"
-                )}
-              >
-                {item.label}
-              </Link>
-            ))}
+            {navItems.map((item) => renderNavigationItem(item, true))}
           </nav>
           <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex flex-col gap-2">
             <Button variant="outline" asChild className="w-full justify-center">

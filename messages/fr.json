@@ -4,10 +4,12 @@
     "findDoctor": "Trouver un médecin",
     "videoConsultation": "Téléconsultation",
     "labTests": "Analyses de laboratoire",
+    "tests": "Examens",
     "radiologyTests": "Examens radiologiques",
     "drive": "ShifaLink Drive",
     "healthArticles": "Articles de santé",
     "about": "À propos de ShifaLink",
+    "aboutAndContact": "À propos et contact",
     "contact": "Contact",
     "login": "Connexion",
     "register": "Inscription Patient",
@@ -65,7 +67,13 @@
     "diagnosticsTitle": "Réservations diagnostiques",
     "diagnosticsDescription": "Suivez vos réservations de laboratoire et de radiologie ainsi que les mises à jour des résultats.",
     "open": "Ouvrir",
-    "dashboardLink": "Tableau de bord patient"
+    "dashboardLink": "Tableau de bord patient",
+    "verifyEmailTitle": "Vérifiez votre adresse e-mail",
+    "verifyEmailMessage": "Votre compte est actif, mais votre adresse e-mail ({email}) n'est pas encore vérifiée.",
+    "verifyEmailButton": "Envoyer l'e-mail de vérification",
+    "verificationEmailSentTitle": "E-mail de vérification envoyé",
+    "verificationEmailSentMessage": "Consultez {email} pour ouvrir le lien de vérification.",
+    "verificationEmailError": "Nous n'avons pas pu envoyer l'e-mail de vérification. Réessayez plus tard."
   },
   "diagnostics": {
     "labImageAlt": "Professionnels de laboratoire travaillant avec des échantillons diagnostiques",
