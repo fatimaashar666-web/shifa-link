@@ -13,7 +13,7 @@ import {
   s3Client,
   STORAGE_BUCKET,
   MAX_FILE_SIZE,
-} from "./s3";
+} from "./s3-client";
 
 const ALLOWED_TYPES = [
   "application/pdf",
