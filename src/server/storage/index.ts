@@ -106,6 +106,28 @@ function createStorageClient(config: NonNullable<ReturnType<typeof getStorageCon
   })
 }
 
+/** Upload bytes from a trusted server route when browser-to-bucket CORS is unavailable. */
+export async function uploadObjectToStorage(params: {
+  storageKey: string
+  mimeType: string
+  body: Buffer
+}) {
+  const config = getStorageConfig()
+  if (!config) {
+    throw new Error('Object storage is not configured.')
+  }
+
+  const client = createStorageClient(config)
+  await client.send(
+    new PutObjectCommand({
+      Bucket: config.bucket,
+      Key: params.storageKey,
+      Body: params.body,
+      ContentType: params.mimeType,
+    }),
+  )
+}
+
 /**
  * Generate a real S3-compatible presigned upload URL.
  * When storage is not configured in development, use the authenticated

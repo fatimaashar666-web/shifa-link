@@ -49,6 +49,11 @@ type DoctorProfileCsvRow = {
   licenseNumber: string
   fee: number
   bio: string
+  specialty?: string
+  qualifications?: string
+  locationName?: string
+  address?: string
+  city?: string
 }
 
 function parseCsvLine(line: string): string[] {
@@ -82,8 +87,7 @@ function parseCsvLine(line: string): string[] {
   return values
 }
 
-function readDoctorProfilesCsv(): DoctorProfileCsvRow[] {
-  const csvPath = resolve(process.cwd(), 'prisma/doctor-profiles.csv')
+function readDoctorCsvFile(csvPath: string): DoctorProfileCsvRow[] {
   const lines = readFileSync(csvPath, 'utf-8')
     .replace(/^\uFEFF/, '')
     .split(/\r?\n/)
@@ -91,20 +95,66 @@ function readDoctorProfilesCsv(): DoctorProfileCsvRow[] {
 
   const expectedHeaders = ['fullName', 'licenseNumber', 'fee', 'bio']
   const headers = parseCsvLine(lines.shift() ?? '')
-  if (headers.length !== expectedHeaders.length || headers.some((header, index) => header !== expectedHeaders[index])) {
-    throw new Error(`Doctor CSV must use the header: ${expectedHeaders.join(',')}`)
+  if (expectedHeaders.some((header) => !headers.includes(header))) {
+    throw new Error(`Doctor CSV must include the fields: ${expectedHeaders.join(',')}`)
   }
 
   return lines.map((line, index) => {
-    const [fullName, licenseNumber, feeValue, bio] = parseCsvLine(line)
+    const values = parseCsvLine(line)
+    const row = Object.fromEntries(headers.map((header, headerIndex) => [header, values[headerIndex] ?? '']))
+    const fullName = row.fullName
+    const licenseNumber = row.licenseNumber
+    const feeValue = row.fee
+    const bio = row.bio
     const fee = Number(feeValue)
 
     if (!fullName || !licenseNumber || !Number.isFinite(fee) || !bio) {
       throw new Error(`Invalid doctor CSV row ${index + 2}: ${line}`)
     }
 
-    return { fullName, licenseNumber, fee, bio }
+    return {
+      fullName,
+      licenseNumber,
+      fee,
+      bio,
+      specialty: row.specialty || undefined,
+      qualifications: row.qualifications || undefined,
+      locationName: row.locationName || undefined,
+      address: row.address || undefined,
+      city: row.city || undefined,
+    }
   })
+}
+
+function readDoctorProfilesCsv(): DoctorProfileCsvRow[] {
+  const basePath = resolve(process.cwd(), 'prisma/doctor-profiles.csv')
+  const detailedPath = resolve(process.cwd(), 'prisma/doctor-profiles-detailed.csv')
+  const mergedByLicense = new Map<string, DoctorProfileCsvRow>()
+
+  for (const row of readDoctorCsvFile(basePath)) {
+    mergedByLicense.set(row.licenseNumber, row)
+  }
+
+  // The detailed CSV is the enrichment source. It overrides matching base
+  // rows by license number while keeping the seed usable with the base file.
+  if (existsSync(detailedPath)) {
+    for (const row of readDoctorCsvFile(detailedPath)) {
+      mergedByLicense.set(row.licenseNumber, {
+        ...mergedByLicense.get(row.licenseNumber),
+        ...row,
+      })
+    }
+  }
+
+  return [...mergedByLicense.values()]
+}
+
+function toSlug(value: string): string {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
 }
 
 const connectionString = process.env.DATABASE_URL
@@ -335,10 +385,15 @@ async function main() {
   })
 
   const importedDoctors = readDoctorProfilesCsv()
+  const importedDoctorAccounts: Array<{
+    doctor: DoctorProfileCsvRow
+    account: Awaited<ReturnType<typeof seedUser>>
+  }> = []
+
   for (const doctor of importedDoctors) {
     const emailSlug = doctor.licenseNumber.toLowerCase().replace(/[^a-z0-9]+/g, '-')
 
-    await seedUser({
+    const account = await seedUser({
       fullName: doctor.fullName,
       email: `doctor.${emailSlug}@seed.shifalink.test`,
       password: 'Password1!',
@@ -349,9 +404,114 @@ async function main() {
       fee: doctor.fee,
       bio: doctor.bio,
     })
+
+    if (account.doctorProf && doctor.specialty) {
+      const specialtyName = doctor.specialty.trim()
+      const specialty = await db.specialty.upsert({
+        where: { slug: toSlug(specialtyName) },
+        create: {
+          name: specialtyName,
+          slug: toSlug(specialtyName),
+          description: 'Imported from the doctor profile CSV.',
+        },
+        update: { name: specialtyName },
+      })
+
+      await db.doctorSpecialty.upsert({
+        where: {
+          doctorId_specialtyId: {
+            doctorId: account.doctorProf.id,
+            specialtyId: specialty.id,
+          },
+        },
+        create: {
+          doctorId: account.doctorProf.id,
+          specialtyId: specialty.id,
+          isPrimary: true,
+        },
+        update: { isPrimary: true },
+      })
+    }
+
+    if (account.doctorProf && doctor.qualifications) {
+      const qualificationDegrees = doctor.qualifications
+        .split(',')
+        .map((qualification) => qualification.trim())
+        .filter(Boolean)
+
+      await db.doctorQualification.deleteMany({ where: { doctorId: account.doctorProf.id } })
+      if (qualificationDegrees.length > 0) {
+        await db.doctorQualification.createMany({
+          data: qualificationDegrees.map((degree) => ({
+            doctorId: account.doctorProf!.id,
+            degree,
+            institution: null,
+            year: null,
+          })),
+        })
+      }
+    }
+
+    importedDoctorAccounts.push({ doctor, account })
   }
 
-  console.log(`  ✅  CSV doctors seeded: ${importedDoctors.length}`)
+  // Give every CSV doctor a Karachi location and a recurring schedule for
+  // every day of the week so the availability endpoint always has bookable
+  // dates to display after the import.
+  for (const { doctor, account } of importedDoctorAccounts) {
+    if (!account.doctorProf) continue
+
+    const locationKey = toSlug(doctor.licenseNumber)
+    const locationName = doctor.locationName?.trim() || `${doctor.fullName} - Karachi Consultation Center`
+    const city = doctor.city?.trim() || 'Karachi'
+    const address = doctor.address?.trim() || `${city}, Pakistan`
+    const location = await db.doctorLocation.upsert({
+      where: { id: `loc-csv-${locationKey}` },
+      create: {
+        id: `loc-csv-${locationKey}`,
+        doctorId: account.doctorProf.id,
+        name: locationName,
+        address,
+        city,
+        isVirtual: false,
+      },
+      update: {
+        doctorId: account.doctorProf.id,
+        name: locationName,
+        address,
+        city,
+        isVirtual: false,
+      },
+    })
+
+    for (const dayOfWeek of Object.values(DayOfWeek)) {
+      const existing = await db.doctorAvailability.findFirst({
+        where: {
+          doctorId: account.doctorProf.id,
+          locationId: location.id,
+          dayOfWeek,
+        },
+      })
+
+      const availabilityData = {
+        doctorId: account.doctorProf.id,
+        locationId: location.id,
+        dayOfWeek,
+        startTime: '09:00',
+        endTime: '17:00',
+        slotDurationMinutes: 30,
+        isActive: true,
+      }
+
+      if (existing) {
+        await db.doctorAvailability.update({ where: { id: existing.id }, data: availabilityData })
+      } else {
+        await db.doctorAvailability.create({ data: availabilityData })
+      }
+    }
+  }
+
+  console.log(`  ✅  CSV doctors seeded with daily availability: ${importedDoctors.length}`)
 
   // Doctor Specialties
   if (doctorGamma.doctorProf) {

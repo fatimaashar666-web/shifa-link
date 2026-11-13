@@ -185,8 +185,8 @@ model DoctorQualification {
   id          String        @id @default(uuid())
   doctorId    String
   degree      String
-  institution String
-  year        Int
+  institution String?
+  year        Int?
   doctor      DoctorProfile @relation(fields: [doctorId], references: [id], onDelete: Cascade)
 
   @@index([doctorId])

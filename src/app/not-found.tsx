@@ -32,7 +32,7 @@ export default function NotFound() {
 
         {/* Description */}
         <p className="mx-auto mt-3 max-w-sm text-sm leading-6 text-gray-500">
-          Sorry, the page you are looking for doesn't
+          Sorry, the page you are looking for doesn&apos;t
           exist, may have been moved, or is temporarily
           unavailable.
         </p>

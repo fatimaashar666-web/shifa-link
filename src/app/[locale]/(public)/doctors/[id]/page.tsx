@@ -95,11 +95,13 @@ export default async function DoctorDetailPage({ params }: DoctorDetailPageProps
                       <div className="font-semibold text-slate-900 dark:text-white">
                         {q.degree}
                       </div>
-                      <div className="text-slate-500">{q.institution}</div>
+                      {q.institution && <div className="text-slate-500">{q.institution}</div>}
                     </div>
-                    <Badge variant="outline" className="text-[10px]">
-                      Class of {q.year}
-                    </Badge>
+                    {q.year && (
+                      <Badge variant="outline" className="text-[10px]">
+                        Class of {q.year}
+                      </Badge>
+                    )}
                   </div>
                 ))}
               </CardContent>
