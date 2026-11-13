@@ -9,6 +9,12 @@ import { getPublishedArticles } from "@/lib/sanity/client";
 import { getSanityImageUrl } from "@/lib/sanity/image";
 import { getLocalizedValue } from "@/lib/sanity/localization";
 
+const knownArticleCategories: Record<string, string> = {
+  "Cardiovascular Health": "articleCategories.cardiovascular",
+  "Diagnostic Guides": "articleCategories.diagnostics",
+  "Preventive Care": "articleCategories.preventive",
+};
+
 interface ArticlesPageProps {
   params: Promise<{ locale: string }>;
 }
@@ -17,6 +23,9 @@ export default async function ArticlesPage({ params }: ArticlesPageProps) {
   const { locale } = await params;
   const tNav = await getTranslations({ locale, namespace: "nav" });
   const tCommon = await getTranslations({ locale, namespace: "common" });
+  const tHome = await getTranslations({ locale, namespace: "home" });
+  const tArticles = await getTranslations({ locale, namespace: "articles" });
+  const tMeta = await getTranslations({ locale, namespace: "articleMeta" });
 
   const articles = await getPublishedArticles();
 
@@ -27,7 +36,7 @@ export default async function ArticlesPage({ params }: ArticlesPageProps) {
           {tNav("healthArticles")}
         </h1>
         <p className="text-sm text-slate-600 dark:text-slate-400">
-          Clinically reviewed articles and patient education resources to help you make informed decisions regarding appointments and diagnostics.
+          {tArticles("description")}
         </p>
       </div>
 
@@ -55,11 +64,13 @@ export default async function ArticlesPage({ params }: ArticlesPageProps) {
               <CardHeader className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Badge variant="outline" className="text-xs">
-                    {art.category}
+                    {knownArticleCategories[art.category]
+                      ? tMeta(knownArticleCategories[art.category])
+                      : art.category}
                   </Badge>
                   <span className="flex items-center gap-1 text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
                     <ShieldCheck className="h-3.5 w-3.5" />
-                    Reviewed
+                    {tHome("articlesReviewed")}
                   </span>
                 </div>
                 <CardTitle className="text-base font-semibold leading-snug">
@@ -81,10 +92,10 @@ export default async function ArticlesPage({ params }: ArticlesPageProps) {
                           month: "short",
                           year: "numeric",
                         })
-                      : "Recent"}
+                      : tHome("articlesRecent")}
                   </span>
                   <span>•</span>
-                  <span>{art.authorDisplay ?? "Editorial Board"}</span>
+                  <span>{art.authorDisplay ?? tHome("articlesEditorialBoard")}</span>
                 </div>
               </CardContent>
 

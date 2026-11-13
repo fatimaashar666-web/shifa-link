@@ -1,6 +1,3 @@
-// ShifaLink Prisma Schema — Milestone M5 (Diagnostic Services & ShifaLink Drive)
-// Constraints: UUID primary keys (ADR-09), Decimal for money, UTC timestamps, Append-only audit (ADR-10), Object storage for files (ADR-06)
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -9,9 +6,459 @@ datasource db {
   provider = "postgresql"
 }
 
-// ─────────────────────────────────────────────
-// ENUMS
-// ─────────────────────────────────────────────
+model User {
+  id              String               @id @default(uuid())
+  email           String               @unique
+  passwordHash    String?
+  emailVerifiedAt DateTime?
+  status          UserStatus           @default(ACTIVE)
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+  auditEvents     AuditEvent[]
+  consents        ConsentRecord[]
+  doctorProfile   DoctorProfile?
+  uploadedFiles   FileObject[]
+  notifications   Notification[]
+  orgMemberships  OrganizationMember[]
+  patientProfile  PatientProfile?
+  preferences     UserPreference?
+  userRoles       UserRole[]
+
+  @@map("users")
+}
+
+model Role {
+  id          Int        @id @default(autoincrement())
+  name        String     @unique
+  description String?
+  userRoles   UserRole[]
+
+  @@map("roles")
+}
+
+model UserRole {
+  id             String        @id @default(uuid())
+  userId         String
+  roleId         Int
+  organizationId String?
+  assignedAt     DateTime      @default(now())
+  assignedBy     String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  role           Role          @relation(fields: [roleId], references: [id])
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roleId, organizationId])
+  @@index([userId])
+  @@index([roleId])
+  @@index([organizationId])
+  @@map("user_roles")
+}
+
+model Organization {
+  id                         String                      @id @default(uuid())
+  name                       String
+  type                       OrgType
+  status                     OrgStatus                   @default(ACTIVE)
+  createdAt                  DateTime                    @default(now())
+  updatedAt                  DateTime                    @updatedAt
+  appointments               Appointment[]
+  auditEvents                AuditEvent[]
+  diagnosticBookings         DiagnosticBooking[]
+  diagnosticServiceLocations DiagnosticServiceLocation[]
+  doctorLocations            DoctorLocation[]
+  members                    OrganizationMember[]
+  userRoles                  UserRole[]
+
+  @@map("organizations")
+}
+
+model OrganizationMember {
+  id             String       @id @default(uuid())
+  organizationId String
+  userId         String
+  membershipRole String
+  status         String       @default("ACTIVE")
+  joinedAt       DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, userId])
+  @@index([organizationId])
+  @@index([userId])
+  @@map("organization_members")
+}
+
+model PatientProfile {
+  id                 String              @id @default(uuid())
+  userId             String              @unique
+  fullName           String
+  dateOfBirth        DateTime?
+  gender             Gender?
+  bloodGroup         BloodGroup?
+  phone              String?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  appointments       Appointment[]
+  diagnosticBookings DiagnosticBooking[]
+  medicalRecords     MedicalRecord[]
+  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("patient_profiles")
+}
+
+model DoctorProfile {
+  id                 String                  @id @default(uuid())
+  userId             String                  @unique
+  fullName           String
+  licenseNumber      String                  @unique
+  consultationFee    Decimal                 @db.Decimal(10, 2)
+  verificationStatus VerificationStatus      @default(PENDING)
+  bio                String?
+  createdAt          DateTime                @default(now())
+  updatedAt          DateTime                @updatedAt
+  appointments       Appointment[]
+  exceptions         AvailabilityException[]
+  availabilities     DoctorAvailability[]
+  languages          DoctorLanguage[]
+  locations          DoctorLocation[]
+  user               User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  qualifications     DoctorQualification[]
+  specialties        DoctorSpecialty[]
+  recordAccessGrants RecordAccessGrant[]
+
+  @@map("doctor_profiles")
+}
+
+model UserPreference {
+  userId    String   @id
+  locale    String   @default("en")
+  theme     String   @default("system")
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_preferences")
+}
+
+model Specialty {
+  id          String            @id @default(uuid())
+  name        String            @unique
+  slug        String            @unique
+  description String?
+  icon        String?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  doctors     DoctorSpecialty[]
+
+  @@map("specialties")
+}
+
+model DoctorSpecialty {
+  id          String        @id @default(uuid())
+  doctorId    String
+  specialtyId String
+  isPrimary   Boolean       @default(false)
+  doctor      DoctorProfile @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  specialty   Specialty     @relation(fields: [specialtyId], references: [id], onDelete: Cascade)
+
+  @@unique([doctorId, specialtyId])
+  @@index([doctorId])
+  @@index([specialtyId])
+  @@map("doctor_specialties")
+}
+
+model DoctorQualification {
+  id          String        @id @default(uuid())
+  doctorId    String
+  degree      String
+  institution String
+  year        Int
+  doctor      DoctorProfile @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+
+  @@index([doctorId])
+  @@map("doctor_qualifications")
+}
+
+model DoctorLanguage {
+  id           String        @id @default(uuid())
+  doctorId     String
+  languageCode String
+  doctor       DoctorProfile @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+
+  @@unique([doctorId, languageCode])
+  @@index([doctorId])
+  @@map("doctor_languages")
+}
+
+model DoctorLocation {
+  id             String               @id @default(uuid())
+  doctorId       String
+  organizationId String?
+  name           String
+  address        String?
+  city           String               @default("Lahore")
+  isVirtual      Boolean              @default(false)
+  appointments   Appointment[]
+  availabilities DoctorAvailability[]
+  doctor         DoctorProfile        @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  organization   Organization?        @relation(fields: [organizationId], references: [id])
+
+  @@index([doctorId])
+  @@index([organizationId])
+  @@map("doctor_locations")
+}
+
+model DoctorAvailability {
+  id                  String         @id @default(uuid())
+  doctorId            String
+  locationId          String
+  dayOfWeek           DayOfWeek
+  startTime           String
+  endTime             String
+  slotDurationMinutes Int            @default(30)
+  isActive            Boolean        @default(true)
+  doctor              DoctorProfile  @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  location            DoctorLocation @relation(fields: [locationId], references: [id], onDelete: Cascade)
+
+  @@index([doctorId, dayOfWeek])
+  @@index([locationId])
+  @@map("doctor_availability")
+}
+
+model AvailabilityException {
+  id          String        @id @default(uuid())
+  doctorId    String
+  date        DateTime      @db.Date
+  isAvailable Boolean       @default(false)
+  startTime   String?
+  endTime     String?
+  reason      String?
+  doctor      DoctorProfile @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+
+  @@unique([doctorId, date])
+  @@index([doctorId])
+  @@map("availability_exceptions")
+}
+
+model Appointment {
+  id                 String            @id @default(uuid())
+  patientId          String
+  doctorId           String
+  locationId         String
+  organizationId     String?
+  appointmentType    AppointmentType   @default(IN_PERSON)
+  status             AppointmentStatus @default(CONFIRMED)
+  scheduledAt        DateTime
+  endAt              DateTime
+  reason             String?
+  symptoms           String?
+  notes              String?
+  cancellationReason String?
+  cancelledBy        String?
+  cancelledAt        DateTime?
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+  doctor             DoctorProfile     @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  location           DoctorLocation    @relation(fields: [locationId], references: [id])
+  organization       Organization?     @relation(fields: [organizationId], references: [id])
+  patient            PatientProfile    @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@unique([doctorId, scheduledAt])
+  @@index([patientId, scheduledAt])
+  @@index([doctorId, status])
+  @@index([scheduledAt])
+  @@map("appointments")
+}
+
+model DiagnosticService {
+  id              String                      @id @default(uuid())
+  name            String
+  slug            String                      @unique
+  type            OrgType
+  category        String
+  description     String?
+  preparation     String?
+  turnaroundHours Int                         @default(24)
+  homeCollection  Boolean                     @default(false)
+  basePrice       Decimal                     @db.Decimal(10, 2)
+  createdAt       DateTime                    @default(now())
+  updatedAt       DateTime                    @updatedAt
+  bookings        DiagnosticBooking[]
+  locations       DiagnosticServiceLocation[]
+
+  @@index([type, category])
+  @@map("diagnostic_services")
+}
+
+model DiagnosticServiceLocation {
+  id             String            @id @default(uuid())
+  serviceId      String
+  organizationId String
+  price          Decimal           @db.Decimal(10, 2)
+  isAvailable    Boolean           @default(true)
+  organization   Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  service        DiagnosticService @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  @@unique([serviceId, organizationId])
+  @@index([organizationId])
+  @@index([serviceId])
+  @@map("diagnostic_service_locations")
+}
+
+model DiagnosticBooking {
+  id                 String                   @id @default(uuid())
+  bookingNumber      String                   @unique
+  patientId          String
+  serviceId          String
+  organizationId     String
+  status             DiagnosticBookingStatus  @default(REQUESTED)
+  scheduledAt        DateTime
+  isHomeCollection   Boolean                  @default(false)
+  collectionAddress  String?
+  notes              String?
+  totalAmount        Decimal                  @db.Decimal(10, 2)
+  cancellationReason String?
+  cancelledBy        String?
+  cancelledAt        DateTime?
+  createdAt          DateTime                 @default(now())
+  updatedAt          DateTime                 @updatedAt
+  events             DiagnosticBookingEvent[]
+  organization       Organization             @relation(fields: [organizationId], references: [id])
+  patient            PatientProfile           @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  service            DiagnosticService        @relation(fields: [serviceId], references: [id])
+  reports            DiagnosticReport[]
+
+  @@index([patientId, status])
+  @@index([organizationId, status])
+  @@index([scheduledAt])
+  @@map("diagnostic_bookings")
+}
+
+model DiagnosticBookingEvent {
+  id        String                  @id @default(uuid())
+  bookingId String
+  status    DiagnosticBookingStatus
+  note      String?
+  actorId   String?
+  createdAt DateTime                @default(now())
+  booking   DiagnosticBooking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@index([bookingId])
+  @@map("diagnostic_booking_events")
+}
+
+model FileObject {
+  id               String            @id @default(uuid())
+  storageKey       String            @unique
+  fileName         String
+  mimeType         String
+  sizeBytes        Int
+  checksum         String?
+  uploadedBy       String
+  createdAt        DateTime          @default(now())
+  diagnosticReport DiagnosticReport?
+  uploader         User              @relation(fields: [uploadedBy], references: [id], onDelete: Cascade)
+  medicalRecord    MedicalRecord?
+
+  @@index([uploadedBy])
+  @@map("file_objects")
+}
+
+model MedicalRecord {
+  id           String                @id @default(uuid())
+  patientId    String
+  fileObjectId String                @unique
+  title        String
+  category     MedicalRecordCategory @default(LAB_REPORT)
+  description  String?
+  recordDate   DateTime              @default(now())
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
+  fileObject   FileObject            @relation(fields: [fileObjectId], references: [id], onDelete: Cascade)
+  patient      PatientProfile        @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  accessGrants RecordAccessGrant[]
+
+  @@index([patientId, category])
+  @@map("medical_records")
+}
+
+model RecordAccessGrant {
+  id                String        @id @default(uuid())
+  recordId          String
+  grantedToDoctorId String
+  expiresAt         DateTime
+  revokedAt         DateTime?
+  revokedBy         String?
+  createdAt         DateTime      @default(now())
+  doctor            DoctorProfile @relation(fields: [grantedToDoctorId], references: [id], onDelete: Cascade)
+  record            MedicalRecord @relation(fields: [recordId], references: [id], onDelete: Cascade)
+
+  @@index([recordId, grantedToDoctorId])
+  @@index([grantedToDoctorId, expiresAt])
+  @@map("record_access_grants")
+}
+
+model DiagnosticReport {
+  id           String            @id @default(uuid())
+  bookingId    String
+  fileObjectId String            @unique
+  reportNotes  String?
+  releasedAt   DateTime          @default(now())
+  releasedBy   String?
+  booking      DiagnosticBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  fileObject   FileObject        @relation(fields: [fileObjectId], references: [id], onDelete: Cascade)
+
+  @@index([bookingId])
+  @@map("diagnostic_reports")
+}
+
+model Notification {
+  id         String           @id @default(uuid())
+  userId     String
+  title      String
+  message    String
+  type       NotificationType @default(SYSTEM)
+  entityType String?
+  entityId   String?
+  isRead     Boolean          @default(false)
+  createdAt  DateTime         @default(now())
+  user       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead])
+  @@map("notifications")
+}
+
+model AuditEvent {
+  id             String        @id @default(uuid())
+  actorType      ActorType
+  actorId        String?
+  action         String
+  entityType     String
+  entityId       String?
+  organizationId String?
+  metadata       Json?
+  ipAddress      String?
+  createdAt      DateTime      @default(now())
+  actor          User?         @relation(fields: [actorId], references: [id])
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+
+  @@index([actorId, createdAt])
+  @@index([entityType, entityId, createdAt])
+  @@index([action, createdAt])
+  @@map("audit_events")
+}
+
+model ConsentRecord {
+  id          String    @id @default(uuid())
+  patientId   String
+  consentType String
+  version     String
+  grantedAt   DateTime  @default(now())
+  withdrawnAt DateTime?
+  patient     User      @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@index([patientId, consentType])
+  @@map("consent_records")
+}
 
 enum UserStatus {
   ACTIVE
@@ -93,11 +540,11 @@ enum NotificationType {
   APPOINTMENT_CONFIRMED
   APPOINTMENT_CANCELLED
   APPOINTMENT_REMINDER
+  SYSTEM
   DIAGNOSTIC_BOOKED
   DIAGNOSTIC_STATUS_UPDATED
   REPORT_READY
   RECORD_SHARED
-  SYSTEM
 }
 
 enum DiagnosticBookingStatus {
@@ -116,518 +563,4 @@ enum MedicalRecordCategory {
   DISCHARGE_SUMMARY
   VACCINATION
   OTHER
-}
-
-// ─────────────────────────────────────────────
-// CORE IDENTITY & RBAC
-// ─────────────────────────────────────────────
-
-model User {
-  id              String         @id @default(uuid())
-  email           String         @unique
-  passwordHash    String?
-  emailVerifiedAt DateTime?
-  status          UserStatus     @default(ACTIVE)
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
-
-  // 1:1 Profiles
-  patientProfile  PatientProfile?
-  doctorProfile   DoctorProfile?
-  preferences     UserPreference?
-
-  // Relations
-  userRoles       UserRole[]
-  orgMemberships  OrganizationMember[]
-  auditEvents     AuditEvent[]
-  consents        ConsentRecord[]
-  notifications   Notification[]
-  uploadedFiles   FileObject[]
-
-  @@map("users")
-}
-
-model Role {
-  id          Int        @id @default(autoincrement())
-  name        String     @unique // patient, doctor, lab_admin, support_agent, content_editor, super_admin
-  description String?
-  userRoles   UserRole[]
-
-  @@map("roles")
-}
-
-model UserRole {
-  id             String        @id @default(uuid())
-  userId         String
-  roleId         Int
-  organizationId String?
-  assignedAt     DateTime      @default(now())
-  assignedBy     String?
-
-  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  role           Role          @relation(fields: [roleId], references: [id], onDelete: Restrict)
-  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, roleId, organizationId])
-  @@index([userId])
-  @@index([roleId])
-  @@index([organizationId])
-  @@map("user_roles")
-}
-
-// ─────────────────────────────────────────────
-// ORGANIZATIONS (Clinics, Labs, Radiology Centers)
-// ─────────────────────────────────────────────
-
-model Organization {
-  id                         String                       @id @default(uuid())
-  name                       String
-  type                       OrgType
-  status                     OrgStatus                    @default(ACTIVE)
-  createdAt                  DateTime                     @default(now())
-  updatedAt                  DateTime                     @updatedAt
-
-  members                    OrganizationMember[]
-  userRoles                  UserRole[]
-  auditEvents                AuditEvent[]
-  doctorLocations            DoctorLocation[]
-  appointments               Appointment[]
-  diagnosticServiceLocations DiagnosticServiceLocation[]
-  diagnosticBookings         DiagnosticBooking[]
-
-  @@map("organizations")
-}
-
-model OrganizationMember {
-  id             String       @id @default(uuid())
-  organizationId String
-  userId         String
-  membershipRole String       // e.g. "admin", "phlebotomist", "radiologist"
-  status         String       @default("ACTIVE")
-  joinedAt       DateTime     @default(now())
-
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([organizationId, userId])
-  @@index([organizationId])
-  @@index([userId])
-  @@map("organization_members")
-}
-
-// ─────────────────────────────────────────────
-// USER PROFILES
-// ─────────────────────────────────────────────
-
-model PatientProfile {
-  id                 String              @id @default(uuid())
-  userId             String              @unique
-  fullName           String
-  dateOfBirth        DateTime?
-  gender             Gender?
-  bloodGroup         BloodGroup?
-  phone              String?
-  createdAt          DateTime            @default(now())
-  updatedAt          DateTime            @updatedAt
-
-  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
-  appointments       Appointment[]
-  diagnosticBookings DiagnosticBooking[]
-  medicalRecords     MedicalRecord[]
-
-  @@map("patient_profiles")
-}
-
-model DoctorProfile {
-  id                 String                  @id @default(uuid())
-  userId             String                  @unique
-  fullName           String
-  licenseNumber      String                  @unique
-  consultationFee    Decimal                 @db.Decimal(10, 2)
-  verificationStatus VerificationStatus      @default(PENDING)
-  bio                String?
-  createdAt          DateTime                @default(now())
-  updatedAt          DateTime                @updatedAt
-
-  user               User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  specialties        DoctorSpecialty[]
-  qualifications     DoctorQualification[]
-  languages          DoctorLanguage[]
-  locations          DoctorLocation[]
-  availabilities     DoctorAvailability[]
-  exceptions         AvailabilityException[]
-  appointments       Appointment[]
-  recordAccessGrants RecordAccessGrant[]
-
-  @@map("doctor_profiles")
-}
-
-model UserPreference {
-  userId    String   @id
-  locale    String   @default("en")
-  theme     String   @default("system")
-  updatedAt DateTime @updatedAt
-
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("user_preferences")
-}
-
-// ─────────────────────────────────────────────
-// DOCTOR DISCOVERY & SPECIALTIES (M4)
-// ─────────────────────────────────────────────
-
-model Specialty {
-  id          String            @id @default(uuid())
-  name        String            @unique
-  slug        String            @unique
-  description String?
-  icon        String?
-  doctors     DoctorSpecialty[]
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
-
-  @@map("specialties")
-}
-
-model DoctorSpecialty {
-  id          String        @id @default(uuid())
-  doctorId    String
-  specialtyId String
-  isPrimary   Boolean       @default(false)
-
-  doctor      DoctorProfile @relation(fields: [doctorId], references: [id], onDelete: Cascade)
-  specialty   Specialty     @relation(fields: [specialtyId], references: [id], onDelete: Cascade)
-
-  @@unique([doctorId, specialtyId])
-  @@index([doctorId])
-  @@index([specialtyId])
-  @@map("doctor_specialties")
-}
-
-model DoctorQualification {
-  id          String        @id @default(uuid())
-  doctorId    String
-  degree      String        // e.g. "MBBS", "FCPS", "MD"
-  institution String        // e.g. "King Edward Medical University"
-  year        Int
-
-  doctor      DoctorProfile @relation(fields: [doctorId], references: [id], onDelete: Cascade)
-
-  @@index([doctorId])
-  @@map("doctor_qualifications")
-}
-
-model DoctorLanguage {
-  id           String        @id @default(uuid())
-  doctorId     String
-  languageCode String        // "en", "ur", "ar", "fr", "de", "ja"
-
-  doctor       DoctorProfile @relation(fields: [doctorId], references: [id], onDelete: Cascade)
-
-  @@unique([doctorId, languageCode])
-  @@index([doctorId])
-  @@map("doctor_languages")
-}
-
-model DoctorLocation {
-  id             String               @id @default(uuid())
-  doctorId       String
-  organizationId String?
-  name           String               // e.g. "Shifa Care Clinic - Gulberg", "Telehealth Video"
-  address        String?
-  city           String               @default("Lahore")
-  isVirtual      Boolean              @default(false)
-
-  doctor         DoctorProfile        @relation(fields: [doctorId], references: [id], onDelete: Cascade)
-  organization   Organization?        @relation(fields: [organizationId], references: [id], onDelete: SetNull)
-  availabilities DoctorAvailability[]
-  appointments   Appointment[]
-
-  @@index([doctorId])
-  @@index([organizationId])
-  @@map("doctor_locations")
-}
-
-model DoctorAvailability {
-  id                  String         @id @default(uuid())
-  doctorId            String
-  locationId          String
-  dayOfWeek           DayOfWeek
-  startTime           String         // "09:00"
-  endTime             String         // "17:00"
-  slotDurationMinutes Int            @default(30)
-  isActive            Boolean        @default(true)
-
-  doctor              DoctorProfile  @relation(fields: [doctorId], references: [id], onDelete: Cascade)
-  location            DoctorLocation @relation(fields: [locationId], references: [id], onDelete: Cascade)
-
-  @@index([doctorId, dayOfWeek])
-  @@index([locationId])
-  @@map("doctor_availability")
-}
-
-model AvailabilityException {
-  id          String        @id @default(uuid())
-  doctorId    String
-  date        DateTime      @db.Date
-  isAvailable Boolean       @default(false) // false = day off, true = override
-  startTime   String?
-  endTime     String?
-  reason      String?
-
-  doctor      DoctorProfile @relation(fields: [doctorId], references: [id], onDelete: Cascade)
-
-  @@unique([doctorId, date])
-  @@index([doctorId])
-  @@map("availability_exceptions")
-}
-
-// ─────────────────────────────────────────────
-// APPOINTMENTS & BOOKING WORKFLOW (M4)
-// ─────────────────────────────────────────────
-
-model Appointment {
-  id                 String            @id @default(uuid())
-  patientId          String
-  doctorId           String
-  locationId         String
-  organizationId     String?
-  appointmentType    AppointmentType   @default(IN_PERSON)
-  status             AppointmentStatus @default(CONFIRMED)
-  scheduledAt        DateTime          // Exact UTC start of slot
-  endAt              DateTime          // Exact UTC end of slot
-  reason             String?
-  symptoms           String?
-  notes              String?
-  cancellationReason String?
-  cancelledBy        String?
-  cancelledAt        DateTime?
-  createdAt          DateTime          @default(now())
-  updatedAt          DateTime          @updatedAt
-
-  patient            PatientProfile    @relation(fields: [patientId], references: [id], onDelete: Cascade)
-  doctor             DoctorProfile     @relation(fields: [doctorId], references: [id], onDelete: Cascade)
-  location           DoctorLocation    @relation(fields: [locationId], references: [id], onDelete: Restrict)
-  organization       Organization?     @relation(fields: [organizationId], references: [id], onDelete: SetNull)
-
-  @@unique([doctorId, scheduledAt]) // Prevents double-booking same doctor at exact slot
-  @@index([patientId, scheduledAt])
-  @@index([doctorId, status])
-  @@index([scheduledAt])
-  @@map("appointments")
-}
-
-// ─────────────────────────────────────────────
-// DIAGNOSTIC SERVICES & BOOKINGS (M5)
-// ─────────────────────────────────────────────
-
-model DiagnosticService {
-  id              String                      @id @default(uuid())
-  name            String
-  slug            String                      @unique
-  type            OrgType                     // LAB or RADIOLOGY
-  category        String                      // e.g. "Hematology", "Cardiology", "Ultrasound", "X-Ray"
-  description     String?
-  preparation     String?                     // Fasting instructions, clothing notes
-  turnaroundHours Int                         @default(24)
-  homeCollection  Boolean                     @default(false)
-  basePrice       Decimal                     @db.Decimal(10, 2)
-  createdAt       DateTime                    @default(now())
-  updatedAt       DateTime                    @updatedAt
-
-  locations       DiagnosticServiceLocation[]
-  bookings        DiagnosticBooking[]
-
-  @@index([type, category])
-  @@map("diagnostic_services")
-}
-
-model DiagnosticServiceLocation {
-  id             String            @id @default(uuid())
-  serviceId      String
-  organizationId String
-  price          Decimal           @db.Decimal(10, 2)
-  isAvailable    Boolean           @default(true)
-
-  service        DiagnosticService @relation(fields: [serviceId], references: [id], onDelete: Cascade)
-  organization   Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-
-  @@unique([serviceId, organizationId])
-  @@index([organizationId])
-  @@index([serviceId])
-  @@map("diagnostic_service_locations")
-}
-
-model DiagnosticBooking {
-  id                 String                  @id @default(uuid())
-  bookingNumber      String                  @unique // e.g. "DIAG-2026-XXXX"
-  patientId          String
-  serviceId          String
-  organizationId     String
-  status             DiagnosticBookingStatus @default(REQUESTED)
-  scheduledAt        DateTime
-  isHomeCollection   Boolean                 @default(false)
-  collectionAddress  String?
-  notes              String?
-  totalAmount        Decimal                 @db.Decimal(10, 2)
-  cancellationReason String?
-  cancelledBy        String?
-  cancelledAt        DateTime?
-  createdAt          DateTime                @default(now())
-  updatedAt          DateTime                @updatedAt
-
-  patient            PatientProfile          @relation(fields: [patientId], references: [id], onDelete: Cascade)
-  service            DiagnosticService       @relation(fields: [serviceId], references: [id], onDelete: Restrict)
-  organization       Organization            @relation(fields: [organizationId], references: [id], onDelete: Restrict)
-  reports            DiagnosticReport[]
-  events             DiagnosticBookingEvent[]
-
-  @@index([patientId, status])
-  @@index([organizationId, status])
-  @@index([scheduledAt])
-  @@map("diagnostic_bookings")
-}
-
-model DiagnosticBookingEvent {
-  id        String                  @id @default(uuid())
-  bookingId String
-  status    DiagnosticBookingStatus
-  note      String?
-  actorId   String?
-  createdAt DateTime                @default(now())
-
-  booking   DiagnosticBooking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
-
-  @@index([bookingId])
-  @@map("diagnostic_booking_events")
-}
-
-// ─────────────────────────────────────────────
-// SHIFALINK DRIVE & MEDICAL RECORDS (M5 - ADR-06)
-// ─────────────────────────────────────────────
-
-model FileObject {
-  id               String            @id @default(uuid())
-  storageKey       String            @unique // S3 / R2 storage path
-  fileName         String
-  mimeType         String
-  sizeBytes        Int
-  checksum         String?
-  uploadedBy       String            // User ID
-  createdAt        DateTime          @default(now())
-
-  uploader         User              @relation(fields: [uploadedBy], references: [id], onDelete: Cascade)
-  medicalRecord    MedicalRecord?
-  diagnosticReport DiagnosticReport?
-
-  @@index([uploadedBy])
-  @@map("file_objects")
-}
-
-model MedicalRecord {
-  id           String                @id @default(uuid())
-  patientId    String
-  fileObjectId String                @unique
-  title        String
-  category     MedicalRecordCategory @default(LAB_REPORT)
-  description  String?
-  recordDate   DateTime              @default(now())
-  createdAt    DateTime              @default(now())
-  updatedAt    DateTime              @updatedAt
-
-  patient      PatientProfile        @relation(fields: [patientId], references: [id], onDelete: Cascade)
-  fileObject   FileObject            @relation(fields: [fileObjectId], references: [id], onDelete: Cascade)
-  accessGrants RecordAccessGrant[]
-
-  @@index([patientId, category])
-  @@map("medical_records")
-}
-
-model RecordAccessGrant {
-  id                String        @id @default(uuid())
-  recordId          String
-  grantedToDoctorId String
-  expiresAt         DateTime
-  revokedAt         DateTime?
-  revokedBy         String?
-  createdAt         DateTime      @default(now())
-
-  record            MedicalRecord @relation(fields: [recordId], references: [id], onDelete: Cascade)
-  doctor            DoctorProfile @relation(fields: [grantedToDoctorId], references: [id], onDelete: Cascade)
-
-  @@index([recordId, grantedToDoctorId])
-  @@index([grantedToDoctorId, expiresAt])
-  @@map("record_access_grants")
-}
-
-model DiagnosticReport {
-  id           String            @id @default(uuid())
-  bookingId    String
-  fileObjectId String            @unique
-  reportNotes  String?
-  releasedAt   DateTime          @default(now())
-  releasedBy   String?           // User ID of pathologist/radiologist
-
-  booking      DiagnosticBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
-  fileObject   FileObject        @relation(fields: [fileObjectId], references: [id], onDelete: Cascade)
-
-  @@index([bookingId])
-  @@map("diagnostic_reports")
-}
-
-// ─────────────────────────────────────────────
-// NOTIFICATIONS & AUDIT
-// ─────────────────────────────────────────────
-
-model Notification {
-  id         String           @id @default(uuid())
-  userId     String
-  title      String
-  message    String
-  type       NotificationType @default(SYSTEM)
-  entityType String?          // "appointment", "booking", "medical_record"
-  entityId   String?
-  isRead     Boolean          @default(false)
-  createdAt  DateTime         @default(now())
-
-  user       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId, isRead])
-  @@map("notifications")
-}
-
-model AuditEvent {
-  id             String        @id @default(uuid())
-  actorType      ActorType
-  actorId        String?
-  action         String        // e.g. "record.upload", "record.share", "record.revoke", "diagnostic.book"
-  entityType     String        // e.g. "User", "Appointment", "MedicalRecord", "DiagnosticBooking"
-  entityId       String?
-  organizationId String?
-  metadata       Json?         // Strict: Non-PHI context only
-  ipAddress      String?
-  createdAt      DateTime      @default(now())
-
-  actor          User?         @relation(fields: [actorId], references: [id], onDelete: SetNull)
-  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
-
-  @@index([actorId, createdAt])
-  @@index([entityType, entityId, createdAt])
-  @@index([action, createdAt])
-  @@map("audit_events")
-}
-
-model ConsentRecord {
-  id          String    @id @default(uuid())
-  patientId   String
-  consentType String    // e.g. "medical_records_sharing", "terms_of_service", "privacy_policy"
-  version     String
-  grantedAt   DateTime  @default(now())
-  withdrawnAt DateTime?
-
-  patient     User      @relation(fields: [patientId], references: [id], onDelete: Cascade)
-
-  @@index([patientId, consentType])
-  @@map("consent_records")
 }

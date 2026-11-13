@@ -176,11 +176,15 @@ export function ShifaDriveClient() {
 
       // Step 2: Upload file to presigned URL (dev fallback: skip actual PUT)
       if (!uploadUrl.startsWith("/api/")) {
-        await fetch(uploadUrl, {
+        const uploadRes = await fetch(uploadUrl, {
           method: "PUT",
           headers: { "Content-Type": uploadFile.type },
           body: uploadFile,
         });
+
+        if (!uploadRes.ok) {
+          throw new Error("The file could not be uploaded to secure storage.");
+        }
       }
       // In dev, the storageKey is registered directly (file bytes aren't stored)
 

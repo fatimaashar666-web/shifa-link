@@ -10,6 +10,12 @@
 import 'server-only'
 
 import crypto from 'node:crypto'
+import {
+  GetObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3'
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
 // Allowed MIME types for health records, lab reports, and imaging
 export const ALLOWED_MIME_TYPES = new Set([
@@ -60,10 +66,48 @@ export function validateFileSize(sizeBytes: number): boolean {
   return sizeBytes > 0 && sizeBytes <= MAX_FILE_SIZE_BYTES
 }
 
+function getStorageConfig() {
+  const endpoint = process.env.STORAGE_ENDPOINT?.trim()
+  const bucket = process.env.STORAGE_BUCKET_NAME?.trim()
+  const accessKeyId = process.env.STORAGE_ACCESS_KEY_ID?.trim()
+  const secretAccessKey = process.env.STORAGE_SECRET_ACCESS_KEY?.trim()
+
+  if (!endpoint || !bucket || !accessKeyId || !secretAccessKey) {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error(
+        'Object storage is not configured. Set STORAGE_ENDPOINT, STORAGE_BUCKET_NAME, STORAGE_ACCESS_KEY_ID, and STORAGE_SECRET_ACCESS_KEY.',
+      )
+    }
+
+    return null
+  }
+
+  return {
+    endpoint,
+    bucket,
+    accessKeyId,
+    secretAccessKey,
+    region: process.env.STORAGE_REGION?.trim() || 'auto',
+    forcePathStyle: process.env.STORAGE_FORCE_PATH_STYLE === 'true',
+  }
+}
+
+function createStorageClient(config: NonNullable<ReturnType<typeof getStorageConfig>>) {
+  return new S3Client({
+    region: config.region,
+    endpoint: config.endpoint,
+    forcePathStyle: config.forcePathStyle,
+    credentials: {
+      accessKeyId: config.accessKeyId,
+      secretAccessKey: config.secretAccessKey,
+    },
+  })
+}
+
 /**
- * Generate presigned upload URL.
- * When real S3/R2 credentials are configured in .env.local, integrates with S3 Client.
- * When in development/test mode, returns an authenticated Next.js mock upload endpoint.
+ * Generate a real S3-compatible presigned upload URL.
+ * When storage is not configured in development, use the authenticated
+ * direct-upload fallback so local development can still exercise the DB flow.
  */
 export async function createPresignedUploadUrl(params: {
   storageKey: string
@@ -72,16 +116,22 @@ export async function createPresignedUploadUrl(params: {
 }): Promise<PresignedUploadResult> {
   const expiresAt = new Date(Date.now() + 15 * 60 * 1000) // 15 minutes
 
-  const endpoint = process.env.STORAGE_ENDPOINT
-  const bucket = process.env.STORAGE_BUCKET_NAME
+  const config = getStorageConfig()
 
-  if (endpoint && bucket && process.env.STORAGE_ACCESS_KEY_ID && !endpoint.includes('mock')) {
-    // Standard S3 / R2 presigned PUT url
-    const uploadUrl = `${endpoint.replace(/\/$/, '')}/${bucket}/${params.storageKey}`
+  if (config) {
+    const client = createStorageClient(config)
+    const command = new PutObjectCommand({
+      Bucket: config.bucket,
+      Key: params.storageKey,
+      ContentType: params.mimeType,
+    })
+    const uploadUrl = await getSignedUrl(client, command, { expiresIn: 15 * 60 })
+
     return {
       uploadUrl,
       storageKey: params.storageKey,
       expiresAt,
+      requiredHeaders: { 'Content-Type': params.mimeType },
     }
   }
 
@@ -101,12 +151,16 @@ export async function createPresignedUploadUrl(params: {
  * Note: Must only be called AFTER authorization/consent check at request time (ADR-06).
  */
 export async function createPresignedDownloadUrl(storageKey: string): Promise<string> {
-  const endpoint = process.env.STORAGE_ENDPOINT
-  const bucket = process.env.STORAGE_BUCKET_NAME
+  const config = getStorageConfig()
 
-  if (endpoint && bucket && process.env.STORAGE_ACCESS_KEY_ID && !endpoint.includes('mock')) {
-    // In production S3/R2, returns signed GET URL with 10-minute expiry
-    return `${endpoint.replace(/\/$/, '')}/${bucket}/${storageKey}?exp=${Date.now() + 600000}`
+  if (config) {
+    const client = createStorageClient(config)
+    const command = new GetObjectCommand({
+      Bucket: config.bucket,
+      Key: storageKey,
+    })
+
+    return getSignedUrl(client, command, { expiresIn: 10 * 60 })
   }
 
   // Fallback direct stream endpoint

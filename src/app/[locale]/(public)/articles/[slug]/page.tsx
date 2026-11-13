@@ -11,6 +11,12 @@ import { getArticleBySlug, getPublishedArticles } from "@/lib/sanity/client";
 import { getSanityImageUrl } from "@/lib/sanity/image";
 import { getLocalizedValue } from "@/lib/sanity/localization";
 
+const knownArticleCategories: Record<string, string> = {
+  "Cardiovascular Health": "articleCategories.cardiovascular",
+  "Diagnostic Guides": "articleCategories.diagnostics",
+  "Preventive Care": "articleCategories.preventive",
+};
+
 interface ArticleDetailPageProps {
   params: Promise<{ locale: string; slug: string }>;
 }
@@ -23,6 +29,8 @@ export async function generateStaticParams() {
 export default async function ArticleDetailPage({ params }: ArticleDetailPageProps) {
   const { locale, slug } = await params;
   const tCommon = await getTranslations({ locale, namespace: "common" });
+  const tArticleDetail = await getTranslations({ locale, namespace: "articleDetail" });
+  const tMeta = await getTranslations({ locale, namespace: "articleMeta" });
 
   const article = await getArticleBySlug(slug);
   if (!article) {
@@ -48,11 +56,13 @@ export default async function ArticleDetailPage({ params }: ArticleDetailPagePro
 
         <div className="flex flex-wrap items-center gap-2 mb-4">
           <Badge variant="secondary" className="text-xs">
-            {article.category}
+            {knownArticleCategories[article.category]
+              ? tMeta(knownArticleCategories[article.category])
+              : article.category}
           </Badge>
           <span className="flex items-center gap-1 text-xs text-emerald-600 dark:text-emerald-400 font-medium">
             <ShieldCheck className="h-3.5 w-3.5" />
-            Clinically Reviewed
+            {tArticleDetail("clinicallyReviewed")}
           </span>
         </div>
 
@@ -63,7 +73,7 @@ export default async function ArticleDetailPage({ params }: ArticleDetailPagePro
         <div className="flex items-center gap-4 text-xs text-slate-500 mt-4 border-b border-slate-100 dark:border-slate-800 pb-4">
           <span className="flex items-center gap-1">
             <User className="h-3.5 w-3.5" />
-            {article.authorDisplay ?? "Clinical Review Board"}
+            {article.authorDisplay ?? tArticleDetail("clinicalReviewBoard")}
           </span>
           <span>•</span>
           <span className="flex items-center gap-1">
@@ -74,7 +84,7 @@ export default async function ArticleDetailPage({ params }: ArticleDetailPagePro
                   day: "numeric",
                   year: "numeric",
                 })
-              : "Recent"}
+              : tArticleDetail("recent")}
           </span>
         </div>
       </div>

@@ -1,36 +1,20 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 
 interface Review {
   id: number;
-  text: string;
-  author: string;
-  role: string;
 }
 
 const REVIEWS: Review[] = [
-  {
-    id: 1,
-    text: "Very good app.Well thought out about booking/rescheduling/cancelling an appointment. Also, Doctor's feedback mechanism is good and describes all the basics in a good way.",
-    author: "Ayesha Khan",
-    role: "Product Lead at Novatek",
-  },
-  {
-    id: 2,
-    text: "Clean interface, fast performance, very easy to book,maintain history.Hassle free from older versions of booking appointments via telephone.Thanks Shifalink for making it simple.",
-    author: "Marcus Vance",
-    role: "Founder at Studio North",
-  },
-  {
-    id: 3,
-    text: "Very helpful.Far easier than doing it manually.Allows you to see the available slots and book an appointment without having to call the clinic.Thank you for making it easy.",
-    author: "Elena Rostova",
-    role: "Head of Growth at Looma",
-  },
+  { id: 1 },
+  { id: 2 },
+  { id: 3 },
 ];
 
 export default function ReviewCarousel() {
+  const t = useTranslations("reviews");
   const [current, setCurrent] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
@@ -54,14 +38,16 @@ export default function ReviewCarousel() {
 
   return (
     <section
-      aria-label="Customer Reviews"
+      aria-label={t("ariaLabel")}
       className="mx-auto max-w-3xl px-6 py-16"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
       <div className="mx-auto mb-12 max-w-2xl text-center">
         <h2 className="mb-2 text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">
-What our users have to say</h2></div>
+          {t("title")}
+        </h2>
+      </div>
       <div className="relative rounded-2xl border border-slate-200 bg-white px-8 py-12 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:px-16">
         {/* Opening Quotation Mark */}
         <span
@@ -75,15 +61,17 @@ What our users have to say</h2></div>
         <div className="relative z-10 text-center" aria-live="polite">
           <blockquote className="flex min-h-[110px] items-center justify-center">
             <p className="text-lg font-medium leading-relaxed text-slate-800 dark:text-slate-100 sm:text-xl">
-              {REVIEWS[current].text}
+              {t(`items.${REVIEWS[current].id}.text`)}
             </p>
           </blockquote>
 
           <div className="mt-6">
             <p className="font-semibold text-slate-900 dark:text-white">
-              {REVIEWS[current].author}
+              {t(`items.${REVIEWS[current].id}.author`)}
             </p>
-            <p className="text-sm text-slate-500 dark:text-slate-400">{REVIEWS[current].role}</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              {t(`items.${REVIEWS[current].id}.role`)}
+            </p>
           </div>
         </div>
 
@@ -101,7 +89,7 @@ What our users have to say</h2></div>
         <button
           type="button"
           onClick={prevSlide}
-          aria-label="Previous review"
+          aria-label={t("previous")}
           className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-300 text-slate-600 transition hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
         >
           &#8592;
@@ -113,7 +101,7 @@ What our users have to say</h2></div>
               key={index}
               type="button"
               onClick={() => setCurrent(index)}
-              aria-label={`Go to review ${index + 1}`}
+              aria-label={t("goTo", { number: index + 1 })}
               aria-pressed={current === index}
               className={`h-2.5 rounded-full transition-all ${
                 current === index
@@ -127,7 +115,7 @@ What our users have to say</h2></div>
         <button
           type="button"
           onClick={nextSlide}
-          aria-label="Next review"
+          aria-label={t("next")}
           className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-300 text-slate-600 transition hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
         >
           &#8594;

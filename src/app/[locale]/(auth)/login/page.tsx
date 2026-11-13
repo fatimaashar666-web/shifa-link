@@ -11,6 +11,7 @@ export default async function LoginPage({
 }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "auth" });
+  const tLinks = await getTranslations({ locale, namespace: "loginLinks" });
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 p-4">
@@ -82,9 +83,9 @@ export default async function LoginPage({
               </Link>
             </p>
             <p>
-              Are you a doctor?{" "}
+              {tLinks("doctorPrompt")}{" "}
               <Link href="/register-doctor" className="font-semibold text-slate-700 dark:text-slate-300 hover:underline">
-                Doctor onboarding
+                {tLinks("doctorOnboarding")}
               </Link>
             </p>
           </CardFooter>

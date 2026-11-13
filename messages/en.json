@@ -30,6 +30,89 @@
     "filter": "Filter",
     "submit": "Submit"
   },
+  "articles": {
+    "description": "Clinically reviewed articles and patient education resources to help you make informed decisions regarding appointments and diagnostics."
+  },
+  "doctors": {
+    "imageAlt": "Doctors working in a bright hospital",
+    "description": "Book verified healthcare specialists, view transparent consultation fees, and schedule clinic or telehealth appointments.",
+    "searchPlaceholder": "Search by doctor name, clinical focus, or medical condition...",
+    "allSpecialties": "All Specialties",
+    "telehealthOnly": "Telehealth Only",
+    "noDoctorsFound": "No doctors found matching criteria",
+    "adjustFilters": "Try adjusting your search terms or clearing specialty filters.",
+    "clearFilters": "Clear Filters",
+    "consultationFee": "Consultation Fee",
+    "specialties": {
+      "cardiology": "Cardiology",
+      "dermatology": "Dermatology",
+      "generalMedicine": "General Medicine",
+      "neurology": "Neurology",
+      "orthopedics": "Orthopedics",
+      "pediatrics": "Pediatrics"
+    }
+  },
+  "patientDashboard": {
+    "eyebrow": "Patient account",
+    "title": "Your health dashboard",
+    "description": "Manage consultations, diagnostic bookings, and your private ShifaLink Drive records from one secure account.",
+    "findDoctor": "Find a Doctor",
+    "appointmentsTitle": "My Consultations",
+    "appointmentsDescription": "View, reschedule, or cancel your clinic and video appointments.",
+    "driveTitle": "ShifaLink Drive",
+    "driveDescription": "Open your medical-record account to upload, organize, download, and share records securely.",
+    "diagnosticsTitle": "Diagnostic Bookings",
+    "diagnosticsDescription": "Track laboratory and radiology bookings and follow report updates.",
+    "open": "Open",
+    "dashboardLink": "Patient Dashboard"
+  },
+  "diagnostics": {
+    "labImageAlt": "Laboratory professionals working with diagnostic samples",
+    "labDescription": "Book certified laboratory tests with transparent pricing, certified phlebotomy sample collection, and digital reports delivered securely to your ShifaLink Drive.",
+    "radiologyImageAlt": "Radiology professionals reviewing medical imaging",
+    "radiologyDescription": "Schedule diagnostic imaging services including X-Rays, Ultrasounds, CT Scans, and MRIs with certified partner radiology centers.",
+    "loadError": "Unable to load services at this time. Please try again shortly.",
+    "noLabServices": "No lab services available yet. Check back soon.",
+    "noRadiologyServices": "No radiology services available yet. Check back soon.",
+    "isoCertified": "ISO-15189 Certified",
+    "certifiedLabTest": "Certified diagnostic laboratory test.",
+    "reportWithinHours": "Report within {hours} hours",
+    "homeCollectionAvailable": "Home Sample Collection Available",
+    "certifiedImagingService": "Certified diagnostic imaging service.",
+    "sameDayReport": "Same day / 24h report",
+    "reportWithinDays": "Report within {days} day(s)"
+  },
+  "standards": {
+    "title": "Our Clinical Standards",
+    "isoLabCompliance": "ISO-15189 Lab Compliance",
+    "encryption": "End-to-End Encryption",
+    "verifiedLicensure": "PMC/PMDC Verified Licensure",
+    "cloudRedundancy": "Multi-Region Cloud Redundancy"
+  },
+  "articleDetail": {
+    "clinicallyReviewed": "Clinically Reviewed",
+    "clinicalReviewBoard": "Clinical Review Board",
+    "recent": "Recent"
+  },
+  "loginLinks": {
+    "doctorPrompt": "Are you a doctor?",
+    "doctorOnboarding": "Doctor onboarding"
+  },
+  "registration": {
+    "dateOfBirth": "Date of birth",
+    "phoneNumber": "Phone number",
+    "gender": "Gender",
+    "selectGender": "Select gender",
+    "male": "Male",
+    "female": "Female",
+    "other": "Other",
+    "preferNotToSay": "Prefer not to say",
+    "bloodGroup": "Blood group",
+    "selectBloodGroup": "Select blood group",
+    "unknown": "Unknown",
+    "consentNotice": "By creating an account, you consent to our secure, role-based medical record handling policy.",
+    "creatingAccount": "Creating account..."
+  },
   "home": {
     "clinicalSafetyTitle": "Clinical Safety Notice",
     "clinicalSafetyBody": "ShifaLink is a scheduled appointment and record coordination platform, not an emergency facility. If you or someone with you experiences acute emergency symptoms, please call your local emergency service (e.g. 112, 911, or 15) immediately.",
@@ -62,6 +145,22 @@
     "articlesEditorialBoard": "Editorial Board",
     "articlesEmpty": "New health articles will appear here soon."
   },
+  "articleMeta": {
+    "articleCategories": { "cardiovascular": "Cardiovascular Health", "diagnostics": "Diagnostic Guides", "preventive": "Preventive Care" },
+    "articleAuthors": { "clinicalAdvisoryPanel": "Clinical Advisory Panel", "laboratoryClinicalTeam": "Laboratory Clinical Team", "primaryCareWorkingGroup": "Primary Care Working Group" }
+  },
+  "reviews": {
+    "ariaLabel": "Customer reviews",
+    "title": "What our users have to say",
+    "previous": "Previous review",
+    "next": "Next review",
+    "goTo": "Go to review {number}",
+    "items": {
+      "1": { "text": "Very good app. Well thought out for booking, rescheduling, and cancelling appointments. The doctor's feedback mechanism is also helpful and covers the basics clearly.", "author": "Ayesha Khan", "role": "Product Lead at Novatek" },
+      "2": { "text": "Clean interface, fast performance, and very easy to book and maintain history. It is much easier than booking appointments by telephone. Thanks ShifaLink for making it simple.", "author": "Marcus Vance", "role": "Founder at Studio North" },
+      "3": { "text": "Very helpful and far easier than doing it manually. You can see available slots and book an appointment without calling the clinic. Thank you for making it easy.", "author": "Elena Rostova", "role": "Head of Growth at Looma" }
+    }
+  },
   "about": {
     "title": "About ShifaLink",
     "description": "ShifaLink is a responsive, privacy-conscious digital healthcare platform connecting patients, qualified physicians, and certified diagnostic centers across unified clinical workflows.",
@@ -89,6 +188,8 @@
   },
   "footer": {
     "tagline": "Connecting healthcare users and providers through secure appointments, diagnostics, and records.",
+    "privacyBadge": "Encrypted & Privacy-First",
+    "mission": "Dedicated to human-centered digital healthcare",
     "rights": "All rights reserved",
     "privacy": "Privacy Policy",
     "terms": "Terms of Service",

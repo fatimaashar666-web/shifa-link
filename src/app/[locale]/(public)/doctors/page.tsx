@@ -7,6 +7,15 @@ import { PageBanner } from "@/components/layout/PageBanner";
 import { Search, CheckCircle2, MapPin, Video, Stethoscope, Globe2 } from "lucide-react";
 import * as doctorService from "@/server/services/doctor.service";
 
+const specialtyMessageKeys: Record<string, string> = {
+  cardiology: "specialties.cardiology",
+  dermatology: "specialties.dermatology",
+  "general-medicine": "specialties.generalMedicine",
+  neurology: "specialties.neurology",
+  orthopedics: "specialties.orthopedics",
+  pediatrics: "specialties.pediatrics",
+};
+
 interface DoctorsPageProps {
   params: Promise<{ locale: string }>;
   searchParams: Promise<{
@@ -21,6 +30,7 @@ export default async function DoctorsPage({ params, searchParams }: DoctorsPageP
   const { locale } = await params;
   const tNav = await getTranslations({ locale, namespace: "nav" });
   const tCommon = await getTranslations({ locale, namespace: "common" });
+  const tDoctors = await getTranslations({ locale, namespace: "doctors" });
 
   const resolvedParams = await searchParams;
   const q = resolvedParams.q;
@@ -43,9 +53,9 @@ export default async function DoctorsPage({ params, searchParams }: DoctorsPageP
     <div className="container mx-auto max-w-7xl space-y-8 px-4 py-8 sm:px-6">
       <PageBanner
         image="/find-a-doctor.png"
-        alt="Doctors working in a bright hospital"
+        alt={tDoctors("imageAlt")}
         heading={tNav("findDoctor")}
-        description="Book verified healthcare specialists, view transparent consultation fees, and schedule clinic or telehealth appointments."
+        description={tDoctors("description")}
       />
 
         {/* Search and filters */}
@@ -57,7 +67,7 @@ export default async function DoctorsPage({ params, searchParams }: DoctorsPageP
             type="text"
             name="q"
             defaultValue={q ?? ""}
-            placeholder="Search by doctor name, clinical focus, or medical condition..."
+            placeholder={tDoctors("searchPlaceholder")}
             className="w-full rounded-lg border border-slate-300 bg-white pl-10 pr-24 py-2.5 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
           />
           <button
@@ -75,7 +85,7 @@ export default async function DoctorsPage({ params, searchParams }: DoctorsPageP
               variant={!specialtySlug ? "default" : "outline"}
               className="cursor-pointer"
             >
-              All Specialties
+              {tDoctors("allSpecialties")}
             </Badge>
           </Link>
           {specialties.map((s) => (
@@ -84,7 +94,7 @@ export default async function DoctorsPage({ params, searchParams }: DoctorsPageP
                 variant={specialtySlug === s.slug ? "default" : "outline"}
                 className="cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800"
               >
-                {s.name}
+                {specialtyMessageKeys[s.slug] ? tDoctors(specialtyMessageKeys[s.slug]) : s.name}
               </Badge>
             </Link>
           ))}
@@ -94,7 +104,7 @@ export default async function DoctorsPage({ params, searchParams }: DoctorsPageP
               className="cursor-pointer flex items-center gap-1"
             >
               <Video className="h-3 w-3" />
-              Telehealth Only
+              {tDoctors("telehealthOnly")}
             </Badge>
           </Link>
         </div>
@@ -105,13 +115,13 @@ export default async function DoctorsPage({ params, searchParams }: DoctorsPageP
         <div className="rounded-xl border border-dashed border-slate-300 dark:border-slate-800 p-12 text-center space-y-3">
           <Stethoscope className="mx-auto h-10 w-10 text-slate-400" />
           <h3 className="text-base font-semibold text-slate-900 dark:text-white">
-            No doctors found matching criteria
+            {tDoctors("noDoctorsFound")}
           </h3>
           <p className="text-xs text-slate-500">
-            Try adjusting your search terms or clearing specialty filters.
+            {tDoctors("adjustFilters")}
           </p>
           <Button asChild variant="outline" size="sm">
-            <Link href="/doctors">Clear Filters</Link>
+            <Link href="/doctors">{tDoctors("clearFilters")}</Link>
           </Button>
         </div>
         ) : (
@@ -136,7 +146,9 @@ export default async function DoctorsPage({ params, searchParams }: DoctorsPageP
                       </div>
                       {primarySpec && (
                         <Badge variant="secondary" className="mt-1 text-xs font-medium">
-                          {primarySpec.name}
+                          {specialtyMessageKeys[primarySpec.slug]
+                            ? tDoctors(specialtyMessageKeys[primarySpec.slug])
+                            : primarySpec.name}
                         </Badge>
                       )}
                     </div>
@@ -172,7 +184,7 @@ export default async function DoctorsPage({ params, searchParams }: DoctorsPageP
 
                 <CardContent className="space-y-3 pt-0">
                   <div className="rounded-lg bg-slate-50 dark:bg-slate-800/50 p-2.5 text-xs flex items-center justify-between">
-                    <span className="text-slate-600 dark:text-slate-400">Consultation Fee</span>
+                    <span className="text-slate-600 dark:text-slate-400">{tDoctors("consultationFee")}</span>
                     <span className="font-bold text-slate-900 dark:text-white">
                       Rs. {doc.consultationFee.toLocaleString()}
                     </span>

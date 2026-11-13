@@ -16,8 +16,21 @@ import { getPublishedArticles } from "@/lib/sanity/client";
 import { getSanityImageUrl } from "@/lib/sanity/image";
 import { getLocalizedValue } from "@/lib/sanity/localization";
 
+const knownArticleCategories: Record<string, string> = {
+  "Cardiovascular Health": "articleCategories.cardiovascular",
+  "Diagnostic Guides": "articleCategories.diagnostics",
+  "Preventive Care": "articleCategories.preventive",
+};
+
+const knownArticleAuthors: Record<string, string> = {
+  "Clinical Advisory Panel": "articleAuthors.clinicalAdvisoryPanel",
+  "Laboratory Clinical Team": "articleAuthors.laboratoryClinicalTeam",
+  "Primary Care Working Group": "articleAuthors.primaryCareWorkingGroup",
+};
+
 export default async function HealthArticles({ locale }: { locale: string }) {
   const t = await getTranslations({ locale, namespace: "home" });
+  const tMeta = await getTranslations({ locale, namespace: "articleMeta" });
   const tCommon = await getTranslations({ locale, namespace: "common" });
   const articles = (await getPublishedArticles()).slice(0, 3);
 
@@ -69,7 +82,9 @@ export default async function HealthArticles({ locale }: { locale: string }) {
                 <CardHeader className="space-y-3">
                   <div className="flex items-center justify-between gap-3">
                     <Badge variant="outline" className="text-[10px] uppercase tracking-wide">
-                      {article.category}
+                      {knownArticleCategories[article.category]
+                        ? tMeta(knownArticleCategories[article.category])
+                        : article.category}
                     </Badge>
                     <span className="flex items-center gap-1 text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
                       <ShieldCheck className="h-3.5 w-3.5" />
@@ -98,7 +113,13 @@ export default async function HealthArticles({ locale }: { locale: string }) {
                         : t("articlesRecent")}
                     </span>
                     <span aria-hidden="true">•</span>
-                    <span>{article.authorDisplay ?? t("articlesEditorialBoard")}</span>
+                    <span>
+                      {article.authorDisplay
+                        ? knownArticleAuthors[article.authorDisplay]
+                          ? tMeta(knownArticleAuthors[article.authorDisplay])
+                          : article.authorDisplay
+                        : t("articlesEditorialBoard")}
+                    </span>
                   </div>
                 </CardContent>
 

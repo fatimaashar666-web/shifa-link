@@ -30,6 +30,89 @@
     "filter": "絞り込み",
     "submit": "送信"
   },
+  "articles": {
+    "description": "臨床的にレビューされた記事と患者向けの教育資料で、診療予約や検査について十分な情報に基づく判断をサポートします。"
+  },
+  "doctors": {
+    "imageAlt": "明るい病院で働く医師たち",
+    "description": "認証済みの医療専門家を予約し、透明な診療料金を確認して、対面またはオンライン診療の予約を行えます。",
+    "searchPlaceholder": "医師名、診療分野、または症状で検索...",
+    "allSpecialties": "すべての診療科",
+    "telehealthOnly": "オンライン診療のみ",
+    "noDoctorsFound": "条件に一致する医師が見つかりません",
+    "adjustFilters": "検索語を調整するか、診療科のフィルターを解除してください。",
+    "clearFilters": "フィルターを解除",
+    "consultationFee": "診療料金",
+    "specialties": {
+      "cardiology": "循環器内科",
+      "dermatology": "皮膚科",
+      "generalMedicine": "一般内科",
+      "neurology": "神経内科",
+      "orthopedics": "整形外科",
+      "pediatrics": "小児科"
+    }
+  },
+  "patientDashboard": {
+    "eyebrow": "患者アカウント",
+    "title": "健康ダッシュボード",
+    "description": "安全なアカウントから、診療予約、検査予約、非公開のShifaLink Drive記録を管理できます。",
+    "findDoctor": "医師を探す",
+    "appointmentsTitle": "診療予約",
+    "appointmentsDescription": "対面診療とビデオ診療の予約を確認、変更、キャンセルできます。",
+    "driveTitle": "ShifaLink Drive",
+    "driveDescription": "医療記録アカウントを開き、記録を安全にアップロード、整理、ダウンロード、共有できます。",
+    "diagnosticsTitle": "検査予約",
+    "diagnosticsDescription": "検査室・放射線検査の予約とレポートの更新を確認できます。",
+    "open": "開く",
+    "dashboardLink": "患者ダッシュボード"
+  },
+  "diagnostics": {
+    "labImageAlt": "検査用検体を扱う検査室スタッフ",
+    "labDescription": "透明な料金体系、認定採血スタッフによる検体採取、安全なShifaLink Driveへのデジタルレポート配信に対応した認定検査を予約できます。",
+    "radiologyImageAlt": "医療画像を確認する放射線科スタッフ",
+    "radiologyDescription": "認定された提携放射線センターで、X線、超音波、CT、MRIなどの画像診断サービスを予約できます。",
+    "loadError": "現在サービスを読み込めません。しばらくしてからもう一度お試しください。",
+    "noLabServices": "現在利用できる検査サービスはありません。後でもう一度ご確認ください。",
+    "noRadiologyServices": "現在利用できる放射線検査サービスはありません。後でもう一度ご確認ください。",
+    "isoCertified": "ISO-15189認証済み",
+    "certifiedLabTest": "認定診断検査。",
+    "reportWithinHours": "{hours}時間以内にレポートを提供",
+    "homeCollectionAvailable": "自宅検体採取に対応",
+    "certifiedImagingService": "認定画像診断サービス。",
+    "sameDayReport": "当日 / 24時間以内にレポートを提供",
+    "reportWithinDays": "{days}日以内にレポートを提供"
+  },
+  "standards": {
+    "title": "私たちの臨床基準",
+    "isoLabCompliance": "ISO-15189検査室基準への準拠",
+    "encryption": "エンドツーエンド暗号化",
+    "verifiedLicensure": "PMC/PMDC認証済み資格",
+    "cloudRedundancy": "複数地域のクラウド冗長化"
+  },
+  "articleDetail": {
+    "clinicallyReviewed": "臨床レビュー済み",
+    "clinicalReviewBoard": "臨床審査委員会",
+    "recent": "最新"
+  },
+  "loginLinks": {
+    "doctorPrompt": "医師の方ですか？",
+    "doctorOnboarding": "医師登録"
+  },
+  "registration": {
+    "dateOfBirth": "生年月日",
+    "phoneNumber": "電話番号",
+    "gender": "性別",
+    "selectGender": "性別を選択",
+    "male": "男性",
+    "female": "女性",
+    "other": "その他",
+    "preferNotToSay": "回答しない",
+    "bloodGroup": "血液型",
+    "selectBloodGroup": "血液型を選択",
+    "unknown": "不明",
+    "consentNotice": "アカウントを作成することで、安全で役割に基づく医療記録の取り扱いポリシーに同意したものとみなされます。",
+    "creatingAccount": "アカウントを作成中..."
+  },
   "home": {
     "clinicalSafetyTitle": "臨床安全に関する注意",
     "clinicalSafetyBody": "ShifaLinkは、予定された診療予約と医療記録を調整するためのプラットフォームであり、救急医療施設ではありません。あなたや同伴者に急を要する症状がある場合は、直ちに地域の救急サービス（112、911、15など）へ連絡してください。",
@@ -62,6 +145,22 @@
     "articlesEditorialBoard": "編集委員会",
     "articlesEmpty": "新しい健康記事がまもなくここに表示されます。"
   },
+  "articleMeta": {
+    "articleCategories": { "cardiovascular": "循環器の健康", "diagnostics": "検査ガイド", "preventive": "予防医療" },
+    "articleAuthors": { "clinicalAdvisoryPanel": "臨床諮問パネル", "laboratoryClinicalTeam": "検査室臨床チーム", "primaryCareWorkingGroup": "プライマリケア作業部会" }
+  },
+  "reviews": {
+    "ariaLabel": "ユーザーレビュー",
+    "title": "利用者の声",
+    "previous": "前のレビュー",
+    "next": "次のレビュー",
+    "goTo": "レビュー{number}へ移動",
+    "items": {
+      "1": { "text": "とても良いアプリです。予約、変更、キャンセルの流れがよく考えられています。医師からのフィードバック機能も役立ち、基本的な内容が分かりやすく説明されています。", "author": "アイシャ・カーン", "role": "Novatek プロダクトリード" },
+      "2": { "text": "分かりやすい画面で動作も速く、予約や履歴の管理がとても簡単です。電話で予約するよりずっと便利です。簡単に利用できるサービスをありがとうございます。", "author": "マーカス・ヴァンス", "role": "Studio North 創業者" },
+      "3": { "text": "とても便利で、手作業よりはるかに簡単です。空き時間を確認して、クリニックに電話せず予約できます。使いやすくしてくれてありがとうございます。", "author": "エレナ・ロストワ", "role": "Looma グロース責任者" }
+    }
+  },
   "about": {
     "title": "ShifaLinkについて",
     "description": "ShifaLinkはプライバシー保護を第一に考え、患者様、医療従事者、提携診断センターをつなぐ包括的な医療SaaSプラットフォームです。",
@@ -89,6 +188,8 @@
   },
   "footer": {
     "tagline": "診療予約、臨床検査、医療記録管理を安全に統合するデジタルヘルスケアプラットフォーム。",
+    "privacyBadge": "暗号化とプライバシーを最優先",
+    "mission": "人を中心に考えたデジタルヘルスケアに取り組んでいます",
     "rights": "無断転載を禁じます",
     "privacy": "プライバシーポリシー",
     "terms": "利用規約",

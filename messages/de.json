@@ -30,6 +30,89 @@
     "filter": "Filtern",
     "submit": "Absenden"
   },
+  "articles": {
+    "description": "Klinisch geprüfte Artikel und Gesundheitsinformationen für Patienten, die Ihnen fundierte Entscheidungen zu Terminen und Diagnostik ermöglichen."
+  },
+  "doctors": {
+    "imageAlt": "Ärzte bei der Arbeit in einem hellen Krankenhaus",
+    "description": "Buchen Sie verifizierte medizinische Fachkräfte, sehen Sie transparente Beratungskosten und vereinbaren Sie Termine in der Praxis oder per Telemedizin.",
+    "searchPlaceholder": "Nach Name, klinischem Schwerpunkt oder Erkrankung suchen...",
+    "allSpecialties": "Alle Fachgebiete",
+    "telehealthOnly": "Nur Telemedizin",
+    "noDoctorsFound": "Keine Ärzte mit diesen Kriterien gefunden",
+    "adjustFilters": "Passen Sie Ihre Suchbegriffe an oder löschen Sie die Fachgebietsfilter.",
+    "clearFilters": "Filter löschen",
+    "consultationFee": "Beratungsgebühr",
+    "specialties": {
+      "cardiology": "Kardiologie",
+      "dermatology": "Dermatologie",
+      "generalMedicine": "Allgemeinmedizin",
+      "neurology": "Neurologie",
+      "orthopedics": "Orthopädie",
+      "pediatrics": "Kinderheilkunde"
+    }
+  },
+  "patientDashboard": {
+    "eyebrow": "Patientenkonto",
+    "title": "Ihr Gesundheits-Dashboard",
+    "description": "Verwalten Sie Termine, diagnostische Buchungen und Ihre privaten ShifaLink-Drive-Dokumente in einem sicheren Konto.",
+    "findDoctor": "Arzt finden",
+    "appointmentsTitle": "Meine Konsultationen",
+    "appointmentsDescription": "Sehen Sie Ihre Praxis- und Videotermine ein, verschieben oder stornieren Sie sie.",
+    "driveTitle": "ShifaLink Drive",
+    "driveDescription": "Öffnen Sie Ihr medizinisches Dokumentenkonto, um Unterlagen sicher hochzuladen, zu verwalten, herunterzuladen und zu teilen.",
+    "diagnosticsTitle": "Diagnostische Buchungen",
+    "diagnosticsDescription": "Verfolgen Sie Labor- und Radiologiebuchungen sowie den Status Ihrer Befunde.",
+    "open": "Öffnen",
+    "dashboardLink": "Patienten-Dashboard"
+  },
+  "diagnostics": {
+    "labImageAlt": "Laborpersonal bei der Arbeit mit diagnostischen Proben",
+    "labDescription": "Buchen Sie zertifizierte Labortests mit transparenten Preisen, zertifizierter Blutabnahme und sicher in Ihrem ShifaLink Drive bereitgestellten digitalen Befunden.",
+    "radiologyImageAlt": "Radiologiepersonal bei der Auswertung medizinischer Bilder",
+    "radiologyDescription": "Planen Sie bildgebende Untersuchungen wie Röntgen, Ultraschall, CT und MRT bei zertifizierten Partnerzentren.",
+    "loadError": "Die Dienste konnten derzeit nicht geladen werden. Bitte versuchen Sie es später erneut.",
+    "noLabServices": "Derzeit sind keine Labordienste verfügbar. Bitte schauen Sie später wieder vorbei.",
+    "noRadiologyServices": "Derzeit sind keine radiologischen Dienste verfügbar. Bitte schauen Sie später wieder vorbei.",
+    "isoCertified": "ISO-15189-zertifiziert",
+    "certifiedLabTest": "Zertifizierter diagnostischer Labortest.",
+    "reportWithinHours": "Befund innerhalb von {hours} Stunden",
+    "homeCollectionAvailable": "Probenabholung zu Hause verfügbar",
+    "certifiedImagingService": "Zertifizierte diagnostische Bildgebung.",
+    "sameDayReport": "Befund am selben Tag / innerhalb von 24 Stunden",
+    "reportWithinDays": "Befund innerhalb von {days} Tag(en)"
+  },
+  "standards": {
+    "title": "Unsere klinischen Standards",
+    "isoLabCompliance": "ISO-15189-Laborkonformität",
+    "encryption": "Ende-zu-Ende-Verschlüsselung",
+    "verifiedLicensure": "Verifizierte PMC/PMDC-Zulassung",
+    "cloudRedundancy": "Cloud-Redundanz über mehrere Regionen"
+  },
+  "articleDetail": {
+    "clinicallyReviewed": "Klinisch geprüft",
+    "clinicalReviewBoard": "Klinisches Prüfungsgremium",
+    "recent": "Aktuell"
+  },
+  "loginLinks": {
+    "doctorPrompt": "Sind Sie Arzt oder Ärztin?",
+    "doctorOnboarding": "Ärzte-Onboarding"
+  },
+  "registration": {
+    "dateOfBirth": "Geburtsdatum",
+    "phoneNumber": "Telefonnummer",
+    "gender": "Geschlecht",
+    "selectGender": "Geschlecht auswählen",
+    "male": "Männlich",
+    "female": "Weiblich",
+    "other": "Andere",
+    "preferNotToSay": "Keine Angabe",
+    "bloodGroup": "Blutgruppe",
+    "selectBloodGroup": "Blutgruppe auswählen",
+    "unknown": "Unbekannt",
+    "consentNotice": "Mit der Erstellung eines Kontos stimmen Sie unserer sicheren, rollenbasierten Richtlinie zur Verarbeitung medizinischer Daten zu.",
+    "creatingAccount": "Konto wird erstellt..."
+  },
   "home": {
     "clinicalSafetyTitle": "Klinischer Sicherheitshinweis",
     "clinicalSafetyBody": "ShifaLink ist eine Plattform zur Koordination geplanter Termine und medizinischer Unterlagen, keine Notfalleinrichtung. Wenn Sie oder eine Person bei Ihnen akute Notfallsymptome haben, rufen Sie bitte sofort den örtlichen Notdienst (z. B. 112, 911 oder 15).",
@@ -62,6 +145,22 @@
     "articlesEditorialBoard": "Redaktion",
     "articlesEmpty": "Neue Gesundheitsartikel erscheinen bald hier."
   },
+  "articleMeta": {
+    "articleCategories": { "cardiovascular": "Herz-Kreislauf-Gesundheit", "diagnostics": "Diagnostische Ratgeber", "preventive": "Präventive Versorgung" },
+    "articleAuthors": { "clinicalAdvisoryPanel": "Klinischer Beirat", "laboratoryClinicalTeam": "Klinisches Laborteam", "primaryCareWorkingGroup": "Arbeitsgruppe für Primärversorgung" }
+  },
+  "reviews": {
+    "ariaLabel": "Kundenbewertungen",
+    "title": "Das sagen unsere Nutzer",
+    "previous": "Vorherige Bewertung",
+    "next": "Nächste Bewertung",
+    "goTo": "Zu Bewertung {number}",
+    "items": {
+      "1": { "text": "Sehr gute App. Die Buchung, Umbuchung und Stornierung von Terminen ist gut durchdacht. Auch das Feedback-System der Ärzte ist hilfreich und erklärt die Grundlagen verständlich.", "author": "Ayesha Khan", "role": "Product Lead bei Novatek" },
+      "2": { "text": "Übersichtliche Oberfläche, schnelle Leistung und sehr einfache Buchung mit guter Verlaufshistorie. Viel unkomplizierter als eine telefonische Terminvereinbarung. Danke, ShifaLink, dass Sie es so einfach machen.", "author": "Marcus Vance", "role": "Gründer von Studio North" },
+      "3": { "text": "Sehr hilfreich und viel einfacher als die manuelle Vorgehensweise. Man sieht freie Termine und kann buchen, ohne in der Klinik anrufen zu müssen. Vielen Dank für die einfache Lösung.", "author": "Elena Rostova", "role": "Head of Growth bei Looma" }
+    }
+  },
   "about": {
     "title": "Über ShifaLink",
     "description": "ShifaLink ist eine datenschutzorientierte digitale Gesundheitsplattform, die Patienten, qualifizierte Ärzte und zertifizierte Diagnosezentren miteinander verbindet.",
@@ -89,6 +188,8 @@
   },
   "footer": {
     "tagline": "Sichere Termine, Diagnostik und Aktenverwaltung für Patienten und Gesundheitsdienstleister.",
+    "privacyBadge": "Verschlüsselt & datenschutzorientiert",
+    "mission": "Engagiert für eine menschenzentrierte digitale Gesundheitsversorgung",
     "rights": "Alle Rechte vorbehalten",
     "privacy": "Datenschutzrichtlinie",
     "terms": "Nutzungsbedingungen",

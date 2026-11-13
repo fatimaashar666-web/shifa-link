@@ -15,6 +15,7 @@ export default async function RadiologyPage({
   const { locale } = await params;
   const tNav = await getTranslations({ locale, namespace: "nav" });
   const tCommon = await getTranslations({ locale, namespace: "common" });
+  const tDiagnostics = await getTranslations({ locale, namespace: "diagnostics" });
 
   let radiologyServices: Awaited<ReturnType<typeof searchServices>> = [];
   let fetchError = false;
@@ -29,20 +30,20 @@ export default async function RadiologyPage({
     <div className="container mx-auto max-w-7xl space-y-8 px-4 py-8 sm:px-6">
       <PageBanner
         image="/radiology-tests.png"
-        alt="Radiology professionals reviewing medical imaging"
+        alt={tDiagnostics("radiologyImageAlt")}
         heading={tNav("radiologyTests")}
-        description="Schedule diagnostic imaging services including X-Rays, Ultrasounds, CT Scans, and MRIs with certified partner radiology centers."
+        description={tDiagnostics("radiologyDescription")}
       />
 
         {fetchError && (
         <div className="flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-800/40 dark:bg-amber-900/20 dark:text-amber-400">
           <AlertCircle className="h-4 w-4 shrink-0" />
-          <span>Unable to load services at this time. Please try again shortly.</span>
+          <span>{tDiagnostics("loadError")}</span>
         </div>
         )}
 
         {!fetchError && radiologyServices.length === 0 && (
-        <p className="text-sm text-slate-500">No radiology services available yet. Check back soon.</p>
+        <p className="text-sm text-slate-500">{tDiagnostics("noRadiologyServices")}</p>
         )}
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -67,7 +68,7 @@ export default async function RadiologyPage({
                 </div>
                 <CardTitle className="text-base font-semibold">{service.name}</CardTitle>
                 <CardDescription className="text-xs leading-relaxed">
-                  {service.description ?? "Certified diagnostic imaging service."}
+                  {service.description ?? tDiagnostics("certifiedImagingService")}
                 </CardDescription>
               </CardHeader>
 
@@ -78,8 +79,8 @@ export default async function RadiologyPage({
                       <Clock className="h-3.5 w-3.5 text-blue-600" />
                       <span>
                         {service.turnaroundHours <= 24
-                          ? "Same day / 24h report"
-                          : `Report within ${Math.ceil(service.turnaroundHours / 24)} day(s)`}
+                          ? tDiagnostics("sameDayReport")
+                          : tDiagnostics("reportWithinDays", { days: Math.ceil(service.turnaroundHours / 24) })}
                       </span>
                     </div>
                   )}

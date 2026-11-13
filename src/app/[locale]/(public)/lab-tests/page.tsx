@@ -15,6 +15,7 @@ export default async function LabTestsPage({
   const { locale } = await params;
   const tNav = await getTranslations({ locale, namespace: "nav" });
   const tCommon = await getTranslations({ locale, namespace: "common" });
+  const tDiagnostics = await getTranslations({ locale, namespace: "diagnostics" });
 
   let labServices: Awaited<ReturnType<typeof searchServices>> = [];
   let fetchError = false;
@@ -29,20 +30,20 @@ export default async function LabTestsPage({
     <div className="container mx-auto max-w-7xl space-y-8 px-4 py-8 sm:px-6">
       <PageBanner
         image="/lab-tests.png"
-        alt="Laboratory professionals working with diagnostic samples"
+        alt={tDiagnostics("labImageAlt")}
         heading={tNav("labTests")}
-        description="Book certified laboratory tests with transparent pricing, certified phlebotomy sample collection, and digital reports delivered securely to your ShifaLink Drive."
+        description={tDiagnostics("labDescription")}
       />
 
         {fetchError && (
         <div className="flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-800/40 dark:bg-amber-900/20 dark:text-amber-400">
           <AlertCircle className="h-4 w-4 shrink-0" />
-          <span>Unable to load services at this time. Please try again shortly.</span>
+          <span>{tDiagnostics("loadError")}</span>
         </div>
         )}
 
         {!fetchError && labServices.length === 0 && (
-        <p className="text-sm text-slate-500">No lab services available yet. Check back soon.</p>
+        <p className="text-sm text-slate-500">{tDiagnostics("noLabServices")}</p>
         )}
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -62,12 +63,12 @@ export default async function LabTestsPage({
                     <FlaskConical className="h-5 w-5" />
                   </div>
                   <Badge variant="outline" className="text-xs">
-                    ISO-15189 Certified
+                    {tDiagnostics("isoCertified")}
                   </Badge>
                 </div>
                 <CardTitle className="text-base font-semibold">{service.name}</CardTitle>
                 <CardDescription className="text-xs leading-relaxed">
-                  {service.description ?? "Certified diagnostic laboratory test."}
+                  {service.description ?? tDiagnostics("certifiedLabTest")}
                 </CardDescription>
               </CardHeader>
 
@@ -76,13 +77,13 @@ export default async function LabTestsPage({
                   {service.turnaroundHours != null && (
                     <div className="flex items-center gap-1.5 font-medium text-slate-700 dark:text-slate-300">
                       <Clock className="h-3.5 w-3.5 text-blue-600" />
-                      <span>Report within {service.turnaroundHours} hours</span>
+                      <span>{tDiagnostics("reportWithinHours", { hours: service.turnaroundHours })}</span>
                     </div>
                   )}
                   {homeCollectionAvailable && (
                     <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-medium pt-1">
                       <Home className="h-3.5 w-3.5" />
-                      <span>Home Sample Collection Available</span>
+                      <span>{tDiagnostics("homeCollectionAvailable")}</span>
                     </div>
                   )}
                   {service.category && (

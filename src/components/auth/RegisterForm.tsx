@@ -14,6 +14,7 @@ type ApiErrorResponse = {
 
 export function RegisterForm() {
   const t = useTranslations("auth");
+  const tRegistration = useTranslations("registration");
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -55,7 +56,7 @@ export function RegisterForm() {
         return;
       }
 
-      router.push("/patient/appointments");
+      router.push("/patient");
       router.refresh();
     } catch {
       setError("Unable to connect to ShifaLink. Please try again.");
@@ -132,7 +133,7 @@ export function RegisterForm() {
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-1.5">
             <label htmlFor="register-date-of-birth" className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-              Date of birth
+              {tRegistration("dateOfBirth")}
             </label>
             <div className="relative flex items-center">
               <CalendarDays className="absolute left-3 h-4 w-4 text-slate-400" />
@@ -150,7 +151,7 @@ export function RegisterForm() {
 
           <div className="space-y-1.5">
             <label htmlFor="register-phone" className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-              Phone number
+              {tRegistration("phoneNumber")}
             </label>
             <div className="relative flex items-center">
               <Phone className="absolute left-3 h-4 w-4 text-slate-400" />
@@ -171,7 +172,7 @@ export function RegisterForm() {
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-1.5">
             <label htmlFor="register-gender" className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-              Gender
+              {tRegistration("gender")}
             </label>
             <div className="relative flex items-center">
               <User className="absolute left-3 h-4 w-4 text-slate-400" />
@@ -182,18 +183,18 @@ export function RegisterForm() {
                 onChange={(event) => setGender(event.target.value)}
                 className="w-full appearance-none rounded-md border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
               >
-                <option value="">Select gender</option>
-                <option value="MALE">Male</option>
-                <option value="FEMALE">Female</option>
-                <option value="OTHER">Other</option>
-                <option value="PREFER_NOT_TO_SAY">Prefer not to say</option>
+                <option value="">{tRegistration("selectGender")}</option>
+                <option value="MALE">{tRegistration("male")}</option>
+                <option value="FEMALE">{tRegistration("female")}</option>
+                <option value="OTHER">{tRegistration("other")}</option>
+                <option value="PREFER_NOT_TO_SAY">{tRegistration("preferNotToSay")}</option>
               </select>
             </div>
           </div>
 
           <div className="space-y-1.5">
             <label htmlFor="register-blood-group" className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-              Blood group
+              {tRegistration("bloodGroup")}
             </label>
             <div className="relative flex items-center">
               <Droplets className="absolute left-3 h-4 w-4 text-slate-400" />
@@ -204,7 +205,7 @@ export function RegisterForm() {
                 onChange={(event) => setBloodGroup(event.target.value)}
                 className="w-full appearance-none rounded-md border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
               >
-                <option value="">Select blood group</option>
+                <option value="">{tRegistration("selectBloodGroup")}</option>
                 <option value="A_POSITIVE">A+</option>
                 <option value="A_NEGATIVE">A-</option>
                 <option value="B_POSITIVE">B+</option>
@@ -213,7 +214,7 @@ export function RegisterForm() {
                 <option value="AB_NEGATIVE">AB-</option>
                 <option value="O_POSITIVE">O+</option>
                 <option value="O_NEGATIVE">O-</option>
-                <option value="UNKNOWN">Unknown</option>
+                <option value="UNKNOWN">{tRegistration("unknown")}</option>
               </select>
             </div>
           </div>
@@ -221,7 +222,7 @@ export function RegisterForm() {
 
         <div className="flex items-start gap-2 rounded-md bg-blue-50 p-3 text-xs text-blue-900 dark:bg-blue-950/50 dark:text-blue-200">
           <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-blue-600" />
-          <span>By creating an account, you consent to our secure, role-based medical record handling policy.</span>
+          <span>{tRegistration("consentNotice")}</span>
         </div>
 
         {error && (
@@ -231,7 +232,7 @@ export function RegisterForm() {
         )}
 
         <Button type="submit" className="mt-2 w-full" size="lg" disabled={isSubmitting}>
-          {isSubmitting ? "Creating account..." : t("submitRegister")}
+          {isSubmitting ? tRegistration("creatingAccount") : t("submitRegister")}
         </Button>
       </form>
     </CardContent>

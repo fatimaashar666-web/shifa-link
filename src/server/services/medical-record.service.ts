@@ -167,22 +167,21 @@ export async function registerRecord(
   }
 
   // Create the FileObject row (metadata only — no bytes)
-  const fileObject = await recordRepo.createFileObject({
-    storageKey: parsed.storageKey,
-    fileName: parsed.fileName,
-    mimeType: parsed.mimeType,
-    sizeBytes: parsed.sizeBytes,
-    uploadedBy: userId,
-  })
-
-  // Create the MedicalRecord row
-  const record = await recordRepo.createMedicalRecord({
-    patientId,
-    fileObjectId: fileObject.id,
-    title: parsed.title,
-    category: parsed.category,
-    description: parsed.description,
-    recordDate: parsed.recordDate ? new Date(parsed.recordDate) : new Date(),
+  const record = await recordRepo.createFileObjectAndMedicalRecord({
+    fileObject: {
+      storageKey: parsed.storageKey,
+      fileName: parsed.fileName,
+      mimeType: parsed.mimeType,
+      sizeBytes: parsed.sizeBytes,
+      uploadedBy: userId,
+    },
+    record: {
+      patientId,
+      title: parsed.title,
+      category: parsed.category,
+      description: parsed.description,
+      recordDate: parsed.recordDate ? new Date(parsed.recordDate) : new Date(),
+    },
   })
 
   writeAuditEvent({
@@ -192,7 +191,7 @@ export async function registerRecord(
     entityType: 'MedicalRecord',
     entityId: record.id,
     metadata: {
-      fileObjectId: fileObject.id,
+      fileObjectId: record.fileObjectId,
       storageKey: parsed.storageKey,
       category: parsed.category,
       sizeBytes: parsed.sizeBytes,

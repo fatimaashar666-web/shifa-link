@@ -25,6 +25,39 @@ export interface CreateMedicalRecordData {
   recordDate?: Date
 }
 
+export async function createFileObjectAndMedicalRecord(data: {
+  fileObject: CreateFileObjectData
+  record: Omit<CreateMedicalRecordData, 'fileObjectId'>
+}) {
+  return db.$transaction(async (tx) => {
+    const fileObject = await tx.fileObject.create({
+      data: {
+        storageKey: data.fileObject.storageKey,
+        fileName: data.fileObject.fileName,
+        mimeType: data.fileObject.mimeType,
+        sizeBytes: data.fileObject.sizeBytes,
+        checksum: data.fileObject.checksum ?? null,
+        uploadedBy: data.fileObject.uploadedBy,
+      },
+    })
+
+    return tx.medicalRecord.create({
+      data: {
+        patientId: data.record.patientId,
+        fileObjectId: fileObject.id,
+        title: data.record.title,
+        category: data.record.category,
+        description: data.record.description ?? null,
+        recordDate: data.record.recordDate ?? new Date(),
+      },
+      include: {
+        fileObject: true,
+        patient: true,
+      },
+    })
+  })
+}
+
 export async function createFileObject(data: CreateFileObjectData) {
   return db.fileObject.create({
     data: {

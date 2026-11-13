@@ -10,6 +10,7 @@ export default async function AboutPage({
 }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "about" });
+  const tStandards = await getTranslations({ locale, namespace: "standards" });
 
   return (
     <div className="container mx-auto max-w-7xl space-y-12 px-4 py-8 sm:px-6">
@@ -61,24 +62,24 @@ export default async function AboutPage({
       {/* Trust & Quality Indicators */}
       <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-6 dark:border-slate-800 dark:bg-slate-900/40 space-y-4">
         <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
-          Our Clinical Standards
+          {tStandards("title")}
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-xs text-slate-600 dark:text-slate-400">
           <div className="flex items-center gap-2">
             <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-            <span>ISO-15189 Lab Compliance</span>
+            <span>{tStandards("isoLabCompliance")}</span>
           </div>
           <div className="flex items-center gap-2">
             <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-            <span>End-to-End Encryption</span>
+            <span>{tStandards("encryption")}</span>
           </div>
           <div className="flex items-center gap-2">
             <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-            <span>PMC/PMDC Verified Licensure</span>
+            <span>{tStandards("verifiedLicensure")}</span>
           </div>
           <div className="flex items-center gap-2">
             <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-            <span>Multi-Region Cloud Redundancy</span>
+            <span>{tStandards("cloudRedundancy")}</span>
           </div>
         </div>
       </div>

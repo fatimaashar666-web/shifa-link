@@ -58,7 +58,7 @@ export function Footer({ locale }: { locale: string }) {
             </p>
             <div className="flex items-center gap-2 text-xs text-blue-600 dark:text-blue-400 font-medium">
               <ShieldCheck className="h-4 w-4" />
-              <span>Encrypted & Privacy-First</span>
+              <span>{t("privacyBadge")}</span>
             </div>
             <div className="flex items-center gap-2 pt-1">
               {socialLinks.map((social) => (
@@ -158,7 +158,7 @@ export function Footer({ locale }: { locale: string }) {
           <p>© {new Date().getFullYear()} ShifaLink. {t("rights")}.</p>
           <div className="flex items-center gap-1 text-slate-400">
             <HeartHandshake className="h-3.5 w-3.5 text-red-500" />
-            <span>Dedicated to human-centered digital healthcare</span>
+            <span>{t("mission")}</span>
           </div>
         </div>
       </div>
