@@ -171,48 +171,25 @@ export function ShifaDriveClient() {
         throw new Error(data.message ?? t("failedInitiateUpload"));
       }
 
-      const { uploadUrl, storageKey } = await urlRes.json() as {
-        uploadUrl: string;
+      const { storageKey } = await urlRes.json() as {
         storageKey: string;
       };
 
-      // Step 2: Upload file to the bucket. If browser CORS blocks the
-      // presigned URL, retry through the authenticated same-origin proxy.
-      const uploadThroughProxy = async () => {
-        const proxyForm = new FormData();
-        proxyForm.append("file", uploadFile);
-        proxyForm.append("storageKey", storageKey);
+      // Upload through the authenticated same-origin route. This avoids
+      // browser CORS failures when the S3-compatible bucket does not expose
+      // the required PUT CORS policy.
+      const proxyForm = new FormData();
+      proxyForm.append("file", uploadFile);
+      proxyForm.append("storageKey", storageKey);
 
-        const proxyRes = await fetch("/api/v1/medical-records/upload-proxy", {
-          method: "POST",
-          body: proxyForm,
-        });
+      const proxyRes = await fetch("/api/v1/medical-records/upload-proxy", {
+        method: "POST",
+        body: proxyForm,
+      });
 
-        if (!proxyRes.ok) {
-          const data = await proxyRes.json().catch(() => ({})) as { message?: string };
-          throw new Error(data.message ?? t("fileUploadFailed"));
-        }
-      };
-
-      if (!uploadUrl.startsWith("/api/")) {
-        let uploaded = false;
-
-        try {
-          const uploadRes = await fetch(uploadUrl, {
-            method: "PUT",
-            headers: { "Content-Type": uploadFile.type },
-            body: uploadFile,
-          });
-          uploaded = uploadRes.ok;
-        } catch {
-          uploaded = false;
-        }
-
-        if (!uploaded) {
-          await uploadThroughProxy();
-        }
-      } else {
-        await uploadThroughProxy();
+      if (!proxyRes.ok) {
+        const data = await proxyRes.json().catch(() => ({})) as { message?: string };
+        throw new Error(data.message ?? t("fileUploadFailed"));
       }
       // In dev, the storageKey is registered directly (file bytes aren't stored)
 
