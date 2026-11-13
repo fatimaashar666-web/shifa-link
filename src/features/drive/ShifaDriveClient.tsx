@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -50,13 +51,13 @@ interface MedicalRecord {
   accessGrants: AccessGrantDto[];
 }
 
-const CATEGORY_LABELS: Record<MedicalRecordCategory, string> = {
-  LAB_REPORT: "Lab Report",
-  RADIOLOGY_IMAGE: "Radiology",
-  PRESCRIPTION: "Prescription",
-  DISCHARGE_SUMMARY: "Discharge Summary",
-  VACCINATION: "Vaccination",
-  OTHER: "Other",
+const CATEGORY_LABEL_KEYS: Record<MedicalRecordCategory, string> = {
+  LAB_REPORT: "labReport",
+  RADIOLOGY_IMAGE: "radiology",
+  PRESCRIPTION: "prescription",
+  DISCHARGE_SUMMARY: "dischargeSummary",
+  VACCINATION: "vaccination",
+  OTHER: "other",
 };
 
 const CATEGORY_COLORS: Record<MedicalRecordCategory, string> = {
@@ -75,6 +76,7 @@ function formatBytes(bytes: number) {
 }
 
 export function ShifaDriveClient() {
+  const t = useTranslations("driveWorkspace");
   const [records, setRecords] = useState<MedicalRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -95,7 +97,7 @@ export function ShifaDriveClient() {
   const loadRecords = useCallback(() => {
     fetch("/api/v1/medical-records")
       .then((res) => {
-        if (!res.ok) throw new Error("Failed to load records.");
+        if (!res.ok) throw new Error(t("loadError"));
         return res.json();
       })
       .then((data: { records?: MedicalRecord[] }) => {
@@ -103,7 +105,7 @@ export function ShifaDriveClient() {
         setLoading(false);
       })
       .catch((err) => {
-        setError(err instanceof Error ? err.message : "Could not load your records.");
+          setError(err instanceof Error ? err.message : t("couldNotLoad"));
         setLoading(false);
       });
   }, []);
@@ -116,11 +118,11 @@ export function ShifaDriveClient() {
     setDownloadingId(recordId);
     try {
       const res = await fetch(`/api/v1/medical-records/${recordId}/download`);
-      if (!res.ok) throw new Error("Could not get download link.");
+      if (!res.ok) throw new Error(t("couldNotGetDownloadLink"));
       const data = await res.json() as { downloadUrl: string };
       window.open(data.downloadUrl, "_blank");
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Download failed.");
+      alert(err instanceof Error ? err.message : t("downloadFailed"));
     } finally {
       setDownloadingId(null);
     }
@@ -132,10 +134,10 @@ export function ShifaDriveClient() {
       const res = await fetch(`/api/v1/medical-records/${recordId}/share/${grantId}`, {
         method: "DELETE",
       });
-      if (!res.ok) throw new Error("Failed to revoke access.");
+      if (!res.ok) throw new Error(t("revokeFailed"));
       await loadRecords();
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to revoke access.");
+      alert(err instanceof Error ? err.message : t("revokeFailed"));
     } finally {
       setRevokingGrantId(null);
     }
@@ -144,7 +146,7 @@ export function ShifaDriveClient() {
   async function handleUpload(e: React.FormEvent) {
     e.preventDefault();
     if (!uploadFile || !uploadTitle) {
-      setUploadError("Please select a file and enter a title.");
+      setUploadError(t("selectFileAndTitle"));
       return;
     }
 
@@ -166,7 +168,7 @@ export function ShifaDriveClient() {
 
       if (!urlRes.ok) {
         const data = await urlRes.json().catch(() => ({})) as { message?: string };
-        throw new Error(data.message ?? "Failed to initiate upload.");
+        throw new Error(data.message ?? t("failedInitiateUpload"));
       }
 
       const { uploadUrl, storageKey } = await urlRes.json() as {
@@ -183,7 +185,7 @@ export function ShifaDriveClient() {
         });
 
         if (!uploadRes.ok) {
-          throw new Error("The file could not be uploaded to secure storage.");
+        throw new Error(t("fileUploadFailed"));
         }
       }
       // In dev, the storageKey is registered directly (file bytes aren't stored)
@@ -205,7 +207,7 @@ export function ShifaDriveClient() {
 
       if (!registerRes.ok) {
         const data = await registerRes.json().catch(() => ({})) as { message?: string };
-        throw new Error(data.message ?? "Failed to register record.");
+        throw new Error(data.message ?? t("failedRegisterRecord"));
       }
 
       setUploadSuccess(true);
@@ -219,7 +221,7 @@ export function ShifaDriveClient() {
         setUploadSuccess(false);
       }, 1500);
     } catch (err) {
-      setUploadError(err instanceof Error ? err.message : "Upload failed.");
+      setUploadError(err instanceof Error ? err.message : t("uploadFailed"));
     } finally {
       setUploading(false);
     }
@@ -239,7 +241,7 @@ export function ShifaDriveClient() {
           }}
         >
           <Upload className="h-4 w-4" />
-          {uploadPanelOpen ? "Close Upload" : "Upload Record"}
+            {uploadPanelOpen ? t("closeUpload") : t("uploadRecord")}
         </Button>
       </div>
 
@@ -249,7 +251,7 @@ export function ShifaDriveClient() {
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-semibold flex items-center gap-2">
               <Upload className="h-4 w-4 text-blue-600" />
-              Upload Medical Record
+              {t("uploadMedicalRecord")}
             </CardTitle>
           </CardHeader>
           <form onSubmit={handleUpload}>
@@ -263,13 +265,13 @@ export function ShifaDriveClient() {
               {uploadSuccess && (
                 <div className="flex items-center gap-2 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700 dark:border-emerald-800/40 dark:bg-emerald-900/20 dark:text-emerald-400">
                   <CheckCircle2 className="h-4 w-4 shrink-0" />
-                  <span>Record uploaded successfully!</span>
+                <span>{t("recordUploaded")}</span>
                 </div>
               )}
 
               <div className="space-y-1.5">
                 <Label htmlFor="file" className="text-xs font-medium">
-                  File <span className="text-slate-400">(PDF, JPEG, PNG, DICOM · max 50MB)</span>
+                  {t("fileLabel")} <span className="text-slate-400">{t("fileTypes")}</span>
                 </Label>
                 <input
                   id="file"
@@ -284,28 +286,28 @@ export function ShifaDriveClient() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <Label htmlFor="uploadTitle" className="text-xs font-medium">Title</Label>
+                  <Label htmlFor="uploadTitle" className="text-xs font-medium">{t("titleLabel")}</Label>
                   <input
                     id="uploadTitle"
                     type="text"
                     value={uploadTitle}
                     onChange={(e) => setUploadTitle(e.target.value)}
-                    placeholder="e.g. CBC Report June 2025"
+                    placeholder={t("titlePlaceholder")}
                     className="w-full rounded-md border border-slate-200 bg-transparent px-3 py-2 text-xs dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                   />
                 </div>
 
                 <div className="space-y-1.5">
-                  <Label htmlFor="uploadCategory" className="text-xs font-medium">Category</Label>
+                  <Label htmlFor="uploadCategory" className="text-xs font-medium">{t("categoryLabel")}</Label>
                   <select
                     id="uploadCategory"
                     value={uploadCategory}
                     onChange={(e) => setUploadCategory(e.target.value as MedicalRecordCategory)}
                     className="w-full rounded-md border border-slate-200 bg-transparent px-3 py-2 text-xs dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
-                    {Object.entries(CATEGORY_LABELS).map(([value, label]) => (
-                      <option key={value} value={value}>{label}</option>
+                    {Object.entries(CATEGORY_LABEL_KEYS).map(([value, labelKey]) => (
+                      <option key={value} value={value}>{t(`categories.${labelKey}`)}</option>
                     ))}
                   </select>
                 </div>
@@ -313,13 +315,13 @@ export function ShifaDriveClient() {
 
               <div className="space-y-1.5">
                 <Label htmlFor="uploadDescription" className="text-xs font-medium">
-                  Description <span className="text-slate-400">(optional)</span>
+                  {t("descriptionLabel")} <span className="text-slate-400">({t("optional")})</span>
                 </Label>
                 <textarea
                   id="uploadDescription"
                   value={uploadDescription}
                   onChange={(e) => setUploadDescription(e.target.value)}
-                  placeholder="Brief description of this record…"
+                  placeholder={t("descriptionPlaceholder")}
                   rows={2}
                   className="w-full rounded-md border border-slate-200 bg-transparent px-3 py-2 text-xs resize-none dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
@@ -329,7 +331,7 @@ export function ShifaDriveClient() {
             <CardFooter className="border-t border-slate-100 dark:border-slate-800/60 mt-2 gap-2">
               <Button type="submit" size="sm" className="gap-1.5 text-xs" disabled={uploading}>
                 {uploading && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-                {uploading ? "Uploading…" : "Upload"}
+                  {uploading ? t("uploading") : t("upload")}
               </Button>
               <Button
                 type="button"
@@ -338,7 +340,7 @@ export function ShifaDriveClient() {
                 className="text-xs"
                 onClick={() => setUploadPanelOpen(false)}
               >
-                Cancel
+                {t("cancel")}
               </Button>
             </CardFooter>
           </form>
@@ -362,9 +364,9 @@ export function ShifaDriveClient() {
       {!loading && !error && records.length === 0 && (
         <div className="flex flex-col items-center gap-4 py-16 text-center">
           <HardDrive className="h-10 w-10 text-slate-300 dark:text-slate-600" />
-          <p className="text-sm text-slate-500">Your ShifaLink Drive is empty.</p>
+          <p className="text-sm text-slate-500">{t("emptyTitle")}</p>
           <p className="text-xs text-slate-400">
-            Upload lab reports, prescriptions, and imaging files to access them anytime.
+            {t("emptyDescription")}
           </p>
         </div>
       )}
@@ -395,7 +397,7 @@ export function ShifaDriveClient() {
                       variant="secondary"
                       className={`text-[10px] font-medium shrink-0 ${CATEGORY_COLORS[record.category] ?? ""}`}
                     >
-                      {CATEGORY_LABELS[record.category]}
+                      {t(`categories.${CATEGORY_LABEL_KEYS[record.category]}`)}
                     </Badge>
                   </div>
                 </CardHeader>
@@ -403,7 +405,7 @@ export function ShifaDriveClient() {
                 <CardContent className="pb-3 space-y-2 text-xs text-slate-600 dark:text-slate-400">
                   {record.description && <p>{record.description}</p>}
                   <p className="text-[10px] text-slate-400">
-                    Record date:{" "}
+                    {t("recordDate")}:{" "}
                     {new Date(record.recordDate).toLocaleDateString("en-PK", { dateStyle: "medium" })}
                   </p>
 
@@ -411,7 +413,7 @@ export function ShifaDriveClient() {
                     <div className="mt-2 space-y-1.5">
                       <div className="flex items-center gap-1 text-[10px] font-medium text-slate-500 uppercase tracking-wide">
                         <Eye className="h-3 w-3" />
-                        Shared with ({activeGrants.length})
+                        {t("sharedWith")} ({activeGrants.length})
                       </div>
                       {activeGrants.map((grant) => (
                         <div
@@ -419,8 +421,8 @@ export function ShifaDriveClient() {
                           className="flex items-center justify-between rounded bg-slate-50 dark:bg-slate-800/50 px-2 py-1"
                         >
                           <span className="text-[10px] text-slate-500">
-                            Doctor ID: {grant.doctorId.slice(0, 8)}…
-                            &nbsp;·&nbsp;Expires{" "}
+                            {t("doctorId")} {grant.doctorId.slice(0, 8)}…
+                            &nbsp;·&nbsp;{t("expires")} {" "}
                             {new Date(grant.expiresAt).toLocaleDateString("en-PK", { dateStyle: "short" })}
                           </span>
                           <Button
@@ -435,7 +437,7 @@ export function ShifaDriveClient() {
                             ) : (
                               <X className="h-3 w-3" />
                             )}
-                            Revoke
+                            {t("revoke")}
                           </Button>
                         </div>
                       ))}
@@ -456,17 +458,17 @@ export function ShifaDriveClient() {
                     ) : (
                       <Download className="h-3.5 w-3.5" />
                     )}
-                    Download
+                    {t("download")}
                   </Button>
 
                   <Button
                     variant="ghost"
                     size="sm"
                     className="gap-1.5 text-xs text-slate-600 dark:text-slate-400"
-                    onClick={() => alert(`Share feature: POST /api/v1/medical-records/${record.id}/share with { doctorId, expiresInDays }`)}
+                    onClick={() => alert(t("shareNotAvailable"))}
                   >
                     <Share2 className="h-3.5 w-3.5" />
-                    Share
+                    {t("share")}
                   </Button>
                 </CardFooter>
               </Card>

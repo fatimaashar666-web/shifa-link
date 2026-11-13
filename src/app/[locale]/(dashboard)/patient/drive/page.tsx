@@ -11,6 +11,7 @@ export default async function PatientDrivePage({
 }) {
   const { locale } = await params;
   const tDashboard = await getTranslations({ locale, namespace: "patientDashboard" });
+  const tDrive = await getTranslations({ locale, namespace: "driveWorkspace" });
 
   return (
     <div className="container mx-auto max-w-5xl px-4 py-8 sm:px-6 space-y-6">
@@ -18,11 +19,10 @@ export default async function PatientDrivePage({
         <div>
         <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
           <HardDrive className="h-6 w-6 text-blue-600" />
-          ShifaLink Drive
+          {tDrive("title")}
         </h1>
         <p className="text-xs text-slate-500 mt-1">
-          Securely store, organize, and share your medical records. Files are encrypted at rest
-          and never stored directly in the database.
+          {tDrive("description")}
         </p>
         </div>
         <Button asChild variant="outline" size="sm">
