@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
     })
 
     return Response.json(
-      { userId, email, verificationRequired: false, roles: ['patient'] },
+      { userId, email, roles: ['patient'] },
       { status: 201, headers: { 'Set-Cookie': buildSessionCookie(token) } },
     )
   } catch (err) {

@@ -52,8 +52,9 @@ Configure the following environment variables in the Railway dashboard:
 ### Authentication & Secrets
 | Variable | Description |
 |---|---|
-| `AUTH_SECRET` | 32+ character random hex string (`openssl rand -hex 32`) |
-| `JWT_SECRET` | 32+ character random secret for jose JWT verification |
+| `AUTH_SECRET` | 32+ character random hex string (`openssl rand -hex 32`); used for session signing when `SESSION_SECRET` is not set |
+| `JWT_SECRET` | 32+ character random secret accepted as a session-secret fallback |
+| `SESSION_SECRET` | Optional 32+ character session secret; takes precedence over `AUTH_SECRET` |
 
 ### Object Storage (Cloudflare R2 / AWS S3)
 | Variable | Description |

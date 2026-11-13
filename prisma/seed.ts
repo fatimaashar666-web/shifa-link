@@ -44,6 +44,69 @@ if (existsSync(envPath)) {
   }
 }
 
+type DoctorProfileCsvRow = {
+  fullName: string
+  licenseNumber: string
+  fee: number
+  bio: string
+}
+
+function parseCsvLine(line: string): string[] {
+  const values: string[] = []
+  let value = ''
+  let inQuotes = false
+
+  for (let index = 0; index < line.length; index += 1) {
+    const character = line[index]
+
+    if (character === '"') {
+      if (inQuotes && line[index + 1] === '"') {
+        value += '"'
+        index += 1
+      } else {
+        inQuotes = !inQuotes
+      }
+    } else if (character === ',' && !inQuotes) {
+      values.push(value)
+      value = ''
+    } else {
+      value += character
+    }
+  }
+
+  if (inQuotes) {
+    throw new Error(`Invalid doctor CSV row: unmatched quote in ${line}`)
+  }
+
+  values.push(value)
+  return values
+}
+
+function readDoctorProfilesCsv(): DoctorProfileCsvRow[] {
+  const csvPath = resolve(process.cwd(), 'prisma/doctor-profiles.csv')
+  const lines = readFileSync(csvPath, 'utf-8')
+    .replace(/^\uFEFF/, '')
+    .split(/\r?\n/)
+    .filter((line) => line.trim().length > 0)
+
+  const expectedHeaders = ['fullName', 'licenseNumber', 'fee', 'bio']
+  const headers = parseCsvLine(lines.shift() ?? '')
+  if (headers.length !== expectedHeaders.length || headers.some((header, index) => header !== expectedHeaders[index])) {
+    throw new Error(`Doctor CSV must use the header: ${expectedHeaders.join(',')}`)
+  }
+
+  return lines.map((line, index) => {
+    const [fullName, licenseNumber, feeValue, bio] = parseCsvLine(line)
+    const fee = Number(feeValue)
+
+    if (!fullName || !licenseNumber || !Number.isFinite(fee) || !bio) {
+      throw new Error(`Invalid doctor CSV row ${index + 2}: ${line}`)
+    }
+
+    return { fullName, licenseNumber, fee, bio }
+  })
+}
+
 const connectionString = process.env.DATABASE_URL
 const pool = new Pool({ connectionString })
 const adapter = new PrismaPg(pool)
@@ -208,8 +271,10 @@ async function main() {
         },
         update: {
           fullName: params.fullName,
+          licenseNumber: params.licenseNumber ?? `SYNTH-${user.id.slice(0, 8)}`,
           consultationFee: params.fee ?? 1500,
           verificationStatus: params.emailVerified ? 'VERIFIED' : 'PENDING',
+          bio: params.bio ?? 'Licensed medical practitioner providing evidence-based patient consultations.',
         },
       })
     }
@@ -268,6 +333,25 @@ async function main() {
     fee: 1800,
     bio: 'Specialist General Physician focusing on adult acute illness, preventive health assessments, and chronic condition management.',
   })
+
+  const importedDoctors = readDoctorProfilesCsv()
+  for (const doctor of importedDoctors) {
+    const emailSlug = doctor.licenseNumber.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+
+    await seedUser({
+      fullName: doctor.fullName,
+      email: `doctor.${emailSlug}@seed.shifalink.test`,
+      password: 'Password1!',
+      role: 'doctor',
+      emailVerified: true,
+      profileType: 'doctor',
+      licenseNumber: doctor.licenseNumber,
+      fee: doctor.fee,
+      bio: doctor.bio,
+    })
+  }
+
+  console.log(`  ✅  CSV doctors seeded: ${importedDoctors.length}`)
 
   // Doctor Specialties
   if (doctorGamma.doctorProf) {

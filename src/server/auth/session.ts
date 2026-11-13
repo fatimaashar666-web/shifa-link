@@ -3,7 +3,7 @@
  *
  * Uses `jose` for signing/verification; no Auth.js for custom credentials flow.
  * Cookie name: `shifalink-session`
- * Algorithm: HS256 (symmetric — SESSION_SECRET env var)
+ * Algorithm: HS256 (symmetric — SESSION_SECRET, AUTH_SECRET, or JWT_SECRET)
  * Max-Age: 7 days
  */
 import 'server-only'
@@ -19,9 +19,14 @@ const MAX_AGE_SECONDS = 60 * 60 * 24 * 7 // 7 days
 const PASSWORD_RESET_MAX_AGE_SECONDS = 60 * 15 // 15 minutes
 
 function getSecret(): Uint8Array {
-  const secret = process.env.SESSION_SECRET
+  // Railway's deployment guide historically used AUTH_SECRET/JWT_SECRET,
+  // while local development uses SESSION_SECRET. Accept all supported names
+  // so a valid deployment secret cannot silently break dashboard sessions.
+  const secret = [process.env.SESSION_SECRET, process.env.AUTH_SECRET, process.env.JWT_SECRET]
+    .map((value) => value?.trim())
+    .find((value): value is string => Boolean(value))
   if (!secret || secret.length < 32) {
-    throw new Error('SESSION_SECRET env var is missing or too short (minimum 32 characters)')
+    throw new Error('A session secret is missing or too short (minimum 32 characters). Set SESSION_SECRET or AUTH_SECRET.')
   }
   return new TextEncoder().encode(secret)
 }
