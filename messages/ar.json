@@ -5,6 +5,7 @@
     "videoConsultation": "استشارة مرئية",
     "labTests": "الفحوصات المخبرية",
     "radiologyTests": "فحوصات الأشعة",
+    "drive": "ShifaLink Drive",
     "healthArticles": "المقالات الصحية",
     "about": "عن شفا لينك",
     "contact": "اتصل بنا",
@@ -111,7 +112,31 @@
     "selectBloodGroup": "اختر فصيلة الدم",
     "unknown": "غير معروف",
     "consentNotice": "بإنشاء حساب، فإنك توافق على سياسة التعامل الآمن مع السجلات الطبية القائمة على الأدوار.",
-    "creatingAccount": "جارٍ إنشاء الحساب..."
+    "creatingAccount": "جارٍ إنشاء الحساب...",
+    "verificationSentTitle": "تحقق من بريدك الوارد",
+    "verificationSentMessage": "أرسلنا رابط التحقق إلى {email}. افتحه لتفعيل حساب المريض.",
+    "goToLogin": "الانتقال إلى تسجيل الدخول"
+  },
+  "emailVerification": {
+    "successTitle": "تم التحقق من البريد الإلكتروني",
+    "successMessage": "تم التحقق من عنوان بريدك الإلكتروني. يمكنك الآن تسجيل الدخول إلى حساب المريض في ShifaLink.",
+    "invalidTitle": "الرابط غير متاح",
+    "invalidMessage": "رابط التحقق غير صالح أو منتهي الصلاحية أو مستخدم من قبل.",
+    "login": "متابعة إلى تسجيل الدخول"
+  },
+  "drivePage": {
+    "eyebrow": "سجلات طبية خاصة",
+    "title": "سجلاتك الصحية متصلة بأمان",
+    "description": "يوفر ShifaLink Drive مكانًا آمنًا لرفع سجلاتك الطبية وتنظيمها ومشاركتها مع المختصين الذين تختارهم.",
+    "imageAlt": "تخزين آمن للسجلات الطبية في ShifaLink Drive",
+    "createAccount": "إنشاء حساب مريض",
+    "signIn": "تسجيل الدخول",
+    "privateTitle": "خاصة افتراضيًا",
+    "privateDescription": "تبقى سجلاتك خاصة حتى تختار مشاركتها صراحةً.",
+    "sharingTitle": "مشاركة يتحكم بها المريض",
+    "sharingDescription": "امنح أطباء محددين صلاحيات واضحة وقابلة للإلغاء.",
+    "organizedTitle": "كل شيء منظم",
+    "organizedDescription": "احتفظ بالوصفات وتقارير المختبر والصور والملاحظات في مكان واحد."
   },
   "home": {
     "clinicalSafetyTitle": "تنبيه للسلامة السريرية",

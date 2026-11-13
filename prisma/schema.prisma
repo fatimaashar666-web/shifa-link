@@ -17,6 +17,7 @@ model User {
   auditEvents     AuditEvent[]
   consents        ConsentRecord[]
   doctorProfile   DoctorProfile?
+  emailVerificationTokens EmailVerificationToken[]
   uploadedFiles   FileObject[]
   notifications   Notification[]
   orgMemberships  OrganizationMember[]
@@ -25,6 +26,20 @@ model User {
   userRoles       UserRole[]
 
   @@map("users")
+}
+
+model EmailVerificationToken {
+  id         String    @id @default(uuid())
+  userId     String
+  tokenHash  String    @unique
+  expiresAt  DateTime
+  consumedAt DateTime?
+  createdAt  DateTime  @default(now())
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("email_verification_tokens")
 }
 
 model Role {

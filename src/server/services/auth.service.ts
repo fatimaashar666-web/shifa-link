@@ -14,6 +14,7 @@ import 'server-only'
 
 import { z } from 'zod'
 import bcrypt from 'bcryptjs'
+import { createHash, randomBytes } from 'node:crypto'
 
 import {
   createPasswordResetToken,
@@ -22,6 +23,7 @@ import {
   verifyPasswordResetToken,
 } from '@/server/auth/session'
 import * as userRepo from '@/server/repositories/user.repository'
+import * as emailVerificationRepo from '@/server/repositories/email-verification.repository'
 import { writeAuditEvent } from '@/server/audit'
 
 // ---------------------------------------------------------------------------
@@ -51,6 +53,7 @@ export const RegisterSchema = z.object({
     ])
     .optional(),
   phone: z.string().trim().min(7, 'Phone number must be at least 7 characters').max(30).optional(),
+  locale: z.string().optional().default('en'),
 })
 
 export const LoginSchema = z.object({
@@ -82,7 +85,7 @@ export type ResetPasswordInput = z.infer<typeof ResetPasswordSchema>
 
 export class AuthError extends Error {
   constructor(
-    public readonly code: 'EMAIL_TAKEN' | 'INVALID_CREDENTIALS' | 'ACCOUNT_DISABLED',
+    public readonly code: 'EMAIL_TAKEN' | 'INVALID_CREDENTIALS' | 'ACCOUNT_DISABLED' | 'EMAIL_NOT_VERIFIED',
     message: string,
   ) {
     super(message)
@@ -104,12 +107,12 @@ const BCRYPT_ROUNDS = 12
  * 2. Hash password.
  * 3. Create user, patient profile, role assignment, and preferences.
  * 4. Write audit event.
- * 5. Return a signed session payload.
+ * 5. Create a one-time email verification token.
  */
 export async function registerPatient(
   input: RegisterInput,
   ipAddress?: string,
-): Promise<{ session: SessionPayload; userId: string }> {
+): Promise<{ userId: string; email: string; verificationToken: string }> {
   // Uniqueness check
   const existing = await userRepo.findByEmail(input.email)
   if (existing) throw new AuthError('EMAIL_TAKEN', 'An account with this email already exists.')
@@ -132,7 +135,11 @@ export async function registerPatient(
     phone: input.phone,
   })
   await userRepo.assignRole(user.id, 'patient')
-  await userRepo.upsertPreferences(user.id, 'en', 'system')
+  await userRepo.upsertPreferences(user.id, input.locale, 'system')
+
+  const verificationToken = randomBytes(32).toString('hex')
+  const tokenHash = createHash('sha256').update(verificationToken).digest('hex')
+  await emailVerificationRepo.replaceForUser(user.id, tokenHash, new Date(Date.now() + 24 * 60 * 60 * 1000))
 
   // Audit
   writeAuditEvent({
@@ -144,14 +151,7 @@ export async function registerPatient(
     ipAddress,
   })
 
-  const session: SessionPayload = {
-    userId: user.id,
-    email: user.email,
-    roles: ['patient'],
-    organizationId: null,
-  }
-
-  return { session, userId: user.id }
+  return { userId: user.id, email: user.email, verificationToken }
 }
 
 /**
@@ -188,6 +188,10 @@ export async function login(
     throw new AuthError('ACCOUNT_DISABLED', 'Your account has been disabled. Please contact support.')
   }
 
+  if (!user.emailVerifiedAt) {
+    throw new AuthError('EMAIL_NOT_VERIFIED', 'Please verify your email address before signing in.')
+  }
+
   const roles = user.userRoles.map((ur) => ur.role.name)
 
   writeAuditEvent({
@@ -207,6 +211,28 @@ export async function login(
   }
 
   return { session, userId: user.id }
+}
+
+/** Verify a one-time email token and mark the associated account as verified. */
+export async function verifyEmailAddress(token: string): Promise<boolean> {
+  const tokenHash = createHash('sha256').update(token).digest('hex')
+  const verification = await emailVerificationRepo.findValidByHash(tokenHash)
+  if (!verification) return false
+
+  const consumed = await emailVerificationRepo.consume(verification.id)
+  if (consumed.count !== 1) return false
+
+  await userRepo.setEmailVerified(verification.userId)
+  await emailVerificationRepo.deleteForUser(verification.userId)
+  writeAuditEvent({
+    actorType: 'USER',
+    actorId: verification.userId,
+    action: 'auth.email_verified',
+    entityType: 'User',
+    entityId: verification.userId,
+  })
+
+  return true
 }
 
 /** Create a reset token without revealing whether an email is registered. */

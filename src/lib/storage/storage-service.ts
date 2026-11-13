@@ -31,6 +31,10 @@ export async function uploadMedicalDocument(params: {
 }) {
   const { key, buffer, contentType } = params;
 
+  if (!(ALLOWED_TYPES as readonly string[]).includes(contentType)) {
+    throw new Error("Unsupported medical document type.");
+  }
+
   if (!buffer.length || buffer.length > MAX_FILE_SIZE) {
     throw new Error("Invalid file size.");
   }

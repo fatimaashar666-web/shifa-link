@@ -5,6 +5,7 @@
     "videoConsultation": "ویڈیو مشاورت",
     "labTests": "لیب ٹیسٹ",
     "radiologyTests": "ریڈیالوجی ٹیسٹ",
+    "drive": "ShifaLink Drive",
     "healthArticles": "صحت کے مضامین",
     "about": "شفا لنک کا تعارف",
     "contact": "رابطہ کریں",
@@ -111,7 +112,31 @@
     "selectBloodGroup": "خون کا گروپ منتخب کریں",
     "unknown": "نامعلوم",
     "consentNotice": "اکاؤنٹ بنانے سے آپ ہماری محفوظ، کردار پر مبنی طبی ریکارڈ ہینڈلنگ پالیسی سے رضامند ہوتے ہیں۔",
-    "creatingAccount": "اکاؤنٹ بنایا جا رہا ہے..."
+    "creatingAccount": "اکاؤنٹ بنایا جا رہا ہے...",
+    "verificationSentTitle": "اپنا ان باکس چیک کریں",
+    "verificationSentMessage": "ہم نے تصدیقی لنک {email} پر بھیج دیا ہے۔ مریض اکاؤنٹ فعال کرنے کے لیے اسے کھولیں۔",
+    "goToLogin": "لاگ اِن پر جائیں"
+  },
+  "emailVerification": {
+    "successTitle": "ای میل کی تصدیق ہو گئی",
+    "successMessage": "آپ کے ای میل ایڈریس کی تصدیق ہو گئی ہے۔ اب آپ اپنے ShifaLink مریض اکاؤنٹ میں سائن اِن کر سکتے ہیں۔",
+    "invalidTitle": "لنک دستیاب نہیں",
+    "invalidMessage": "یہ تصدیقی لنک غلط، ختم شدہ، یا پہلے ہی استعمال ہو چکا ہے۔",
+    "login": "لاگ اِن جاری رکھیں"
+  },
+  "drivePage": {
+    "eyebrow": "نجی طبی ریکارڈز",
+    "title": "اپنے صحت کے ریکارڈز کو محفوظ طریقے سے مربوط رکھیں",
+    "description": "ShifaLink Drive آپ کو طبی ریکارڈز اپ لوڈ، منظم اور اپنی پسند کے طبی ماہرین کے ساتھ محفوظ طریقے سے شیئر کرنے کی جگہ دیتا ہے۔",
+    "imageAlt": "ShifaLink Drive میں محفوظ طبی ریکارڈز",
+    "createAccount": "مریض اکاؤنٹ بنائیں",
+    "signIn": "سائن اِن کریں",
+    "privateTitle": "بطور ڈیفالٹ نجی",
+    "privateDescription": "آپ کے ریکارڈز نجی رہتے ہیں جب تک آپ انہیں واضح طور پر شیئر نہ کریں۔",
+    "sharingTitle": "مریض کے اختیار میں شیئرنگ",
+    "sharingDescription": "منتخب ڈاکٹروں کو واضح اور واپس لیے جا سکنے والی رسائی دیں۔",
+    "organizedTitle": "سب کچھ منظم",
+    "organizedDescription": "نسخے، لیب رپورٹس، اسکینز اور نوٹس ایک جگہ آسانی سے تلاش کریں۔"
   },
   "home": {
     "clinicalSafetyTitle": "طبی حفاظتی اطلاع",

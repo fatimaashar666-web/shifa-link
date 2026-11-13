@@ -88,7 +88,9 @@ function getStorageConfig() {
     accessKeyId,
     secretAccessKey,
     region: process.env.STORAGE_REGION?.trim() || 'auto',
-    forcePathStyle: process.env.STORAGE_FORCE_PATH_STYLE === 'true',
+    forcePathStyle:
+      process.env.STORAGE_FORCE_PATH_STYLE === 'true' ||
+      process.env.STORAGE_URL_STYLE?.trim().toLowerCase() === 'path',
   }
 }
 

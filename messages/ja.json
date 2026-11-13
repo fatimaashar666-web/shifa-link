@@ -5,6 +5,7 @@
     "videoConsultation": "オンライン診療",
     "labTests": "血液・検査",
     "radiologyTests": "放射線・画像検査",
+    "drive": "ShifaLink Drive",
     "healthArticles": "医療コラム",
     "about": "ShifaLinkについて",
     "contact": "お問い合わせ",
@@ -111,7 +112,31 @@
     "selectBloodGroup": "血液型を選択",
     "unknown": "不明",
     "consentNotice": "アカウントを作成することで、安全で役割に基づく医療記録の取り扱いポリシーに同意したものとみなされます。",
-    "creatingAccount": "アカウントを作成中..."
+    "creatingAccount": "アカウントを作成中...",
+    "verificationSentTitle": "受信トレイを確認してください",
+    "verificationSentMessage": "確認リンクを {email} に送信しました。リンクを開いて患者アカウントを有効化してください。",
+    "goToLogin": "ログインへ"
+  },
+  "emailVerification": {
+    "successTitle": "メールアドレスを確認しました",
+    "successMessage": "メールアドレスが確認されました。ShifaLinkの患者アカウントにログインできます。",
+    "invalidTitle": "リンクを利用できません",
+    "invalidMessage": "この確認リンクは無効、期限切れ、またはすでに使用されています。",
+    "login": "ログインへ進む"
+  },
+  "drivePage": {
+    "eyebrow": "非公開の医療記録",
+    "title": "健康記録を安全につなぐ",
+    "description": "ShifaLink Driveなら、医療記録を安全にアップロード、整理し、選択した医療従事者と共有できます。",
+    "imageAlt": "ShifaLink Driveの安全な医療記録ストレージ",
+    "createAccount": "患者アカウントを作成",
+    "signIn": "ログイン",
+    "privateTitle": "初期設定は非公開",
+    "privateDescription": "明示的に共有するまで、記録は非公開のままです。",
+    "sharingTitle": "患者が共有を管理",
+    "sharingDescription": "指定した医師に、明確で取り消し可能なアクセス権を付与できます。",
+    "organizedTitle": "すべてを整理",
+    "organizedDescription": "処方箋、検査結果、画像、メモを一か所で簡単に管理できます。"
   },
   "home": {
     "clinicalSafetyTitle": "臨床安全に関する注意",

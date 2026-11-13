@@ -1,14 +1,15 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
 import { CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CalendarDays, Droplets, Lock, Mail, Phone, ShieldCheck, User } from "lucide-react";
+import { CalendarDays, CheckCircle2, Droplets, Lock, Mail, Phone, ShieldCheck, User } from "lucide-react";
 
 type ApiErrorResponse = {
   message?: string;
+  code?: string;
   fieldErrors?: Record<string, string[]>;
 };
 
@@ -16,6 +17,7 @@ export function RegisterForm() {
   const t = useTranslations("auth");
   const tRegistration = useTranslations("registration");
   const router = useRouter();
+  const locale = useLocale();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -25,6 +27,7 @@ export function RegisterForm() {
   const [phone, setPhone] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [verificationSent, setVerificationSent] = useState(false);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -43,6 +46,7 @@ export function RegisterForm() {
           gender: gender || undefined,
           bloodGroup: bloodGroup || undefined,
           phone: phone || undefined,
+          locale,
         }),
       });
 
@@ -56,13 +60,29 @@ export function RegisterForm() {
         return;
       }
 
-      router.push("/patient");
-      router.refresh();
+      setVerificationSent(true);
     } catch {
       setError("Unable to connect to ShifaLink. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
+  }
+
+  if (verificationSent) {
+    return (
+      <CardContent className="flex flex-col items-center gap-4 pt-8 text-center">
+        <CheckCircle2 className="h-12 w-12 text-emerald-600" aria-hidden="true" />
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
+          {tRegistration("verificationSentTitle")}
+        </h2>
+        <p className="text-sm text-slate-600 dark:text-slate-300">
+          {tRegistration("verificationSentMessage", { email })}
+        </p>
+        <Button type="button" className="w-full" onClick={() => router.push("/login")}>
+          {tRegistration("goToLogin")}
+        </Button>
+      </CardContent>
+    );
   }
 
   return (

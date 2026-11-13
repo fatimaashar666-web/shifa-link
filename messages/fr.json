@@ -5,6 +5,7 @@
     "videoConsultation": "Téléconsultation",
     "labTests": "Analyses de laboratoire",
     "radiologyTests": "Examens radiologiques",
+    "drive": "ShifaLink Drive",
     "healthArticles": "Articles de santé",
     "about": "À propos de ShifaLink",
     "contact": "Contact",
@@ -111,7 +112,31 @@
     "selectBloodGroup": "Sélectionner le groupe sanguin",
     "unknown": "Inconnu",
     "consentNotice": "En créant un compte, vous acceptez notre politique sécurisée de gestion des dossiers médicaux fondée sur les rôles.",
-    "creatingAccount": "Création du compte..."
+    "creatingAccount": "Création du compte...",
+    "verificationSentTitle": "Consultez votre boîte de réception",
+    "verificationSentMessage": "Nous avons envoyé un lien de vérification à {email}. Ouvrez-le pour activer votre compte patient.",
+    "goToLogin": "Accéder à la connexion"
+  },
+  "emailVerification": {
+    "successTitle": "E-mail vérifié",
+    "successMessage": "Votre adresse e-mail est vérifiée. Vous pouvez maintenant vous connecter à votre compte patient ShifaLink.",
+    "invalidTitle": "Lien indisponible",
+    "invalidMessage": "Ce lien de vérification est invalide, expiré ou déjà utilisé.",
+    "login": "Continuer vers la connexion"
+  },
+  "drivePage": {
+    "eyebrow": "Dossiers médicaux privés",
+    "title": "Vos dossiers de santé, connectés en toute sécurité",
+    "description": "ShifaLink Drive vous offre un espace sécurisé pour importer, organiser et partager vos dossiers avec les professionnels de santé de votre choix.",
+    "imageAlt": "Stockage sécurisé des dossiers médicaux ShifaLink Drive",
+    "createAccount": "Créer un compte patient",
+    "signIn": "Se connecter",
+    "privateTitle": "Privé par défaut",
+    "privateDescription": "Vos dossiers restent privés jusqu'à ce que vous choisissiez explicitement de les partager.",
+    "sharingTitle": "Partage contrôlé par le patient",
+    "sharingDescription": "Accordez à des médecins nommés des accès clairs et révocables.",
+    "organizedTitle": "Tout est organisé",
+    "organizedDescription": "Gardez ordonnances, résultats, scans et notes faciles à retrouver au même endroit."
   },
   "home": {
     "clinicalSafetyTitle": "Avis de sécurité clinique",

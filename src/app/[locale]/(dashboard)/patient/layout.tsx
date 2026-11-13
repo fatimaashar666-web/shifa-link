@@ -14,7 +14,7 @@ export default async function PatientDashboardLayout({
   const token = (await cookies()).get("shifalink-session")?.value;
   const session = token ? await verifySession(token) : null;
 
-  if (!session) {
+  if (!session || !session.roles.includes("patient")) {
     redirect(`/${locale}/login?redirect=/${locale}/patient`);
   }
 

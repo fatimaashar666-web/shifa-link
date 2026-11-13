@@ -5,6 +5,7 @@
     "videoConsultation": "Videosprechstunde",
     "labTests": "Labortests",
     "radiologyTests": "Radiologie",
+    "drive": "ShifaLink Drive",
     "healthArticles": "Gesundheitsartikel",
     "about": "Über ShifaLink",
     "contact": "Kontakt",
@@ -111,7 +112,31 @@
     "selectBloodGroup": "Blutgruppe auswählen",
     "unknown": "Unbekannt",
     "consentNotice": "Mit der Erstellung eines Kontos stimmen Sie unserer sicheren, rollenbasierten Richtlinie zur Verarbeitung medizinischer Daten zu.",
-    "creatingAccount": "Konto wird erstellt..."
+    "creatingAccount": "Konto wird erstellt...",
+    "verificationSentTitle": "Posteingang prüfen",
+    "verificationSentMessage": "Wir haben einen Bestätigungslink an {email} gesendet. Öffnen Sie ihn, um Ihr Patientenkonto zu aktivieren.",
+    "goToLogin": "Zur Anmeldung"
+  },
+  "emailVerification": {
+    "successTitle": "E-Mail bestätigt",
+    "successMessage": "Ihre E-Mail-Adresse ist bestätigt. Sie können sich jetzt bei Ihrem ShifaLink-Patientenkonto anmelden.",
+    "invalidTitle": "Link nicht verfügbar",
+    "invalidMessage": "Dieser Bestätigungslink ist ungültig, abgelaufen oder wurde bereits verwendet.",
+    "login": "Weiter zur Anmeldung"
+  },
+  "drivePage": {
+    "eyebrow": "Private medizinische Unterlagen",
+    "title": "Ihre Gesundheitsunterlagen sicher verbunden",
+    "description": "ShifaLink Drive bietet einen sicheren Ort zum Hochladen, Organisieren und Teilen medizinischer Unterlagen mit ausgewählten Fachkräften.",
+    "imageAlt": "Sichere Speicherung medizinischer Unterlagen in ShifaLink Drive",
+    "createAccount": "Patientenkonto erstellen",
+    "signIn": "Anmelden",
+    "privateTitle": "Standardmäßig privat",
+    "privateDescription": "Ihre Unterlagen bleiben privat, bis Sie sie ausdrücklich teilen.",
+    "sharingTitle": "Teilen durch Patienten gesteuert",
+    "sharingDescription": "Geben Sie benannten Ärzten klare, widerrufbare Zugriffsrechte.",
+    "organizedTitle": "Alles organisiert",
+    "organizedDescription": "Bewahren Sie Rezepte, Laborberichte, Scans und Notizen übersichtlich an einem Ort auf."
   },
   "home": {
     "clinicalSafetyTitle": "Klinischer Sicherheitshinweis",

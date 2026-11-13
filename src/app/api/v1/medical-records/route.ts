@@ -5,13 +5,13 @@
  * POST - Register a medical record after upload to object storage (Step 2)
  */
 import { NextRequest } from 'next/server'
-import { requireAuth } from '@/server/auth/rbac'
+import { requireRole } from '@/server/auth/rbac'
 import * as recordService from '@/server/services/medical-record.service'
 import { badRequest, internalError, forbidden } from '@/lib/errors'
 import { MedicalRecordCategory } from '@prisma/client'
 
 export async function GET(request: NextRequest) {
-  const guard = await requireAuth(request)
+  const guard = await requireRole(request, 'patient')
   if (!guard.ok) return guard.response
 
   const { searchParams } = request.nextUrl
@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const guard = await requireAuth(request)
+  const guard = await requireRole(request, 'patient')
   if (!guard.ok) return guard.response
 
   let body: unknown

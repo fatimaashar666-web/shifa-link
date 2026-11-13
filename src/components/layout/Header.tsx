@@ -20,6 +20,7 @@ export function Header() {
     { href: "/doctors", label: t("findDoctor") },
     { href: "/lab-tests", label: t("labTests") },
     { href: "/radiology", label: t("radiologyTests") },
+    { href: "/drive", label: t("drive") },
     { href: "/articles", label: t("healthArticles") },
     { href: "/about", label: t("about") },
     { href: "/contact", label: t("contact") },

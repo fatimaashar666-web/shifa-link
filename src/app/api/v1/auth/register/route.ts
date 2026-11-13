@@ -10,9 +10,10 @@
  */
 import { type NextRequest } from 'next/server'
 
-import { RegisterSchema, registerPatient, createSession, AuthError } from '@/server/services/auth.service'
-import { buildSessionCookie } from '@/server/auth/session'
+import { RegisterSchema, registerPatient, AuthError } from '@/server/services/auth.service'
+import { isEmailDeliveryConfigured, sendVerificationEmail } from '@/server/email/mailer'
 import { validationError, conflict, internalError } from '@/lib/errors'
+import { locales, type Locale } from '@/i18n/routing'
 
 export async function POST(request: NextRequest) {
   // 1. Parse body
@@ -36,19 +37,30 @@ export async function POST(request: NextRequest) {
 
   const ipAddress = request.headers.get('x-forwarded-for') ?? request.headers.get('x-real-ip') ?? undefined
 
+  if (!isEmailDeliveryConfigured()) {
+    return Response.json(
+      {
+        code: 'EMAIL_NOT_CONFIGURED',
+        message: 'Email verification is temporarily unavailable. Please configure the SMTP email settings.',
+      },
+      { status: 503 },
+    )
+  }
+
   // 3. Register
   try {
-    const { session, userId } = await registerPatient(parsed.data, ipAddress)
+    const { userId, email, verificationToken } = await registerPatient(parsed.data, ipAddress)
+    const locale: Locale = locales.includes(parsed.data.locale as Locale)
+      ? (parsed.data.locale as Locale)
+      : 'en'
+    const verificationUrl = new URL(
+      `/${locale}/verify-email?token=${encodeURIComponent(verificationToken)}`,
+      request.url,
+    ).toString()
 
-    // 4. Issue session cookie
-    const { token } = await createSession(session)
-    return Response.json(
-      { userId, email: session.email },
-      {
-        status: 201,
-        headers: { 'Set-Cookie': buildSessionCookie(token) },
-      },
-    )
+    await sendVerificationEmail({ to: email, name: parsed.data.name, verificationUrl })
+
+    return Response.json({ userId, email, verificationRequired: true }, { status: 201 })
   } catch (err) {
     if (err instanceof AuthError && err.code === 'EMAIL_TAKEN') {
       return conflict(err.message)

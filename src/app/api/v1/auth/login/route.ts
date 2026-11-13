@@ -50,6 +50,9 @@ export async function POST(request: NextRequest) {
       },
     )
   } catch (err) {
+    if (err instanceof AuthError && err.code === 'EMAIL_NOT_VERIFIED') {
+      return Response.json({ code: err.code, message: err.message }, { status: 403 })
+    }
     if (err instanceof AuthError) {
       return unauthorized(err.message)
     }

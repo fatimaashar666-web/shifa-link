@@ -10,7 +10,7 @@ import { Card } from "@/components/ui/card";
 const services = [
   { id: "doctors", image: "/doctor.jpg", link: "/doctors" },
   { id: "labs", image: "/labtests.jpg", link: "/lab-tests" },
-  { id: "drive", image: "/drive.png", link: "/about" },
+  { id: "drive", image: "/drive.png", link: "/drive" },
 ] as const;
 
 export default async function ServiceCards({ locale }: { locale: string }) {

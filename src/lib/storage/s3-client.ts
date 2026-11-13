@@ -58,6 +58,8 @@ function getStorageConfig() {
 const config = getStorageConfig();
 
 export const storageBucket = config.bucket;
+export const STORAGE_BUCKET = config.bucket;
+export const MAX_FILE_SIZE = 50 * 1024 * 1024;
 
 export const s3Client = new S3Client({
   region: config.region,

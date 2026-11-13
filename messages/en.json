@@ -5,6 +5,7 @@
     "videoConsultation": "Video Consultation",
     "labTests": "Lab Tests",
     "radiologyTests": "Radiology Tests",
+    "drive": "ShifaLink Drive",
     "healthArticles": "Health Articles",
     "about": "About ShifaLink",
     "contact": "Contact",
@@ -111,7 +112,31 @@
     "selectBloodGroup": "Select blood group",
     "unknown": "Unknown",
     "consentNotice": "By creating an account, you consent to our secure, role-based medical record handling policy.",
-    "creatingAccount": "Creating account..."
+    "creatingAccount": "Creating account...",
+    "verificationSentTitle": "Check your inbox",
+    "verificationSentMessage": "We sent a verification link to {email}. Open it to activate your patient account.",
+    "goToLogin": "Go to login"
+  },
+  "emailVerification": {
+    "successTitle": "Email verified",
+    "successMessage": "Your email address is verified. You can now sign in to your ShifaLink patient account.",
+    "invalidTitle": "Link unavailable",
+    "invalidMessage": "This verification link is invalid, expired, or has already been used.",
+    "login": "Continue to login"
+  },
+  "drivePage": {
+    "eyebrow": "Private medical records",
+    "title": "Your health records, safely connected",
+    "description": "ShifaLink Drive gives you one secure place to upload, organize, and share medical records with the healthcare professionals you choose.",
+    "imageAlt": "Secure ShifaLink Drive medical records storage",
+    "createAccount": "Create a patient account",
+    "signIn": "Sign in",
+    "privateTitle": "Private by default",
+    "privateDescription": "Your records stay private until you explicitly choose to share them.",
+    "sharingTitle": "Patient-controlled sharing",
+    "sharingDescription": "Grant named doctors access with clear permissions and revocable consent.",
+    "organizedTitle": "Everything organized",
+    "organizedDescription": "Keep prescriptions, lab reports, scans, and notes easy to find in one place."
   },
   "home": {
     "clinicalSafetyTitle": "Clinical Safety Notice",
