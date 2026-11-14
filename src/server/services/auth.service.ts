@@ -87,11 +87,20 @@ export const ResetPasswordSchema = z.object({
     .max(128, 'Password must be at most 128 characters'),
 })
 
+export const ChangePasswordSchema = z.object({
+  currentPassword: z.string().min(1, 'Current password is required'),
+  newPassword: z
+    .string()
+    .min(8, 'New password must be at least 8 characters')
+    .max(128, 'New password must be at most 128 characters'),
+})
+
 export type RegisterInput = z.infer<typeof RegisterSchema>
 export type DoctorRegisterInput = z.infer<typeof DoctorRegisterSchema>
 export type LoginInput = z.infer<typeof LoginSchema>
 export type ForgotPasswordInput = z.infer<typeof ForgotPasswordSchema>
 export type ResetPasswordInput = z.infer<typeof ResetPasswordSchema>
+export type ChangePasswordInput = z.infer<typeof ChangePasswordSchema>
 
 // ---------------------------------------------------------------------------
 // Error types
@@ -99,7 +108,7 @@ export type ResetPasswordInput = z.infer<typeof ResetPasswordSchema>
 
 export class AuthError extends Error {
   constructor(
-    public readonly code: 'EMAIL_TAKEN' | 'INVALID_CREDENTIALS' | 'ACCOUNT_DISABLED' | 'EMAIL_NOT_VERIFIED' | 'ROLE_NOT_ALLOWED',
+    public readonly code: 'EMAIL_TAKEN' | 'INVALID_CREDENTIALS' | 'INVALID_CURRENT_PASSWORD' | 'ACCOUNT_DISABLED' | 'EMAIL_NOT_VERIFIED' | 'ROLE_NOT_ALLOWED',
     message: string,
   ) {
     super(message)
@@ -337,6 +346,34 @@ export async function resetPassword(input: ResetPasswordInput): Promise<boolean>
   })
 
   return true
+}
+
+/** Change the password for the currently authenticated user. */
+export async function changePassword(
+  userId: string,
+  input: ChangePasswordInput,
+  ipAddress?: string,
+): Promise<void> {
+  const user = await userRepo.findById(userId)
+  if (!user?.passwordHash) {
+    throw new AuthError('INVALID_CURRENT_PASSWORD', 'Current password is incorrect.')
+  }
+
+  const currentPasswordMatches = await bcrypt.compare(input.currentPassword, user.passwordHash)
+  if (!currentPasswordMatches) {
+    throw new AuthError('INVALID_CURRENT_PASSWORD', 'Current password is incorrect.')
+  }
+
+  const passwordHash = await bcrypt.hash(input.newPassword, BCRYPT_ROUNDS)
+  await userRepo.updatePasswordHash(user.id, passwordHash)
+  writeAuditEvent({
+    actorType: 'USER',
+    actorId: user.id,
+    action: 'auth.password_changed',
+    entityType: 'User',
+    entityId: user.id,
+    ipAddress,
+  })
 }
 
 /**

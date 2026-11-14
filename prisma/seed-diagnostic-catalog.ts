@@ -137,8 +137,8 @@ const db = new PrismaClient({ adapter: new PrismaPg(pool) })
 
 async function main() {
   const catalog = readCatalog()
-  const labOrgId = 'org-seed-lab-00000000-0000-0000-000000000001'
-  const radioOrgId = 'org-seed-rad-00000000-0000-0000-000000000002'
+  const labOrgId = 'org-seed-lab-00000000-0000-0000-0000-000000000001'
+  const radioOrgId = 'org-seed-rad-00000000-0000-0000-0000-000000000002'
   const legacySlugByCode = new Map([['cbc', 'complete-blood-count']])
 
   const labCount = catalog.filter((row) => row.type === 'LAB').length
