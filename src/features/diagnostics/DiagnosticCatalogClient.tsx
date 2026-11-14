@@ -47,6 +47,11 @@ interface DiagnosticCatalogClientProps {
     subtotal: string;
     close: string;
     certifiedService: string;
+    bookingDateTime?: string;
+    bookingBeforePayment?: string;
+    bookingInProgress?: string;
+    bookingFailed?: string;
+    missingProvider?: string;
   };
 }
 
@@ -93,6 +98,9 @@ export function DiagnosticCatalogClient({ items, type, canUseCart, labels }: Dia
   const cart = canUseCart ? storedCart : EMPTY_CART;
   const [selectedItem, setSelectedItem] = useState<DiagnosticCatalogItem | null>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [scheduledAt, setScheduledAt] = useState("");
+  const [bookingError, setBookingError] = useState<string | null>(null);
+  const [isBooking, setIsBooking] = useState(false);
 
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
   const knownSubtotal = cart.reduce(
@@ -123,24 +131,76 @@ export function DiagnosticCatalogClient({ items, type, canUseCart, labels }: Dia
     updateCart((currentCart) => currentCart.filter((item) => item.id !== itemId));
   }
 
-  function continueToPayment() {
-    if (!canUseCart || cart.length === 0) return;
-    const checkoutUrl = process.env.NEXT_PUBLIC_DIAGNOSTIC_CHECKOUT_URL ?? DEFAULT_CHECKOUT_URL;
-    const checkoutItems = cart.map((item) => ({
-      code: item.code,
-      name: item.name,
-      type: item.type,
-      quantity: item.quantity,
-      price: item.basePrice,
-      organizationId: item.organizationId,
-    }));
-    const separator = checkoutUrl.includes("?") ? "&" : "?";
-    const url = `${checkoutUrl}${separator}${new URLSearchParams({
-      source: "shifalink",
-      items: JSON.stringify(checkoutItems),
-      total: String(knownSubtotal),
-    }).toString()}`;
-    window.open(url, "_blank", "noopener,noreferrer");
+  async function continueToPayment() {
+    if (!canUseCart || cart.length === 0 || isBooking) return;
+    if (!scheduledAt) {
+      setBookingError(labels.bookingDateTime ?? "Please select an appointment date and time.");
+      return;
+    }
+
+    setIsBooking(true);
+    setBookingError(null);
+
+    try {
+      const createdBookings: Array<{ id?: string; bookingNumber?: string }> = [];
+
+      for (const item of cart) {
+        if (!item.organizationId) {
+          throw new Error(labels.missingProvider ?? "This test does not have an available provider yet.");
+        }
+
+        const response = await fetch("/api/v1/diagnostic-bookings", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            serviceId: item.id,
+            organizationId: item.organizationId,
+            scheduledAt: new Date(scheduledAt).toISOString(),
+            isHomeCollection: false,
+          }),
+        });
+        const data = (await response.json().catch(() => ({}))) as {
+          id?: string;
+          bookingNumber?: string;
+          message?: string;
+        };
+
+        if (!response.ok) {
+          throw new Error(data.message ?? labels.bookingFailed ?? "Booking failed. Please try again.");
+        }
+
+        createdBookings.push(data);
+      }
+
+      const checkoutUrl = process.env.NEXT_PUBLIC_DIAGNOSTIC_CHECKOUT_URL ?? DEFAULT_CHECKOUT_URL;
+      const checkoutItems = cart.map((item) => ({
+        code: item.code,
+        name: item.name,
+        type: item.type,
+        quantity: item.quantity,
+        price: item.basePrice,
+        organizationId: item.organizationId,
+      }));
+      const separator = checkoutUrl.includes("?") ? "&" : "?";
+      const url = `${checkoutUrl}${separator}${new URLSearchParams({
+        source: "shifalink",
+        items: JSON.stringify(checkoutItems),
+        bookings: JSON.stringify(createdBookings),
+        total: String(knownSubtotal),
+      }).toString()}`;
+
+      window.localStorage.removeItem(CART_STORAGE_KEY);
+      cartSnapshotRaw = null;
+      cartSnapshot = EMPTY_CART;
+      window.dispatchEvent(new Event(CART_CHANGE_EVENT));
+      setIsCartOpen(false);
+      setSelectedItem(null);
+      window.open(url, "_blank", "noopener,noreferrer");
+    } catch (error) {
+      setBookingError(error instanceof Error ? error.message : labels.bookingFailed ?? "Booking failed. Please try again.");
+    } finally {
+      setIsBooking(false);
+    }
   }
 
   return (
@@ -254,7 +314,7 @@ export function DiagnosticCatalogClient({ items, type, canUseCart, labels }: Dia
               <Button type="button" variant="outline" onClick={() => { setSelectedItem(null); setIsCartOpen(true); }}>
                 {labels.cart}
               </Button>
-              <Button type="button" onClick={() => { setSelectedItem(null); continueToPayment(); }}>
+              <Button type="button" onClick={() => { setSelectedItem(null); setIsCartOpen(true); }}>
                 {labels.checkout}
               </Button>
             </div>
@@ -285,12 +345,37 @@ export function DiagnosticCatalogClient({ items, type, canUseCart, labels }: Dia
             {hasUnpricedItem && (
               <p className="mt-4 text-xs text-amber-700 dark:text-amber-300">{labels.paymentNotice}</p>
             )}
+            <div className="mt-4 space-y-2 rounded-lg border border-slate-200 p-3 dark:border-slate-700">
+              <label htmlFor="diagnostic-scheduled-at" className="text-xs font-medium text-slate-700 dark:text-slate-300">
+                {labels.bookingDateTime ?? "Select appointment date and time"}
+              </label>
+              <input
+                id="diagnostic-scheduled-at"
+                type="datetime-local"
+                min={new Date().toISOString().slice(0, 16)}
+                value={scheduledAt}
+                onChange={(event) => {
+                  setScheduledAt(event.target.value);
+                  setBookingError(null);
+                }}
+                className="w-full rounded-md border border-slate-200 bg-transparent px-3 py-2 text-sm dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                {labels.bookingBeforePayment ?? "Your test booking will be saved before you continue to JazzCash."}
+              </p>
+            </div>
+            {bookingError && (
+              <div className="mt-4 flex gap-2 rounded-lg border border-red-200 bg-red-50 p-3 text-xs text-red-700 dark:border-red-800/50 dark:bg-red-950/20 dark:text-red-300">
+                <AlertCircle className="h-4 w-4 shrink-0" />
+                <span>{bookingError}</span>
+              </div>
+            )}
             <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4 dark:border-slate-800">
               <span className="font-semibold text-slate-900 dark:text-white">{labels.subtotal}</span>
               <span className="font-bold text-slate-900 dark:text-white">Rs. {knownSubtotal.toLocaleString()}</span>
             </div>
-            <Button type="button" className="mt-4 w-full" onClick={continueToPayment} disabled={cart.length === 0}>
-              {labels.checkout}
+            <Button type="button" className="mt-4 w-full" onClick={() => void continueToPayment()} disabled={cart.length === 0 || isBooking}>
+              {isBooking ? labels.bookingInProgress ?? "Saving booking..." : labels.checkout}
             </Button>
           </div>
         </div>

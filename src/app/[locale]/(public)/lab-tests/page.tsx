@@ -89,6 +89,11 @@ export default async function LabTestsPage({
             subtotal: tDiagnostics("subtotal"),
             close: tDiagnostics("close"),
             certifiedService: tDiagnostics("certifiedService"),
+            bookingDateTime: "Select appointment date and time",
+            bookingBeforePayment: "Your test booking will be saved before you continue to JazzCash.",
+            bookingInProgress: "Saving booking...",
+            bookingFailed: "Booking failed. Please try again.",
+            missingProvider: "This test does not have an available provider yet.",
           }}
         />
     </div>
