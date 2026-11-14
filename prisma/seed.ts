@@ -1,9 +1,9 @@
 /**
- * Prisma seed — M2 & M4 development fixtures.
+ * Prisma seed - M2 & M4 development fixtures.
  *
  * IMPORTANT:
  * - ALL names, emails, and IDs are synthetic. No real patient data.
- * - Run only against a local/staging database — never production.
+ * - Run only against a local/staging database - never production.
  *
  * Usage:
  *   npm run db:seed
@@ -155,6 +155,97 @@ function toSlug(value: string): string {
     .trim()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
+}
+
+type DiagnosticServiceCsvRow = {
+  id: string
+  code: string
+  name: string
+  slug: string
+  type: 'LAB' | 'RADIOLOGY'
+  category: string
+  sampleType: string
+  description: string | null
+  fastingRequired: boolean
+  fastingHours: number | null
+  turnaroundHours: number
+  shortDescription: string | null
+  searchKeywords: string[]
+  isPopular: boolean
+  isFeatured: boolean
+  isActive: boolean
+  basePrice: number | null
+  imageUrl: string | null
+}
+
+function parseBoolean(value: string, field: string, rowNumber: number): boolean {
+  const normalized = value.toLowerCase()
+  if (normalized === 'true') return true
+  if (normalized === 'false') return false
+  throw new Error(`Invalid ${field} value on diagnostic catalog row ${rowNumber}: ${value}`)
+}
+
+function parseOptionalNumber(value: string, field: string, rowNumber: number): number | null {
+  if (!value.trim()) return null
+  const parsed = Number(value)
+  if (!Number.isFinite(parsed)) {
+    throw new Error(`Invalid ${field} value on diagnostic catalog row ${rowNumber}: ${value}`)
+  }
+  return parsed
+}
+
+function readDiagnosticServiceCatalogCsv(): DiagnosticServiceCsvRow[] {
+  const csvPath = resolve(process.cwd(), 'prisma/shifalink_karachi_lab_test_catalog.csv')
+  if (!existsSync(csvPath)) throw new Error(`Diagnostic service catalog not found: ${csvPath}`)
+
+  const lines = readFileSync(csvPath, 'utf-8')
+    .replace(/^\uFEFF/, '')
+    .split(/\r?\n/)
+    .filter((line) => line.trim().length > 0)
+
+  const expectedHeaders = [
+    'code', 'name', 'slug', 'type', 'category', 'sampleType', 'description',
+    'fastingRequired', 'fastingHours', 'turnaroundHours', 'shortDescription',
+    'searchKeywords', 'isPopular', 'isFeatured', 'isActive', 'basePrice', 'imageUrl',
+  ]
+  const headers = parseCsvLine(lines.shift() ?? '')
+  if (expectedHeaders.some((header) => !headers.includes(header))) {
+    throw new Error(`Diagnostic catalog must include the fields: ${expectedHeaders.join(',')}`)
+  }
+
+  return lines.map((line, index) => {
+    const rowNumber = index + 2
+    const values = parseCsvLine(line)
+    const row = Object.fromEntries(headers.map((header, headerIndex) => [header, values[headerIndex] ?? '']))
+
+    if (!row.code || !row.name || !row.slug || !row.category || !row.sampleType) {
+      throw new Error(`Invalid diagnostic catalog row ${rowNumber}: missing required value`)
+    }
+    if (row.type !== 'LAB' && row.type !== 'RADIOLOGY') {
+      throw new Error(`Invalid diagnostic catalog type on row ${rowNumber}: ${row.type}`)
+    }
+
+    return {
+      id: `svc-catalog-${row.code}`,
+      code: row.code,
+      name: row.name,
+      slug: row.slug,
+      type: row.type,
+      category: row.category,
+      sampleType: row.sampleType,
+      description: row.description || null,
+      fastingRequired: parseBoolean(row.fastingRequired, 'fastingRequired', rowNumber),
+      fastingHours: parseOptionalNumber(row.fastingHours, 'fastingHours', rowNumber),
+      turnaroundHours: Number(row.turnaroundHours),
+      shortDescription: row.shortDescription || null,
+      searchKeywords: row.searchKeywords.split(';').map((keyword) => keyword.trim()).filter(Boolean),
+      isPopular: parseBoolean(row.isPopular, 'isPopular', rowNumber),
+      isFeatured: parseBoolean(row.isFeatured, 'isFeatured', rowNumber),
+      isActive: parseBoolean(row.isActive, 'isActive', rowNumber),
+      basePrice: parseOptionalNumber(row.basePrice, 'basePrice', rowNumber),
+      imageUrl: row.imageUrl || null,
+    }
+  })
 }
 
 const connectionString = process.env.DATABASE_URL
@@ -750,35 +841,8 @@ async function main() {
   // 9. M5 — Diagnostic Services (LAB + RADIOLOGY)
   // -------------------------------------------------------------------------
 
-  const labServicesData = [
-    {
-      id: 'svc-seed-lab-cbc-00000000-0000-0000-000000000001',
-      name: 'Complete Blood Count (CBC)',
-      slug: 'complete-blood-count',
-      type: 'LAB' as const,
-      category: 'Haematology',
-      description: 'Comprehensive panel measuring white blood cells, red blood cells, hemoglobin, and platelets.',
-      basePrice: 950,
-    },
-    {
-      id: 'svc-seed-lab-lip-00000000-0000-0000-000000000002',
-      name: 'Lipid Profile (Cholesterol Panel)',
-      slug: 'lipid-profile',
-      type: 'LAB' as const,
-      category: 'Biochemistry',
-      description: 'Evaluates cardiovascular risk: Total Cholesterol, HDL, LDL, and Triglycerides.',
-      basePrice: 1400,
-    },
-    {
-      id: 'svc-seed-lab-hba-00000000-0000-0000-000000000003',
-      name: 'HbA1c (Glycated Haemoglobin)',
-      slug: 'hba1c',
-      type: 'LAB' as const,
-      category: 'Endocrinology',
-      description: 'Standard monitoring panel for diabetes and pre-diabetic metabolic health.',
-      basePrice: 1600,
-    },
-  ]
+  const diagnosticCatalog = readDiagnosticServiceCatalogCsv()
+  const labServicesData = diagnosticCatalog.filter((service) => service.type === 'LAB')
 
   const radioServicesData = [
     {
@@ -788,6 +852,7 @@ async function main() {
       type: 'RADIOLOGY' as const,
       category: 'Radiography',
       description: 'Standard diagnostic imaging for lung fields, cardiac silhouette, and thoracic skeletal structures.',
+      isActive: true,
       basePrice: 1500,
     },
     {
@@ -797,6 +862,7 @@ async function main() {
       type: 'RADIOLOGY' as const,
       category: 'Ultrasound',
       description: 'High-resolution sonography of liver, gallbladder, kidneys, spleen, pancreas, and bladder.',
+      isActive: true,
       basePrice: 2800,
     },
     {
@@ -806,55 +872,72 @@ async function main() {
       type: 'RADIOLOGY' as const,
       category: 'MRI',
       description: 'Detailed soft-tissue neuroimaging for headaches, neurological symptoms, or cranial trauma evaluation.',
+      isActive: true,
       basePrice: 9500,
     },
   ]
 
+  const legacySlugByCode = new Map([['cbc', 'complete-blood-count']])
+  const seededServices = new Map<string, Awaited<ReturnType<typeof db.diagnosticService.create>>>()
+
   for (const svc of labServicesData) {
-    await db.diagnosticService.upsert({
+    const existing =
+      (await db.diagnosticService.findUnique({ where: { code: svc.code } })) ??
+      (await db.diagnosticService.findUnique({ where: { slug: legacySlugByCode.get(svc.code) ?? svc.slug } }))
+    const service = existing
+      ? await db.diagnosticService.update({ where: { id: existing.id }, data: svc })
+      : await db.diagnosticService.create({ data: svc })
+    seededServices.set(svc.code, service)
+
+    if (svc.basePrice !== null) {
+      const existingLink = await db.diagnosticServiceLocation.findFirst({
+        where: { serviceId: service.id, organizationId: labOrg.id },
+      })
+      if (existingLink) {
+        await db.diagnosticServiceLocation.update({
+          where: { id: existingLink.id },
+          data: { price: svc.basePrice, isAvailable: svc.isActive },
+        })
+      } else {
+        await db.diagnosticServiceLocation.create({
+          data: { serviceId: service.id, organizationId: labOrg.id, price: svc.basePrice, isAvailable: svc.isActive },
+        })
+      }
+    }
+  }
+
+  const radioCatalogServices = diagnosticCatalog.filter((service) => service.type === 'RADIOLOGY')
+  for (const svc of [...radioServicesData, ...radioCatalogServices]) {
+    const service = await db.diagnosticService.upsert({
       where: { id: svc.id },
       create: { ...svc, slug: svc.slug ?? svc.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') },
       update: { basePrice: svc.basePrice },
     })
+    if (svc.basePrice === null || svc.basePrice === undefined) continue
 
-    await db.diagnosticServiceLocation.upsert({
-      where: { serviceId_organizationId: { serviceId: svc.id, organizationId: labOrg.id } },
-      create: {
-        serviceId: svc.id,
-        organizationId: labOrg.id,
-        price: svc.basePrice,
-        isAvailable: true,
-      },
-      update: {},
+    const existingLink = await db.diagnosticServiceLocation.findFirst({
+      where: { serviceId: service.id, organizationId: radioOrg.id },
     })
+    if (existingLink) {
+      await db.diagnosticServiceLocation.update({
+        where: { id: existingLink.id },
+        data: { price: svc.basePrice, isAvailable: svc.isActive ?? true },
+      })
+    } else {
+      await db.diagnosticServiceLocation.create({
+        data: { serviceId: service.id, organizationId: radioOrg.id, price: svc.basePrice, isAvailable: svc.isActive ?? true },
+      })
+    }
   }
 
-  for (const svc of radioServicesData) {
-    await db.diagnosticService.upsert({
-      where: { id: svc.id },
-      create: { ...svc, slug: svc.slug ?? svc.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') },
-      update: { basePrice: svc.basePrice },
-    })
-
-    await db.diagnosticServiceLocation.upsert({
-      where: { serviceId_organizationId: { serviceId: svc.id, organizationId: radioOrg.id } },
-      create: {
-        serviceId: svc.id,
-        organizationId: radioOrg.id,
-        price: svc.basePrice,
-        isAvailable: true,
-      },
-      update: {},
-    })
-  }
-
-  console.log(`  ✅  Diagnostic Services: ${labServicesData.length} lab + ${radioServicesData.length} radiology`)
+  console.log(`  ✅  Diagnostic Services: ${labServicesData.length} lab + ${radioServicesData.length + radioCatalogServices.length} radiology`)
 
   // -------------------------------------------------------------------------
   // 10. M5 — Sample DiagnosticBooking for patientAlpha
   // -------------------------------------------------------------------------
 
-  const cbcService = labServicesData[0]
+  const cbcService = seededServices.get('cbc')
+  if (!cbcService) throw new Error('The diagnostic catalog must include the cbc service')
   const existingBooking = await db.diagnosticBooking.findFirst({
     where: { bookingNumber: 'DIAG-SEED-001' },
   })
@@ -869,7 +952,7 @@ async function main() {
         scheduledAt: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
         isHomeCollection: true,
         notes: 'Fasting sample — 10h pre-collection. Synthetic seed booking.',
-        totalAmount: cbcService.basePrice,
+        totalAmount: Number(cbcService.basePrice ?? 0),
         status: DiagnosticBookingStatus.CONFIRMED,
       },
     })
