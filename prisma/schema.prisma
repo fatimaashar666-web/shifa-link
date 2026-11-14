@@ -7,23 +7,23 @@ datasource db {
 }
 
 model User {
-  id              String               @id @default(uuid())
-  email           String               @unique
-  passwordHash    String?
-  emailVerifiedAt DateTime?
-  status          UserStatus           @default(ACTIVE)
-  createdAt       DateTime             @default(now())
-  updatedAt       DateTime             @updatedAt
-  auditEvents     AuditEvent[]
-  consents        ConsentRecord[]
-  doctorProfile   DoctorProfile?
+  id                      String                   @id @default(uuid())
+  email                   String                   @unique
+  passwordHash            String?
+  emailVerifiedAt         DateTime?
+  status                  UserStatus               @default(ACTIVE)
+  createdAt               DateTime                 @default(now())
+  updatedAt               DateTime                 @updatedAt
+  auditEvents             AuditEvent[]
+  consents                ConsentRecord[]
+  doctorProfile           DoctorProfile?
   emailVerificationTokens EmailVerificationToken[]
-  uploadedFiles   FileObject[]
-  notifications   Notification[]
-  orgMemberships  OrganizationMember[]
-  patientProfile  PatientProfile?
-  preferences     UserPreference?
-  userRoles       UserRole[]
+  uploadedFiles           FileObject[]
+  notifications           Notification[]
+  orgMemberships          OrganizationMember[]
+  patientProfile          PatientProfile?
+  preferences             UserPreference?
+  userRoles               UserRole[]
 
   @@map("users")
 }
@@ -80,6 +80,7 @@ model Organization {
   auditEvents                AuditEvent[]
   diagnosticBookings         DiagnosticBooking[]
   diagnosticServiceLocations DiagnosticServiceLocation[]
+  diagnosticLocations        DiagnosticLocation[]
   doctorLocations            DoctorLocation[]
   members                    OrganizationMember[]
   userRoles                  UserRole[]
@@ -285,66 +286,145 @@ model Appointment {
 }
 
 model DiagnosticService {
-  id              String                      @id @default(uuid())
-  name            String
-  slug            String                      @unique
-  type            OrgType
-  category        String
-  description     String?
-  preparation     String?
-  turnaroundHours Int                         @default(24)
-  homeCollection  Boolean                     @default(false)
-  basePrice       Decimal                     @db.Decimal(10, 2)
-  createdAt       DateTime                    @default(now())
-  updatedAt       DateTime                    @updatedAt
-  bookings        DiagnosticBooking[]
-  locations       DiagnosticServiceLocation[]
+  id               String                      @id @default(uuid())
+  code             String?                     @unique
+  name             String
+  slug             String                      @unique
+  type             OrgType
+  category         String
+  description      String?
+  shortDescription String?
+  preparation      String?
+  sampleType       String?
+  fastingRequired  Boolean                     @default(false)
+  fastingHours     Int?
+  turnaroundHours  Int                         @default(24)
+  homeCollection   Boolean                     @default(false)
+  basePrice        Decimal?                    @db.Decimal(10, 2)
+  modality         String?
+  searchKeywords   String[]                    @default([])
+  imageUrl         String?
+  isPopular        Boolean                     @default(false)
+  isFeatured       Boolean                     @default(false)
+  isActive         Boolean                     @default(true)
+  createdAt        DateTime                    @default(now())
+  updatedAt        DateTime                    @updatedAt
+  bookings         DiagnosticBooking[]
+  locations        DiagnosticServiceLocation[]
+  packageItems     DiagnosticPackageItem[]
 
   @@index([type, category])
+  @@index([isActive, isPopular])
+  @@index([modality])
   @@map("diagnostic_services")
 }
 
+model DiagnosticLocation {
+  id                     String                      @id @default(uuid())
+  organizationId         String
+  name                   String
+  address                String
+  city                   String                      @default("Karachi")
+  area                   String?
+  postalCode             String?
+  phone                  String?
+  latitude               Float?
+  longitude              Float?
+  supportsHomeCollection Boolean                     @default(false)
+  isActive               Boolean                     @default(true)
+  createdAt              DateTime                    @default(now())
+  updatedAt              DateTime                    @updatedAt
+  organization           Organization                @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  servicePrices          DiagnosticServiceLocation[]
+  bookings               DiagnosticBooking[]
+
+  @@index([organizationId])
+  @@index([city, area])
+  @@map("diagnostic_locations")
+}
+
 model DiagnosticServiceLocation {
-  id             String            @id @default(uuid())
+  id             String              @id @default(uuid())
   serviceId      String
   organizationId String
-  price          Decimal           @db.Decimal(10, 2)
-  isAvailable    Boolean           @default(true)
-  organization   Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  service        DiagnosticService @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  locationId     String?
+  price          Decimal             @db.Decimal(10, 2)
+  currency       String              @default("PKR")
+  isAvailable    Boolean             @default(true)
+  organization   Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  location       DiagnosticLocation? @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  service        DiagnosticService   @relation(fields: [serviceId], references: [id], onDelete: Cascade)
 
-  @@unique([serviceId, organizationId])
+  @@unique([serviceId, locationId])
   @@index([organizationId])
   @@index([serviceId])
+  @@index([locationId])
   @@map("diagnostic_service_locations")
 }
 
+model DiagnosticPackage {
+  id              String                  @id @default(uuid())
+  name            String
+  slug            String                  @unique
+  description     String?
+  category        String
+  type            OrgType
+  imageUrl        String?
+  basePrice       Decimal                 @db.Decimal(10, 2)
+  discountedPrice Decimal?                @db.Decimal(10, 2)
+  totalTests      Int                     @default(0)
+  isFeatured      Boolean                 @default(false)
+  isActive        Boolean                 @default(true)
+  createdAt       DateTime                @default(now())
+  updatedAt       DateTime                @updatedAt
+  items           DiagnosticPackageItem[]
+
+  @@index([type, category])
+  @@index([isActive, isFeatured])
+  @@map("diagnostic_packages")
+}
+
+model DiagnosticPackageItem {
+  id        String            @id @default(uuid())
+  packageId String
+  serviceId String
+  package   DiagnosticPackage @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  service   DiagnosticService @relation(fields: [serviceId], references: [id], onDelete: Restrict)
+
+  @@unique([packageId, serviceId])
+  @@index([serviceId])
+  @@map("diagnostic_package_items")
+}
+
 model DiagnosticBooking {
-  id                 String                   @id @default(uuid())
-  bookingNumber      String                   @unique
-  patientId          String
-  serviceId          String
-  organizationId     String
-  status             DiagnosticBookingStatus  @default(REQUESTED)
-  scheduledAt        DateTime
-  isHomeCollection   Boolean                  @default(false)
-  collectionAddress  String?
-  notes              String?
-  totalAmount        Decimal                  @db.Decimal(10, 2)
-  cancellationReason String?
-  cancelledBy        String?
-  cancelledAt        DateTime?
-  createdAt          DateTime                 @default(now())
-  updatedAt          DateTime                 @updatedAt
-  events             DiagnosticBookingEvent[]
-  organization       Organization             @relation(fields: [organizationId], references: [id])
-  patient            PatientProfile           @relation(fields: [patientId], references: [id], onDelete: Cascade)
-  service            DiagnosticService        @relation(fields: [serviceId], references: [id])
-  reports            DiagnosticReport[]
+  id                   String                   @id @default(uuid())
+  bookingNumber        String                   @unique
+  patientId            String
+  serviceId            String
+  organizationId       String
+  diagnosticLocationId String?
+  status               DiagnosticBookingStatus  @default(REQUESTED)
+  scheduledAt          DateTime
+  isHomeCollection     Boolean                  @default(false)
+  collectionAddress    String?
+  notes                String?
+  totalAmount          Decimal                  @db.Decimal(10, 2)
+  cancellationReason   String?
+  cancelledBy          String?
+  cancelledAt          DateTime?
+  createdAt            DateTime                 @default(now())
+  updatedAt            DateTime                 @updatedAt
+  events               DiagnosticBookingEvent[]
+  organization         Organization             @relation(fields: [organizationId], references: [id])
+  diagnosticLocation   DiagnosticLocation?      @relation(fields: [diagnosticLocationId], references: [id], onDelete: SetNull)
+  patient              PatientProfile           @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  service              DiagnosticService        @relation(fields: [serviceId], references: [id])
+  reports              DiagnosticReport[]
 
   @@index([patientId, status])
   @@index([organizationId, status])
   @@index([scheduledAt])
+  @@index([diagnosticLocationId])
   @@map("diagnostic_bookings")
 }
 
