@@ -28,11 +28,13 @@ const knownArticleAuthors: Record<string, string> = {
   "Primary Care Working Group": "articleAuthors.primaryCareWorkingGroup",
 };
 
+const LATEST_ARTICLE_COUNT = 3;
+
 export default async function HealthArticles({ locale }: { locale: string }) {
   const t = await getTranslations({ locale, namespace: "home" });
   const tMeta = await getTranslations({ locale, namespace: "articleMeta" });
   const tCommon = await getTranslations({ locale, namespace: "common" });
-  const articles = (await getPublishedArticles()).slice(0, 3);
+  const articles = (await getPublishedArticles()).slice(0, LATEST_ARTICLE_COUNT);
 
   return (
     <section aria-labelledby="health-articles-title" className="container mx-auto max-w-7xl px-4 sm:px-6">

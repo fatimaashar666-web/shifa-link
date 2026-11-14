@@ -34,7 +34,11 @@
     "submit": "Valider"
   },
   "articles": {
-    "description": "Articles évalués cliniquement et ressources d’éducation des patients pour vous aider à prendre des décisions éclairées concernant les rendez-vous et les examens diagnostiques."
+    "description": "Articles évalués cliniquement et ressources d’éducation des patients pour vous aider à prendre des décisions éclairées concernant les rendez-vous et les examens diagnostiques.",
+    "paginationLabel": "Pagination des articles",
+    "previousPage": "Précédent",
+    "nextPage": "Suivant",
+    "pageOf": "Page {page} sur {total}"
   },
   "doctors": {
     "imageAlt": "Médecins travaillant dans un hôpital lumineux",

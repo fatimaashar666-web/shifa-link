@@ -34,7 +34,11 @@
     "submit": "Absenden"
   },
   "articles": {
-    "description": "Klinisch geprüfte Artikel und Gesundheitsinformationen für Patienten, die Ihnen fundierte Entscheidungen zu Terminen und Diagnostik ermöglichen."
+    "description": "Klinisch geprüfte Artikel und Gesundheitsinformationen für Patienten, die Ihnen fundierte Entscheidungen zu Terminen und Diagnostik ermöglichen.",
+    "paginationLabel": "Seitennavigation für Artikel",
+    "previousPage": "Zurück",
+    "nextPage": "Weiter",
+    "pageOf": "Seite {page} von {total}"
   },
   "doctors": {
     "imageAlt": "Ärzte bei der Arbeit in einem hellen Krankenhaus",

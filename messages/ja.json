@@ -34,7 +34,11 @@
     "submit": "送信"
   },
   "articles": {
-    "description": "臨床的にレビューされた記事と患者向けの教育資料で、診療予約や検査について十分な情報に基づく判断をサポートします。"
+    "description": "臨床的にレビューされた記事と患者向けの教育資料で、診療予約や検査について十分な情報に基づく判断をサポートします。",
+    "paginationLabel": "記事のページ移動",
+    "previousPage": "前へ",
+    "nextPage": "次へ",
+    "pageOf": "{total}ページ中{page}ページ"
   },
   "doctors": {
     "imageAlt": "明るい病院で働く医師たち",

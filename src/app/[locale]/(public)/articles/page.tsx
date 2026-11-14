@@ -4,7 +4,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/routing";
-import { Calendar, ArrowRight, ShieldCheck } from "lucide-react";
+import { Calendar, ArrowLeft, ArrowRight, ShieldCheck } from "lucide-react";
 import { getPublishedArticles } from "@/lib/sanity/client";
 import { getSanityImageUrl } from "@/lib/sanity/image";
 import { getLocalizedValue } from "@/lib/sanity/localization";
@@ -17,10 +17,14 @@ const knownArticleCategories: Record<string, string> = {
 
 interface ArticlesPageProps {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ page?: string }>;
 }
 
-export default async function ArticlesPage({ params }: ArticlesPageProps) {
+const ARTICLES_PER_PAGE = 3;
+
+export default async function ArticlesPage({ params, searchParams }: ArticlesPageProps) {
   const { locale } = await params;
+  const { page: requestedPage } = await searchParams;
   const tNav = await getTranslations({ locale, namespace: "nav" });
   const tCommon = await getTranslations({ locale, namespace: "common" });
   const tHome = await getTranslations({ locale, namespace: "home" });
@@ -28,6 +32,16 @@ export default async function ArticlesPage({ params }: ArticlesPageProps) {
   const tMeta = await getTranslations({ locale, namespace: "articleMeta" });
 
   const articles = await getPublishedArticles();
+  const parsedPage = Number.parseInt(requestedPage ?? "1", 10);
+  const totalPages = Math.max(1, Math.ceil(articles.length / ARTICLES_PER_PAGE));
+  const currentPage = Math.min(
+    totalPages,
+    Number.isInteger(parsedPage) && parsedPage > 0 ? parsedPage : 1,
+  );
+  const pageArticles = articles.slice(
+    (currentPage - 1) * ARTICLES_PER_PAGE,
+    currentPage * ARTICLES_PER_PAGE,
+  );
 
   return (
     <div className="container mx-auto max-w-7xl px-4 py-8 sm:px-6 space-y-8">
@@ -41,7 +55,7 @@ export default async function ArticlesPage({ params }: ArticlesPageProps) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {articles.map((art) => {
+        {pageArticles.map((art) => {
           const localizedTitle = getLocalizedValue(art.title, locale) || "Health Article";
           const localizedExcerpt = getLocalizedValue(art.excerpt, locale);
           const imageUrl = getSanityImageUrl(art.coverImage, { width: 720, height: 400 });
@@ -111,6 +125,38 @@ export default async function ArticlesPage({ params }: ArticlesPageProps) {
           );
         })}
       </div>
+
+      {totalPages > 1 && (
+        <nav className="flex items-center justify-center gap-4" aria-label={tArticles("paginationLabel")}>
+          <Button variant="outline" size="sm" asChild disabled={currentPage === 1}>
+            <Link
+              href={`/articles?page=${currentPage - 1}`}
+              locale={locale}
+              aria-disabled={currentPage === 1}
+              tabIndex={currentPage === 1 ? -1 : undefined}
+              className={currentPage === 1 ? "pointer-events-none opacity-50" : undefined}
+            >
+              <ArrowLeft className="h-4 w-4 rtl:rotate-180" />
+              {tArticles("previousPage")}
+            </Link>
+          </Button>
+          <span className="text-xs text-slate-600 dark:text-slate-400">
+            {tArticles("pageOf", { page: currentPage, total: totalPages })}
+          </span>
+          <Button variant="outline" size="sm" asChild disabled={currentPage === totalPages}>
+            <Link
+              href={`/articles?page=${currentPage + 1}`}
+              locale={locale}
+              aria-disabled={currentPage === totalPages}
+              tabIndex={currentPage === totalPages ? -1 : undefined}
+              className={currentPage === totalPages ? "pointer-events-none opacity-50" : undefined}
+            >
+              {tArticles("nextPage")}
+              <ArrowRight className="h-4 w-4 rtl:rotate-180" />
+            </Link>
+          </Button>
+        </nav>
+      )}
     </div>
   );
 }

@@ -34,7 +34,11 @@
     "submit": "Submit"
   },
   "articles": {
-    "description": "Clinically reviewed articles and patient education resources to help you make informed decisions regarding appointments and diagnostics."
+    "description": "Clinically reviewed articles and patient education resources to help you make informed decisions regarding appointments and diagnostics.",
+    "paginationLabel": "Articles pagination",
+    "previousPage": "Previous",
+    "nextPage": "Next",
+    "pageOf": "Page {page} of {total}"
   },
   "doctors": {
     "imageAlt": "Doctors working in a bright hospital",
