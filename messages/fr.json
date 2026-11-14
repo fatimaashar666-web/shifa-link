@@ -285,7 +285,10 @@
     "namePlaceholder": "Votre nom complet",
     "emailPlaceholder": "Votre adresse e-mail",
     "messagePlaceholder": "Comment pouvons-nous vous aider ?",
-    "sendButton": "Envoyer le message"
+    "sendButton": "Envoyer le message",
+    "successTitle": "L’e-mail a été envoyé",
+    "successMessage": "Merci d’avoir contacté ShifaLink. Notre équipe d’assistance vous répondra bientôt.",
+    "backHome": "Retour à l’accueil"
   },
   "footer": {
     "tagline": "Rendez-vous médicaux, examens diagnostiques et gestion sécurisée des dossiers patients.",

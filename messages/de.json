@@ -285,7 +285,10 @@
     "namePlaceholder": "Ihr vollständiger Name",
     "emailPlaceholder": "Ihre E-Mail-Adresse",
     "messagePlaceholder": "Wie können wir Ihnen weiterhelfen?",
-    "sendButton": "Nachricht absenden"
+    "sendButton": "Nachricht absenden",
+    "successTitle": "E-Mail wurde gesendet",
+    "successMessage": "Vielen Dank für Ihre Nachricht an ShifaLink. Unser Support-Team meldet sich in Kürze bei Ihnen.",
+    "backHome": "Zur Startseite"
   },
   "footer": {
     "tagline": "Sichere Termine, Diagnostik und Aktenverwaltung für Patienten und Gesundheitsdienstleister.",

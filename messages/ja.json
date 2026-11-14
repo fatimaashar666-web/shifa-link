@@ -285,7 +285,10 @@
     "namePlaceholder": "お名前",
     "emailPlaceholder": "メールアドレス",
     "messagePlaceholder": "お問い合わせ内容をご記入ください",
-    "sendButton": "送信する"
+    "sendButton": "送信する",
+    "successTitle": "メールを送信しました",
+    "successMessage": "ShifaLinkにお問い合わせいただきありがとうございます。サポートチームより近日中にご連絡します。",
+    "backHome": "ホームに戻る"
   },
   "footer": {
     "tagline": "診療予約、臨床検査、医療記録管理を安全に統合するデジタルヘルスケアプラットフォーム。",

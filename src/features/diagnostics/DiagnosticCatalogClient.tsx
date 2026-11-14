@@ -28,6 +28,7 @@ interface DiagnosticCartItem extends DiagnosticCatalogItem {
 interface DiagnosticCatalogClientProps {
   items: DiagnosticCatalogItem[];
   type: "LAB" | "RADIOLOGY";
+  canUseCart: boolean;
   labels: {
     addToCart: string;
     addedToCart: string;
@@ -87,8 +88,9 @@ function formatPrice(price: number | null) {
   return price === null ? null : `Rs. ${price.toLocaleString()}`;
 }
 
-export function DiagnosticCatalogClient({ items, type, labels }: DiagnosticCatalogClientProps) {
-  const cart = useSyncExternalStore(subscribeToCart, readCart, () => EMPTY_CART);
+export function DiagnosticCatalogClient({ items, type, canUseCart, labels }: DiagnosticCatalogClientProps) {
+  const storedCart = useSyncExternalStore(subscribeToCart, readCart, () => EMPTY_CART);
+  const cart = canUseCart ? storedCart : EMPTY_CART;
   const [selectedItem, setSelectedItem] = useState<DiagnosticCatalogItem | null>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
@@ -108,6 +110,7 @@ export function DiagnosticCatalogClient({ items, type, labels }: DiagnosticCatal
   }
 
   function addToCart(item: DiagnosticCatalogItem) {
+    if (!canUseCart) return;
     updateCart((currentCart) => {
       const existing = currentCart.find((cartItem) => cartItem.id === item.id);
       if (existing) return currentCart;
@@ -121,6 +124,7 @@ export function DiagnosticCatalogClient({ items, type, labels }: DiagnosticCatal
   }
 
   function continueToPayment() {
+    if (!canUseCart || cart.length === 0) return;
     const checkoutUrl = process.env.NEXT_PUBLIC_DIAGNOSTIC_CHECKOUT_URL ?? DEFAULT_CHECKOUT_URL;
     const checkoutItems = cart.map((item) => ({
       code: item.code,
@@ -141,23 +145,25 @@ export function DiagnosticCatalogClient({ items, type, labels }: DiagnosticCatal
 
   return (
     <>
-      <div className="flex flex-col gap-3 rounded-2xl border border-blue-100 bg-blue-50/70 p-4 dark:border-blue-900/50 dark:bg-blue-950/20 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-white">
-            <ShoppingCart className="h-5 w-5" />
+      {canUseCart && (
+        <div className="flex flex-col gap-3 rounded-2xl border border-blue-100 bg-blue-50/70 p-4 dark:border-blue-900/50 dark:bg-blue-950/20 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-white">
+              <ShoppingCart className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="font-semibold text-slate-900 dark:text-white">{labels.cart}</p>
+              <p className="text-xs text-slate-600 dark:text-slate-300">
+                {cartCount === 0 ? labels.cartEmpty : `${cartCount} ${cartCount === 1 ? labels.test : labels.tests} · Rs. ${knownSubtotal.toLocaleString()}`}
+              </p>
+            </div>
           </div>
-          <div>
-            <p className="font-semibold text-slate-900 dark:text-white">{labels.cart}</p>
-            <p className="text-xs text-slate-600 dark:text-slate-300">
-              {cartCount === 0 ? labels.cartEmpty : `${cartCount} ${cartCount === 1 ? labels.test : labels.tests} · Rs. ${knownSubtotal.toLocaleString()}`}
-            </p>
-          </div>
+          <Button type="button" variant="outline" onClick={() => setIsCartOpen(true)} disabled={cartCount === 0}>
+            <ShoppingCart className="h-4 w-4" />
+            {labels.cart} ({cartCount})
+          </Button>
         </div>
-        <Button type="button" variant="outline" onClick={() => setIsCartOpen(true)} disabled={cartCount === 0}>
-          <ShoppingCart className="h-4 w-4" />
-          {labels.cart} ({cartCount})
-        </Button>
-      </div>
+      )}
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         {items.map((item) => {
@@ -203,17 +209,19 @@ export function DiagnosticCatalogClient({ items, type, labels }: DiagnosticCatal
                 <div className="font-bold text-slate-900 dark:text-white">
                   {price ?? labels.priceOnRequest}
                 </div>
-                <Button type="button" size="sm" variant={added ? "secondary" : "default"} onClick={() => addToCart(item)}>
-                  {added ? <Check className="h-4 w-4" /> : <ShoppingCart className="h-4 w-4" />}
-                  {added ? labels.addedToCart : labels.addToCart}
-                </Button>
+                {canUseCart && (
+                  <Button type="button" size="sm" variant={added ? "secondary" : "default"} onClick={() => addToCart(item)}>
+                    {added ? <Check className="h-4 w-4" /> : <ShoppingCart className="h-4 w-4" />}
+                    {added ? labels.addedToCart : labels.addToCart}
+                  </Button>
+                )}
               </CardFooter>
             </Card>
           );
         })}
       </div>
 
-      {selectedItem && (
+      {canUseCart && selectedItem && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4" role="dialog" aria-modal="true" aria-labelledby="diagnostic-cart-title">
           <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl dark:bg-slate-900">
             <div className="flex items-start justify-between gap-4">
@@ -254,7 +262,7 @@ export function DiagnosticCatalogClient({ items, type, labels }: DiagnosticCatal
         </div>
       )}
 
-      {isCartOpen && (
+      {canUseCart && isCartOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4" role="dialog" aria-modal="true" aria-labelledby="diagnostic-cart-summary-title">
           <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl dark:bg-slate-900">
             <div className="flex items-center justify-between">

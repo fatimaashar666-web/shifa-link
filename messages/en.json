@@ -285,7 +285,10 @@
     "namePlaceholder": "Your full name",
     "emailPlaceholder": "Your email address",
     "messagePlaceholder": "How can our clinical support team help you?",
-    "sendButton": "Send Message"
+    "sendButton": "Send Message",
+    "successTitle": "Email has been sent",
+    "successMessage": "Thank you for contacting ShifaLink. Our support team will get back to you shortly.",
+    "backHome": "Back to home"
   },
   "footer": {
     "tagline": "Connecting healthcare users and providers through secure appointments, diagnostics, and records.",

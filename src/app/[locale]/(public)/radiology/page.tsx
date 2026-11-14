@@ -1,7 +1,9 @@
 import { getTranslations } from "next-intl/server";
+import { cookies } from "next/headers";
 import { PageBanner } from "@/components/layout/PageBanner";
 import { AlertCircle } from "lucide-react";
 import { searchServices } from "@/server/services/diagnostic.service";
+import { verifySession } from "@/server/auth/session";
 import { DiagnosticCatalogClient, type DiagnosticCatalogItem } from "@/features/diagnostics/DiagnosticCatalogClient";
 import { getDiagnosticServiceTranslation } from "@/lib/diagnostics/localization";
 
@@ -15,6 +17,8 @@ export default async function RadiologyPage({
   const { locale } = await params;
   const tNav = await getTranslations({ locale, namespace: "nav" });
   const tDiagnostics = await getTranslations({ locale, namespace: "diagnostics" });
+  const sessionToken = (await cookies()).get("shifalink-session")?.value;
+  const session = sessionToken ? await verifySession(sessionToken) : null;
 
   let radiologyServices: Awaited<ReturnType<typeof searchServices>> = [];
   let fetchError = false;
@@ -47,6 +51,7 @@ export default async function RadiologyPage({
 
         <DiagnosticCatalogClient
           type="RADIOLOGY"
+          canUseCart={Boolean(session)}
           items={radiologyServices.map((service): DiagnosticCatalogItem => {
             const localized = getDiagnosticServiceTranslation(service.translations, locale);
             return {
