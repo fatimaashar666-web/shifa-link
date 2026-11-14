@@ -3,6 +3,7 @@ import { PageBanner } from "@/components/layout/PageBanner";
 import { AlertCircle } from "lucide-react";
 import { searchServices } from "@/server/services/diagnostic.service";
 import { DiagnosticCatalogClient, type DiagnosticCatalogItem } from "@/features/diagnostics/DiagnosticCatalogClient";
+import { getDiagnosticServiceTranslation } from "@/lib/diagnostics/localization";
 
 export const dynamic = "force-dynamic";
 
@@ -46,35 +47,43 @@ export default async function RadiologyPage({
 
         <DiagnosticCatalogClient
           type="RADIOLOGY"
-          items={radiologyServices.map((service): DiagnosticCatalogItem => ({
-            id: service.id,
-            code: service.code,
-            name: service.name,
-            category: service.category,
-            description: service.description,
-            shortDescription: service.shortDescription,
-            turnaroundHours: service.turnaroundHours,
-            homeCollection: service.homeCollection,
-            basePrice: service.locations.length > 0
-              ? Math.min(...service.locations.map((location) => Number(location.price)))
-              : service.basePrice === null ? null : Number(service.basePrice),
-            providerName: service.locations[0]?.organization.name ?? null,
-            organizationId: service.locations[0]?.organizationId ?? null,
-            type: "RADIOLOGY",
-          }))}
+          items={radiologyServices.map((service): DiagnosticCatalogItem => {
+            const localized = getDiagnosticServiceTranslation(service.translations, locale);
+            return {
+              id: service.id,
+              code: service.code,
+              name: localized?.name ?? service.name,
+              category: localized?.category ?? service.category,
+              description: localized?.description ?? (localized ? localized.shortDescription : service.description),
+              shortDescription: localized?.shortDescription ?? service.shortDescription,
+              turnaroundHours: service.turnaroundHours,
+              homeCollection: service.homeCollection,
+              basePrice: service.locations.length > 0
+                ? Math.min(...service.locations.map((location) => Number(location.price)))
+                : service.basePrice === null ? null : Number(service.basePrice),
+              providerName: service.locations[0]?.organization.name ?? null,
+              organizationId: service.locations[0]?.organizationId ?? null,
+              type: "RADIOLOGY",
+            };
+          })}
           labels={{
-            addToCart: "Add to cart",
-            addedToCart: "Added to cart",
-            cart: "Cart",
-            checkout: "Continue to payment",
-            continueShopping: "Continue shopping",
-            priceOnRequest: "Price on request",
-            provider: "Provider",
-            remove: "Remove",
-            reportWithinHours: "Report within {hours} hours",
+            addToCart: tDiagnostics("addToCart"),
+            addedToCart: tDiagnostics("addedToCart"),
+            cart: tDiagnostics("cart"),
+            checkout: tDiagnostics("checkout"),
+            continueShopping: tDiagnostics("continueShopping"),
+            priceOnRequest: tDiagnostics("priceOnRequest"),
+            provider: tDiagnostics("provider"),
+            remove: tDiagnostics("remove"),
+            reportWithinHours: tDiagnostics("reportWithinHours", { hours: "{hours}" }),
             homeCollectionAvailable: tDiagnostics("homeCollectionAvailable"),
-            paymentNotice: "Some tests have no published price yet. The provider will confirm the price before payment.",
-            cartEmpty: "Add a test to start your cart.",
+            paymentNotice: tDiagnostics("paymentNotice"),
+            cartEmpty: tDiagnostics("cartEmpty"),
+            test: tDiagnostics("test"),
+            tests: tDiagnostics("tests"),
+            subtotal: tDiagnostics("subtotal"),
+            close: tDiagnostics("close"),
+            certifiedService: tDiagnostics("certifiedService"),
           }}
         />
     </div>

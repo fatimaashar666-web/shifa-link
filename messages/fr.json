@@ -89,7 +89,22 @@
     "homeCollectionAvailable": "Prélèvement à domicile disponible",
     "certifiedImagingService": "Service d’imagerie diagnostique certifié.",
     "sameDayReport": "Résultats le jour même / sous 24 h",
-    "reportWithinDays": "Résultats sous {days} jour(s)"
+    "reportWithinDays": "Résultats sous {days} jour(s)",
+    "addToCart": "Ajouter au panier",
+    "addedToCart": "Ajouté au panier",
+    "cart": "Panier",
+    "checkout": "Continuer vers JazzCash",
+    "continueShopping": "Continuer les achats",
+    "priceOnRequest": "Prix sur demande",
+    "provider": "Prestataire",
+    "remove": "Supprimer",
+    "paymentNotice": "Le prix de certains examens n’est pas encore publié. Le prestataire le confirmera avant le paiement.",
+    "cartEmpty": "Ajoutez un examen pour commencer votre panier.",
+    "test": "examen",
+    "tests": "examens",
+    "subtotal": "Sous-total",
+    "close": "Fermer",
+    "certifiedService": "Service diagnostique certifié."
   },
   "standards": {
     "title": "Nos standards cliniques",
@@ -101,7 +116,11 @@
   "articleDetail": {
     "clinicallyReviewed": "Évalué cliniquement",
     "clinicalReviewBoard": "Comité de revue clinique",
-    "recent": "Récent"
+    "recent": "Récent",
+    "fallbackParagraph1": "Le dépistage régulier et le suivi préventif sont essentiels pour établir un diagnostic précoce et améliorer les résultats. Cette présentation pédagogique s’appuie sur des recommandations internationales de pratique clinique afin d’aider les patients à comprendre les parcours de soins habituels.",
+    "fallbackParagraph2": "Discutez toujours de vos symptômes, de vos antécédents et de vos médicaments prescrits directement avec un professionnel de santé qualifié. La téléconsultation et la prise de rendez-vous en clinique sont disponibles sur ShifaLink pour les utilisateurs inscrits.",
+    "bookDoctorConsultation": "Prendre rendez-vous avec un médecin",
+    "exploreDiagnosticTests": "Découvrir les examens diagnostiques"
   },
   "loginLinks": {
     "doctorPrompt": "Vous êtes médecin ?",

@@ -41,12 +41,17 @@ interface DiagnosticCatalogClientProps {
     homeCollectionAvailable: string;
     paymentNotice: string;
     cartEmpty: string;
+    test: string;
+    tests: string;
+    subtotal: string;
+    close: string;
+    certifiedService: string;
   };
 }
 
 const CART_STORAGE_KEY = "shifalink-diagnostic-cart";
 const CART_CHANGE_EVENT = "shifalink-diagnostic-cart-change";
-const DEFAULT_CHECKOUT_URL = "https://www.paypal.com/";
+const DEFAULT_CHECKOUT_URL = "https://www.jazzcash.com.pk/";
 const EMPTY_CART: DiagnosticCartItem[] = [];
 
 let cartSnapshotRaw: string | null | undefined;
@@ -144,7 +149,7 @@ export function DiagnosticCatalogClient({ items, type, labels }: DiagnosticCatal
           <div>
             <p className="font-semibold text-slate-900 dark:text-white">{labels.cart}</p>
             <p className="text-xs text-slate-600 dark:text-slate-300">
-              {cartCount === 0 ? labels.cartEmpty : `${cartCount} ${cartCount === 1 ? "test" : "tests"} · Rs. ${knownSubtotal.toLocaleString()}`}
+              {cartCount === 0 ? labels.cartEmpty : `${cartCount} ${cartCount === 1 ? labels.test : labels.tests} · Rs. ${knownSubtotal.toLocaleString()}`}
             </p>
           </div>
         </div>
@@ -169,7 +174,7 @@ export function DiagnosticCatalogClient({ items, type, labels }: DiagnosticCatal
                 </div>
                 <CardTitle className="text-base font-semibold">{item.name}</CardTitle>
                 <CardDescription className="text-xs leading-relaxed">
-                  {item.description ?? item.shortDescription ?? "Certified diagnostic service."}
+                  {item.description ?? item.shortDescription ?? labels.certifiedService}
                 </CardDescription>
               </CardHeader>
 
@@ -217,7 +222,7 @@ export function DiagnosticCatalogClient({ items, type, labels }: DiagnosticCatal
                 <h2 id="diagnostic-cart-title" className="mt-1 text-lg font-semibold text-slate-900 dark:text-white">{selectedItem.name}</h2>
                 <p className="mt-1 text-sm text-slate-500">{formatPrice(selectedItem.basePrice) ?? labels.priceOnRequest}</p>
               </div>
-              <button type="button" aria-label="Close" onClick={() => setSelectedItem(null)} className="rounded-md p-1 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800">
+              <button type="button" aria-label={labels.close} onClick={() => setSelectedItem(null)} className="rounded-md p-1 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800">
                 <X className="h-5 w-5" />
               </button>
             </div>
@@ -227,7 +232,7 @@ export function DiagnosticCatalogClient({ items, type, labels }: DiagnosticCatal
                 <span className="font-semibold">{cartCount}</span>
               </div>
               <div className="mt-2 flex items-center justify-between border-t border-slate-100 pt-2 dark:border-slate-800">
-                <span>Subtotal</span>
+                <span>{labels.subtotal}</span>
                 <span className="font-semibold">Rs. {knownSubtotal.toLocaleString()}</span>
               </div>
             </div>
@@ -254,7 +259,7 @@ export function DiagnosticCatalogClient({ items, type, labels }: DiagnosticCatal
           <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl dark:bg-slate-900">
             <div className="flex items-center justify-between">
               <h2 id="diagnostic-cart-summary-title" className="text-lg font-semibold text-slate-900 dark:text-white">{labels.cart}</h2>
-              <button type="button" aria-label="Close" onClick={() => setIsCartOpen(false)} className="rounded-md p-1 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800">
+              <button type="button" aria-label={labels.close} onClick={() => setIsCartOpen(false)} className="rounded-md p-1 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800">
                 <X className="h-5 w-5" />
               </button>
             </div>
@@ -273,7 +278,7 @@ export function DiagnosticCatalogClient({ items, type, labels }: DiagnosticCatal
               <p className="mt-4 text-xs text-amber-700 dark:text-amber-300">{labels.paymentNotice}</p>
             )}
             <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4 dark:border-slate-800">
-              <span className="font-semibold text-slate-900 dark:text-white">Subtotal</span>
+              <span className="font-semibold text-slate-900 dark:text-white">{labels.subtotal}</span>
               <span className="font-bold text-slate-900 dark:text-white">Rs. {knownSubtotal.toLocaleString()}</span>
             </div>
             <Button type="button" className="mt-4 w-full" onClick={continueToPayment} disabled={cart.length === 0}>

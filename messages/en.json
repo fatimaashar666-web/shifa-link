@@ -89,7 +89,22 @@
     "homeCollectionAvailable": "Home Sample Collection Available",
     "certifiedImagingService": "Certified diagnostic imaging service.",
     "sameDayReport": "Same day / 24h report",
-    "reportWithinDays": "Report within {days} day(s)"
+    "reportWithinDays": "Report within {days} day(s)",
+    "addToCart": "Add to cart",
+    "addedToCart": "Added to cart",
+    "cart": "Cart",
+    "checkout": "Continue to JazzCash",
+    "continueShopping": "Continue shopping",
+    "priceOnRequest": "Price on request",
+    "provider": "Provider",
+    "remove": "Remove",
+    "paymentNotice": "Some tests have no published price yet. The provider will confirm the price before payment.",
+    "cartEmpty": "Add a test to start your cart.",
+    "test": "test",
+    "tests": "tests",
+    "subtotal": "Subtotal",
+    "close": "Close",
+    "certifiedService": "Certified diagnostic service."
   },
   "standards": {
     "title": "Our Clinical Standards",
@@ -101,7 +116,11 @@
   "articleDetail": {
     "clinicallyReviewed": "Clinically Reviewed",
     "clinicalReviewBoard": "Clinical Review Board",
-    "recent": "Recent"
+    "recent": "Recent",
+    "fallbackParagraph1": "Routine health screening and proactive monitoring are fundamental to early diagnosis and improved outcomes. This educational overview has been compiled from international clinical practice guidelines to assist patients in understanding standard healthcare pathways.",
+    "fallbackParagraph2": "Always discuss specific symptoms, medical history, and prescribed medications directly with a qualified healthcare practitioner. Teleconsultation and clinic booking options are available through ShifaLink for registered users.",
+    "bookDoctorConsultation": "Book Doctor Consultation",
+    "exploreDiagnosticTests": "Explore Diagnostic Tests"
   },
   "loginLinks": {
     "doctorPrompt": "Are you a doctor?",

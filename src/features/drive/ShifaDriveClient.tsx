@@ -75,7 +75,7 @@ function formatBytes(bytes: number) {
   return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
 }
 
-export function ShifaDriveClient() {
+export function ShifaDriveClient({ locale }: { locale: string }) {
   const t = useTranslations("driveWorkspace");
   const [records, setRecords] = useState<MedicalRecord[]>([]);
   const [loading, setLoading] = useState(true);
@@ -409,7 +409,7 @@ export function ShifaDriveClient() {
                   {record.description && <p>{record.description}</p>}
                   <p className="text-[10px] text-slate-400">
                     {t("recordDate")}:{" "}
-                    {new Date(record.recordDate).toLocaleDateString("en-PK", { dateStyle: "medium" })}
+                    {new Date(record.recordDate).toLocaleDateString(locale, { dateStyle: "medium" })}
                   </p>
 
                   {activeGrants.length > 0 && (
@@ -426,7 +426,7 @@ export function ShifaDriveClient() {
                           <span className="text-[10px] text-slate-500">
                             {t("doctorId")} {grant.doctorId.slice(0, 8)}…
                             &nbsp;·&nbsp;{t("expires")} {" "}
-                            {new Date(grant.expiresAt).toLocaleDateString("en-PK", { dateStyle: "short" })}
+                            {new Date(grant.expiresAt).toLocaleDateString(locale, { dateStyle: "short" })}
                           </span>
                           <Button
                             variant="ghost"

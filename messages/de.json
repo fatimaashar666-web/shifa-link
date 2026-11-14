@@ -89,7 +89,22 @@
     "homeCollectionAvailable": "Probenabholung zu Hause verfügbar",
     "certifiedImagingService": "Zertifizierte diagnostische Bildgebung.",
     "sameDayReport": "Befund am selben Tag / innerhalb von 24 Stunden",
-    "reportWithinDays": "Befund innerhalb von {days} Tag(en)"
+    "reportWithinDays": "Befund innerhalb von {days} Tag(en)",
+    "addToCart": "In den Warenkorb",
+    "addedToCart": "Zum Warenkorb hinzugefügt",
+    "cart": "Warenkorb",
+    "checkout": "Mit JazzCash fortfahren",
+    "continueShopping": "Weiter einkaufen",
+    "priceOnRequest": "Preis auf Anfrage",
+    "provider": "Anbieter",
+    "remove": "Entfernen",
+    "paymentNotice": "Für einige Tests ist noch kein Preis veröffentlicht. Der Anbieter bestätigt den Preis vor der Zahlung.",
+    "cartEmpty": "Fügen Sie einen Test hinzu, um den Warenkorb zu starten.",
+    "test": "Test",
+    "tests": "Tests",
+    "subtotal": "Zwischensumme",
+    "close": "Schließen",
+    "certifiedService": "Zertifizierter diagnostischer Dienst."
   },
   "standards": {
     "title": "Unsere klinischen Standards",
@@ -101,7 +116,11 @@
   "articleDetail": {
     "clinicallyReviewed": "Klinisch geprüft",
     "clinicalReviewBoard": "Klinisches Prüfungsgremium",
-    "recent": "Aktuell"
+    "recent": "Aktuell",
+    "fallbackParagraph1": "Regelmäßige Gesundheitsvorsorge und proaktive Verlaufskontrolle sind entscheidend für eine frühe Diagnose und bessere Behandlungsergebnisse. Diese Übersicht wurde auf Grundlage internationaler klinischer Leitlinien zusammengestellt und soll Patientinnen und Patienten helfen, übliche Versorgungswege zu verstehen.",
+    "fallbackParagraph2": "Besprechen Sie konkrete Symptome, Ihre Krankengeschichte und verordnete Medikamente immer direkt mit qualifiziertem medizinischem Fachpersonal. Telekonsultationen und Kliniktermine stehen registrierten ShifaLink-Nutzenden zur Verfügung.",
+    "bookDoctorConsultation": "Arzttermin buchen",
+    "exploreDiagnosticTests": "Diagnostische Tests entdecken"
   },
   "loginLinks": {
     "doctorPrompt": "Sind Sie Arzt oder Ärztin?",

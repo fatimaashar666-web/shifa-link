@@ -293,6 +293,7 @@ model DiagnosticService {
   type             OrgType
   category         String
   description      String?
+  translations     Json?
   shortDescription String?
   preparation      String?
   sampleType       String?

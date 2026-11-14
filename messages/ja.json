@@ -76,6 +76,21 @@
     "verificationEmailError": "確認メールを送信できませんでした。後でもう一度お試しください。"
   },
   "diagnostics": {
+    "addToCart": "カートに追加",
+    "addedToCart": "カートに追加済み",
+    "cart": "カート",
+    "checkout": "JazzCashへ進む",
+    "continueShopping": "買い物を続ける",
+    "priceOnRequest": "価格はお問い合わせください",
+    "provider": "提供者",
+    "remove": "削除",
+    "paymentNotice": "一部の検査にはまだ公開価格がありません。支払い前に提供者が価格を確認します。",
+    "cartEmpty": "検査を追加してカートを開始してください。",
+    "test": "検査",
+    "tests": "検査",
+    "subtotal": "小計",
+    "close": "閉じる",
+    "certifiedService": "認定診断サービス。",
     "labImageAlt": "検査用検体を扱う検査室スタッフ",
     "labDescription": "透明な料金体系、認定採血スタッフによる検体採取、安全なShifaLink Driveへのデジタルレポート配信に対応した認定検査を予約できます。",
     "radiologyImageAlt": "医療画像を確認する放射線科スタッフ",
@@ -99,6 +114,10 @@
     "cloudRedundancy": "複数地域のクラウド冗長化"
   },
   "articleDetail": {
+    "fallbackParagraph1": "定期的な健康診断と予防的なモニタリングは、早期診断とより良い結果のために重要です。この教育的な概要は、患者が標準的な医療の流れを理解できるよう、国際的な臨床実践ガイドラインに基づいて作成されています。",
+    "fallbackParagraph2": "具体的な症状、病歴、処方薬については、必ず資格を持つ医療従事者に直接相談してください。登録ユーザーはShifaLinkで遠隔診療とクリニック予約を利用できます。",
+    "bookDoctorConsultation": "医師の診察を予約",
+    "exploreDiagnosticTests": "検査を探す",
     "clinicallyReviewed": "臨床レビュー済み",
     "clinicalReviewBoard": "臨床審査委員会",
     "recent": "最新"

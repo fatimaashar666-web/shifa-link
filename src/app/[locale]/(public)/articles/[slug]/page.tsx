@@ -114,10 +114,10 @@ export default async function ArticleDetailPage({ params }: ArticleDetailPagePro
         ) : (
           <>
             <p>
-              Routine health screening and proactive monitoring are fundamental to early diagnosis and improved outcomes. This educational overview has been compiled from international clinical practice guidelines to assist patients in understanding standard healthcare pathways.
+              {tArticleDetail("fallbackParagraph1")}
             </p>
             <p>
-              Always discuss specific symptoms, medical history, and prescribed medications directly with a qualified healthcare practitioner. Teleconsultation and clinic booking options are available through ShifaLink for registered users.
+              {tArticleDetail("fallbackParagraph2")}
             </p>
           </>
         )}
@@ -125,10 +125,10 @@ export default async function ArticleDetailPage({ params }: ArticleDetailPagePro
 
       <div className="pt-8 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
         <Button asChild size="sm">
-          <Link href="/doctors">Book Doctor Consultation</Link>
+          <Link href="/doctors">{tArticleDetail("bookDoctorConsultation")}</Link>
         </Button>
         <Button variant="outline" size="sm" asChild>
-          <Link href="/lab-tests">Explore Diagnostic Tests</Link>
+          <Link href="/lab-tests">{tArticleDetail("exploreDiagnosticTests")}</Link>
         </Button>
       </div>
     </article>

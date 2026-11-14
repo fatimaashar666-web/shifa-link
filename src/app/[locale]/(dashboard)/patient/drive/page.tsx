@@ -32,7 +32,7 @@ export default async function PatientDrivePage({
       </div>
 
       <ErrorBoundary>
-        <ShifaDriveClient />
+        <ShifaDriveClient locale={locale} />
       </ErrorBoundary>
     </div>
   );
