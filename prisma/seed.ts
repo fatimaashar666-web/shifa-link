@@ -284,9 +284,9 @@ async function main() {
   // -------------------------------------------------------------------------
 
   const clinicOrg = await db.organization.upsert({
-    where: { id: 'org-seed-cln-00000000-0000-0000-0000-000000000000' },
+    where: { id: '00000000-0000-4000-8000-000000000000' },
     create: {
-      id: 'org-seed-cln-00000000-0000-0000-0000-000000000000',
+      id: '00000000-0000-4000-8000-000000000000',
       name: 'Shifa Central Clinic',
       type: 'CLINIC',
       status: 'ACTIVE',
@@ -295,9 +295,9 @@ async function main() {
   })
 
   const labOrg = await db.organization.upsert({
-    where: { id: 'org-seed-lab-00000000-0000-0000-0000-000000000001' },
+    where: { id: '00000000-0000-4000-8000-000000000001' },
     create: {
-      id: 'org-seed-lab-00000000-0000-0000-0000-000000000001',
+      id: '00000000-0000-4000-8000-000000000001',
       name: 'Synthetic Lab Center',
       type: 'LAB',
       status: 'ACTIVE',
@@ -306,9 +306,9 @@ async function main() {
   })
 
   const radioOrg = await db.organization.upsert({
-    where: { id: 'org-seed-rad-00000000-0000-0000-0000-000000000002' },
+    where: { id: '00000000-0000-4000-8000-000000000002' },
     create: {
-      id: 'org-seed-rad-00000000-0000-0000-0000-000000000002',
+      id: '00000000-0000-4000-8000-000000000002',
       name: 'Synthetic Radiology Hub',
       type: 'RADIOLOGY',
       status: 'ACTIVE',
@@ -846,7 +846,7 @@ async function main() {
 
   const radioServicesData = [
     {
-      id: 'svc-seed-rad-xry-00000000-0000-0000-000000000004',
+      id: '00000000-0000-4000-8000-000000000004',
       name: 'Chest X-Ray (PA & Lateral)',
       slug: 'chest-xray',
       type: 'RADIOLOGY' as const,
@@ -856,7 +856,7 @@ async function main() {
       basePrice: 1500,
     },
     {
-      id: 'svc-seed-rad-usg-00000000-0000-0000-000000000005',
+      id: '00000000-0000-4000-8000-000000000005',
       name: 'Abdominal & Pelvic Ultrasound',
       slug: 'abdominal-ultrasound',
       type: 'RADIOLOGY' as const,
@@ -866,7 +866,7 @@ async function main() {
       basePrice: 2800,
     },
     {
-      id: 'svc-seed-rad-mri-00000000-0000-0000-000000000006',
+      id: '00000000-0000-4000-8000-000000000006',
       name: 'Brain MRI (Without Contrast)',
       slug: 'brain-mri',
       type: 'RADIOLOGY' as const,
