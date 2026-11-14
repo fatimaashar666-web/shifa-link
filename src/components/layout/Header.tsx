@@ -2,8 +2,8 @@
 
 import * as React from "react"
 import { useTranslations } from "next-intl"
-import { Link, usePathname } from "@/i18n/routing"
-import { Activity, ChevronDown, Menu, X } from "lucide-react"
+import { Link, usePathname, useRouter } from "@/i18n/routing"
+import { Activity, ChevronDown, LogOut, Menu, UserRound, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "./ThemeToggle"
@@ -21,11 +21,46 @@ type NavigationItem =
   | { key: string; href: string; label: string }
   | { key: string; label: string; items: MenuLink[] }
 
+type CurrentAccount = {
+  name: string
+  email: string
+  roles: string[]
+}
+
 export function Header() {
   const t = useTranslations("nav")
   const tFooter = useTranslations("footer")
   const pathname = usePathname()
+  const router = useRouter()
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
+  const [account, setAccount] = React.useState<CurrentAccount | null>(null)
+
+  React.useEffect(() => {
+    let active = true
+
+    fetch("/api/v1/auth/me")
+      .then((response) => (response.ok ? response.json() : null))
+      .then((profile: CurrentAccount | null) => {
+        if (active) setAccount(profile)
+      })
+      .catch(() => {
+        if (active) setAccount(null)
+      })
+
+    return () => {
+      active = false
+    }
+  }, [pathname])
+
+  async function handleLogout() {
+    await fetch("/api/v1/auth/logout", { method: "POST" }).catch(() => undefined)
+    setAccount(null)
+    setMobileMenuOpen(false)
+    router.push("/")
+    router.refresh()
+  }
+
+  const accountHref = account?.roles.includes("patient") ? "/patient" : "/doctor/summary"
 
   const navItems: NavigationItem[] = [
     { key: "home", href: "/", label: t("home") },
@@ -127,17 +162,34 @@ export function Header() {
           {navItems.map((item) => renderNavigationItem(item))}
         </nav>
 
-        {/* Right Actions: Lang, Theme, Login, Register */}
+        {/* Right Actions: Lang, Theme, Account */}
         <div className="hidden lg:flex items-center gap-2.5">
           <LangSelector />
           <ThemeToggle />
           <div className="h-4 w-px bg-slate-200 dark:bg-slate-700 mx-1" />
-          <Button variant="ghost" size="sm" asChild>
-            <Link href="/login">{t("login")}</Link>
-          </Button>
-          <Button size="sm" asChild>
-            <Link href="/register">{t("register")}</Link>
-          </Button>
+          {account ? (
+            <>
+              <Button variant="ghost" size="sm" asChild className="max-w-48 gap-1.5">
+                <Link href={accountHref} title={account.email}>
+                  <UserRound className="h-4 w-4 shrink-0" />
+                  <span className="truncate">{account.name || account.email}</span>
+                </Link>
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => void handleLogout()} className="gap-1.5">
+                <LogOut className="h-4 w-4" />
+                Logout
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button variant="ghost" size="sm" asChild>
+                <Link href="/login">{t("login")}</Link>
+              </Button>
+              <Button size="sm" asChild>
+                <Link href="/register">{t("register")}</Link>
+              </Button>
+            </>
+          )}
         </div>
 
         {/* Mobile menu trigger */}
@@ -162,16 +214,33 @@ export function Header() {
             {navItems.map((item) => renderNavigationItem(item, true))}
           </nav>
           <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex flex-col gap-2">
-            <Button variant="outline" asChild className="w-full justify-center">
-              <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
-                {t("login")}
-              </Link>
-            </Button>
-            <Button asChild className="w-full justify-center">
-              <Link href="/register" onClick={() => setMobileMenuOpen(false)}>
-                {t("register")}
-              </Link>
-            </Button>
+            {account ? (
+              <>
+                <Button variant="outline" asChild className="w-full justify-center gap-1.5">
+                  <Link href={accountHref} onClick={() => setMobileMenuOpen(false)}>
+                    <UserRound className="h-4 w-4" />
+                    {account.name || account.email}
+                  </Link>
+                </Button>
+                <Button className="w-full justify-center gap-1.5" onClick={() => void handleLogout()}>
+                  <LogOut className="h-4 w-4" />
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="outline" asChild className="w-full justify-center">
+                  <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
+                    {t("login")}
+                  </Link>
+                </Button>
+                <Button asChild className="w-full justify-center">
+                  <Link href="/register" onClick={() => setMobileMenuOpen(false)}>
+                    {t("register")}
+                  </Link>
+                </Button>
+              </>
+            )}
           </div>
         </div>
       )}

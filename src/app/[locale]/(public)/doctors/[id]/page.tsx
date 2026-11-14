@@ -1,3 +1,4 @@
+import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { Link } from "@/i18n/routing";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +15,7 @@ import {
   Video,
 } from "lucide-react";
 import * as doctorService from "@/server/services/doctor.service";
+import { verifySession } from "@/server/auth/session";
 import { BookingWidget } from "@/features/appointments/BookingWidget";
 
 interface DoctorDetailPageProps {
@@ -29,6 +31,9 @@ export default async function DoctorDetailPage({ params }: DoctorDetailPageProps
   if (!doctor) {
     notFound();
   }
+
+  const sessionToken = (await cookies()).get("shifalink-session")?.value;
+  const session = sessionToken ? await verifySession(sessionToken) : null;
 
   return (
     <div className="container mx-auto max-w-7xl px-4 py-8 sm:px-6 space-y-8">
@@ -159,6 +164,8 @@ export default async function DoctorDetailPage({ params }: DoctorDetailPageProps
             doctorId={doctor.id}
             doctorName={doctor.fullName}
             fee={doctor.consultationFee}
+            isAuthenticated={Boolean(session)}
+            canBook={Boolean(session?.roles.includes("patient"))}
           />
         </div>
       </div>

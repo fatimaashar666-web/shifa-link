@@ -4,6 +4,8 @@ import { AlertCircle } from "lucide-react";
 import { searchServices } from "@/server/services/diagnostic.service";
 import { DiagnosticCatalogClient, type DiagnosticCatalogItem } from "@/features/diagnostics/DiagnosticCatalogClient";
 
+export const dynamic = "force-dynamic";
+
 export default async function RadiologyPage({
   params,
 }: {

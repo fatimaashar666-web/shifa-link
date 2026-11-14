@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "@/i18n/routing";
+import { Link, useRouter } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Calendar, Clock, Video, Building2, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
@@ -19,9 +19,11 @@ interface BookingWidgetProps {
   doctorId: string;
   doctorName: string;
   fee: number;
+  isAuthenticated: boolean;
+  canBook: boolean;
 }
 
-export function BookingWidget({ doctorId, doctorName, fee }: BookingWidgetProps) {
+export function BookingWidget({ doctorId, doctorName, fee, isAuthenticated, canBook }: BookingWidgetProps) {
   const router = useRouter();
 
   // Generate next 7 selectable days starting today
@@ -49,6 +51,8 @@ export function BookingWidget({ doctorId, doctorName, fee }: BookingWidgetProps)
   const [successBooking, setSuccessBooking] = useState<{ id: string; time: string } | null>(null);
 
   useEffect(() => {
+    if (!canBook) return;
+
     let isMounted = true;
 
     fetch(`/api/v1/doctors/${doctorId}/availability?date=${selectedDate}`)
@@ -73,7 +77,7 @@ export function BookingWidget({ doctorId, doctorName, fee }: BookingWidgetProps)
     return () => {
       isMounted = false;
     };
-  }, [doctorId, selectedDate]);
+  }, [canBook, doctorId, selectedDate]);
 
   async function handleBookAppointment(e: React.FormEvent) {
     e.preventDefault();
@@ -119,6 +123,48 @@ export function BookingWidget({ doctorId, doctorName, fee }: BookingWidgetProps)
       setErrorMsg("A network error occurred. Please check your connection and retry.");
       setSubmitting(false);
     }
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <Card className="shadow-md">
+        <CardHeader className="border-b border-slate-100 pb-4 dark:border-slate-800">
+          <CardTitle className="flex items-center gap-2 text-lg font-semibold">
+            <Calendar className="h-5 w-5 text-blue-600" />
+            Book Consultation
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4 p-6">
+          <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+            Please log in to select a time slot and book an appointment with {doctorName}.
+          </p>
+          <Button asChild className="w-full">
+            <Link href={`/login?redirect=/doctors/${doctorId}`}>Book Now</Link>
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!canBook) {
+    return (
+      <Card className="shadow-md">
+        <CardHeader className="border-b border-slate-100 pb-4 dark:border-slate-800">
+          <CardTitle className="flex items-center gap-2 text-lg font-semibold">
+            <Calendar className="h-5 w-5 text-blue-600" />
+            Book Consultation
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4 p-6">
+          <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+            A patient account is required to book a doctor appointment.
+          </p>
+          <Button asChild className="w-full">
+            <Link href={`/login?redirect=/doctors/${doctorId}`}>Use a Patient Account</Link>
+          </Button>
+        </CardContent>
+      </Card>
+    );
   }
 
   if (successBooking) {
